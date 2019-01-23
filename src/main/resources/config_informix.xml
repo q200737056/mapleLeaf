@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 使用前，请好好查看配置文件说明及使用说明-->
+<configure>
+	<basedir>f:\\code</basedir>
+	<basePackage>com.test</basePackage>
+	<!-- 设置成去掉表前缀 -->
+	<isDeleteTablePrefix>false</isDeleteTablePrefix>
+	<!-- 设置成表字段的属性驼峰命名 -->
+	<columnIsCamel>true</columnIsCamel>
+	<persistance>hibernate</persistance>
+	<!-- 一些公共类，工具类,父类等原样输出，仅仅用来辅助下面的代码生成,不必需(包名=模板文件名(也是类名)，多个英文逗号隔开) -->
+	<common>common=Page</common>
+	<!-- <db>
+		<dbType>oracle</dbType>
+		<dbName>oracle</dbName>
+		<user>oracle</user>
+		<pwd>oracle</pwd>
+		<driver>oracle.jdbc.OracleDriver</driver>
+		<url>jdbc:oracle:thin:@128.1.84.122:1521:testdb</url>
+	</db> -->
+	<db>
+		<dbType>informix</dbType>
+		<dbName>rmbp</dbName>
+		<user>zjtsyw</user>
+		<pwd>zjtsyw</pwd>
+		<driver>com.informix.jdbc.IfxDriver</driver>
+		<url>jdbc:informix-sqli://128.1.84.127:9977/rmbp:informixserver=zjtsywtsdb;DB_LOCALE=en_us.819;CLIENT_LOCALE=en_us.57372;NEWCODESET=GBK,8859-1,819</url>
+	</db>
+	<!-- 默认全局包名设置，推荐全部设置，而且这些都是必需标签 -->
+	<packageSetting>
+		<entityPackage>entity</entityPackage>
+		<daoPackage>dao</daoPackage>
+		<servicePackage>service</servicePackage>
+		<controllerPackage>controller</controllerPackage>
+		<!-- hibernate不需要，可以设置空 -->
+		<mapperPackage></mapperPackage>
+		<viewPackage tpl="Jsp_list" type="html">jsp</viewPackage>
+		<!-- 自定义配置，模板自定，比如js文件等等 -->
+		<customPackage tpl="Jsp_add" type="java">custom</customPackage>
+	</packageSetting>
+	<module>
+		<name>test1</name>
+		<viewPackage tpl="Jsp_view" type="jsp">jsp</viewPackage>
+		<!-- 嵌套做关联，注意内部的表，必需设置refType(主对从的关系),refColumns(主表字段=从表字段) -->
+		<table name="authorize_param" prefix="">
+		</table>
+		
+	</module>
+</configure>

@@ -1,0 +1,99 @@
+<div class="layui-fluid" lay-title="生成代码">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="form-group">
+        
+
+<script type="text/html" id="tpl_config" template lay-url="code/renderConfig" 
+	lay-type="post" 
+	lay-done="layui.form.render('select');">
+        
+		<div class="layui-form-item">
+          <label class="layui-form-label">模板</label>
+          <div class="layui-input-block">
+			<div class="layui-inline">
+            <select name="templ" id="templ">
+			  {{# layui.each(d.tpls,function(i,item){ }}
+              <option value="{{item}}">{{item}}</option>
+              {{# }) }}
+             
+            </select>
+			</div>
+          </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+          <label class="layui-form-label">配置文件</label>
+          <div class="layui-input-block">
+            <textarea name="config" placeholder="请输入内容" class="layui-textarea" rows="30">
+				{{ d.config }}
+			</textarea>
+          </div>
+        </div>
+</script>        
+        
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="save-submit">保存</button>
+            <button class="layui-btn" lay-submit lay-filter="generate-submit">生成代码</button>
+           	<p style="color:red">如有修改配置文件，请先保存</p>
+          </div>
+        </div>
+        
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.use(['admin', 'form', 'laydate'], function () {
+    var $ = layui.$
+      , admin = layui.admin
+      , element = layui.element
+      , layer = layui.layer
+      , laydate = layui.laydate
+      , form = layui.form;
+
+    form.render(null, 'form-group');
+
+  
+    /* 保存 */
+    form.on('submit(save-submit)', function (data) {
+    	 admin.get({
+             url:'code/updateConfig',
+             type:'post',
+             data:data.field,
+             success:function(res){
+            	 if(res.code=="0"){
+            		admin.modal.success("保存成功！") 
+             	 }else{
+             		admin.modal.error("保存失败！") 
+             	 }
+             }
+         });
+         return false;
+    });
+    /* 生成代码 */
+    form.on('submit(generate-submit)', function (data) {
+    	
+    	 admin.get({
+             url:'code/generateCode',
+             type:'get',
+             data:{
+            	 tplname:$("#templ").val()
+             },
+             success:function(res){
+            	 if(res.code=="0"){
+            		admin.modal.success("生成代码成功！")
+            	 }else{
+            		admin.modal.error("生成代码失败！")
+            	 }
+            	 
+             }
+         });
+         return false;
+    });
+   
+  });
+  
+</script>

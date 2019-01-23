@@ -1,0 +1,99 @@
+<div class="layui-fluid" id="VIEW-index" lay-title="首页">
+  <div class="nepadmin-pad-tb20">
+    <h1 class="nepadmin-lead">mapleLeaf 程序员的工具</h1>
+    <div class="nepadmin-ignore nepadmin-pad-tb10">
+      <p>运行不依赖数据库，简单方便。强大的代码生成功能，可自由编辑模板，不管是网站开发，还是后台管理开发，接口开发等，都可生成代码。</p>
+      <p>mapleLeaf支持mysql，oracle，sqlserver等数据库，支持mybatis，hibernate等持久层生成</p>
+    </div>
+  </div>
+  
+  <script type="text/html" id="idx_template" template lay-url="index/index" 
+	lay-type="get" lay-done="">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-lg8">
+      <div class="layui-row layui-col-space15">
+        
+        <div class="layui-col-xs12">
+          <div class="layui-row layui-col-space15">
+          
+            <div class="layui-col-sm6">
+              <div class="layui-card">
+		        <div class="layui-card-header">系统信息</div>
+		        <div class="layui-card-body">
+				  <p>java版本：{{d.javaVersion}}</p>
+		          <hr />
+		          <p>服务器IP：{{d.serverIP}}</p>
+		          <hr />
+		          <p>CPU核心数：{{d.cpu}}</p>
+		          <hr />
+		          <p>操作系统：{{d.osName}}</p>
+		          <hr />
+		          <p>WEB服务器：{{d.webVersion}}</p>
+		        </div>
+		      </div>
+            </div>
+            
+        <div class="layui-col-sm6">
+        <div class="layui-card">
+        
+        <div class="layui-card-header">java虚拟机</div>
+        <div class="layui-card-body">
+        
+          <p>内存总量：{{d.totalMemory}}</p>
+          <hr />
+          <p>空闲内存量：{{d.freeMemory}}</p>
+          <hr />
+          <p>最大内存量：{{d.maxMemory}}</p>
+        
+          </div>
+        </div>
+        </div>
+            
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <div class="layui-col-lg4">
+      <div class="layui-card">
+        <div class="layui-card-header">版本信息</div>
+        <div class="layui-card-body">
+          <table class="layui-table">
+            <colgroup>
+              <col width="100" />
+              <col />
+            </colgroup>
+            <tbody>
+              <tr>
+                <td>当前版本</td>
+                <td>v1.0.1</td>
+              </tr>
+              <tr>
+                <td>基于框架</td>
+                <td>layui-v2.4.0+sprintboot-2.0.4</td>
+              </tr>
+             
+              <tr>
+                <td>下载源码</td>
+                <td style="padding-bottom: 0;">
+                  <div class="layui-btn-container">
+                    <a href="https://github.com/q200737056/mapleLeaf"
+                      target="_blank"
+                      class="layui-btn layui-btn-danger"><i class="layui-icon">&#xe965;</i>GITHUB</a>
+                    <a href="https://gitee.com/june000/nep-admin"
+                      target="_blank" class="layui-btn layui-btn-success">GITEE</a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+    </div>
+    
+  </div>
+  </script>
+</div>

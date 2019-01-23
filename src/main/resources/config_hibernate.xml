@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 使用前，请好好查看配置文件说明及使用说明-->
+<configure>
+	<basedir>f:\\code</basedir>
+	<basePackage>com.test</basePackage>
+	<!-- 设置成去掉表前缀 -->
+	<isDeleteTablePrefix>true</isDeleteTablePrefix>
+	<!-- 设置成表字段的属性驼峰命名 -->
+	<columnIsCamel>true</columnIsCamel>
+	<persistance>hibernate</persistance>
+	<!-- 一些公共类，工具类,父类等原样输出，仅仅用来辅助下面的代码生成,不必需(包名=模板文件名(也是类名)，多个英文逗号隔开) -->
+	<common>common=Page</common>
+	<db>
+		<dbType>mysql</dbType>
+		<dbName>wxmp</dbName>
+		<user>root</user>
+		<pwd>q123</pwd>
+		<driver>com.mysql.jdbc.Driver</driver>
+		<url>jdbc:mysql://localhost:3306/wxmp?useUnicode=true&amp;characterEncoding=UTF-8</url>
+	</db>
+	<!-- 默认全局包名设置 -->
+	<packageSetting>
+		<entityPackage>entity</entityPackage>
+		<daoPackage>dao</daoPackage>
+		<servicePackage>service</servicePackage>
+		<controllerPackage>controller</controllerPackage>
+		<!-- hibernate不需要，可以设置空 -->
+		<mapperPackage></mapperPackage>
+		<viewPackage tpl="Jsp_list" type="html">jsp</viewPackage>
+		<!-- 自定义配置，模板自定，比如js文件等等 -->
+		<customPackage tpl="Jsp_add" type="java">custom</customPackage>
+	</packageSetting>
+	<module>
+		<name>test1</name>
+		<viewPackage tpl="Jsp_view" type="jsp">jsp</viewPackage>
+		<!-- 嵌套做关联，注意内部的表，必需设置refType(主对从的关系),refColumns(主表字段=从表字段) -->
+		<table name="sys_user" prefix="sys_">
+			<!-- 排除生成view及自定义 -->
+			<table name="wxcms_login_info" prefix="wxcms_" refType="OneToMany" refColumns="id=user_id" 
+				exclude="view,custom" />
+		</table>
+	</module>
+	<module>
+		<name>test2</name>
+		<entityPackage>entity.test2</entityPackage>
+		<daoPackage>dao.test2</daoPackage>
+		<servicePackage>service.test2</servicePackage>
+		<controllerPackage>controller.test2</controllerPackage>
+		<!-- 包名配置空字符,该模块中的全部表就不会去生成对应的代码文件 -->
+		<viewPackage></viewPackage>
+		<customPackage></customPackage>
+		<table name="wxcms_article" prefix="wxcms_"/>
+	</module>
+</configure>

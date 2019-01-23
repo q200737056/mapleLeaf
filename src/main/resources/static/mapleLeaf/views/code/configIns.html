@@ -1,0 +1,382 @@
+<!-- <div class="layui-breadcrumb nepadmin-breadcrumb" lay-filter="nepadmin-breadcrumb">
+  <a lay-href="/">首页</a>
+  <a>新增模块</a>
+  <a>
+    <cite>admin</cite>
+  </a>
+</div> -->
+<style>
+.c_font{
+	color:red;
+	font-weight:bolder;
+}
+</style>
+<div class="layui-fluid" id="VIEW-module-admin" lay-title="配置文件说明">
+  <div class="layui-row layui-col-space10">
+    <div class="layui-col-lg12">
+      <div class="layui-card">
+        <div class="layui-card-body">
+          <h3 class="nepadmin-c-gray">配置文件说明
+          <span style="color:red;">{*必需：必需配置该标签（属性），内容可以为空；非必需：可以不配置该标签（属性）}</span>
+          </h3>
+          <hr>
+          <p style="color:red;font-weight:bolder;">configure根标签</p>
+          <table class="layui-table">
+            <colgroup>
+              <col width="100">
+              <col>
+              <col width="80">
+              <col width="100">
+              <col>
+            </colgroup>
+            <thead>
+              <tr>
+                <th>子标签</th>
+                <th>子标签说明</th>
+                <th>是否必需</th>
+                <th>子标签属性</th>
+                <th>子标签属性说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>basedir</td>
+                <td>生成代码文件的路径。如：d:\\code</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>basePackage</td>
+                <td>生成代码的基础包名。如：com.test</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>isDeleteTablePrefix</td>
+                <td>是否删除表名前缀。（true或false)</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>columnIsCamel</td>
+                <td>是否表字段中下划线转成驼峰命名。（true或false)</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>persistance</td>
+                <td>持久层框架。（mybatis,hibernate,other)</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>common</td>
+                <td>公共类，形式：“包名=模板”多个英文逗号分隔，模板不需要后缀。主要是一些工具类，父类等,直接输出生成java文件，一般不需要。如：util=Page,commom.Dao=BaseDao</td>
+                <td>否</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>db</td>
+                <td>连接数据库的配置，含有子标签，详情看db标签说明</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>packageSetting</td>
+                <td>全局包设置，详情看packageSetting标签说明</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>module</td>
+                <td>模块设置，可以配置多个module，详情看module标签说明</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <p style="color:red;font-weight:bolder;">db标签</p>
+          <table class="layui-table">
+            <colgroup>
+              <col width="100">
+              <col>
+              <col width="80">
+              <col width="100">
+              <col>
+            </colgroup>
+            <thead>
+              <tr>
+                <th>子标签</th>
+                <th>子标签说明</th>
+                <th>是否必需</th>
+                <th>子标签属性</th>
+                <th>子标签属性说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>dbType</td>
+                <td>数据库。（mysql,oracle,sqlserver）</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>dbName</td>
+                <td>数据库名</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>user</td>
+                <td>数据库登陆用户</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>pwd</td>
+                <td>数据库登陆密码</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>driver</td>
+                <td>数据库驱动</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>url</td>
+                <td>数据库url</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <p style="color:red;font-weight:bolder;">packageSetting标签</p>
+          <table class="layui-table">
+            <colgroup>
+              <col width="100">
+              <col>
+              <col width="80">
+              <col width="100">
+              <col>
+            </colgroup>
+            <thead>
+              <tr>
+                <th>子标签</th>
+                <th>子标签说明</th>
+                <th>是否必需</th>
+                <th>子标签属性</th>
+                <th>子标签属性说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>entityPackage</td>
+                <td class="c_font">全局实体类包名。如：entity。如为空字符，在module中又没配置，则不会去生成实体类代码
+                	（推荐全部设置，如果个别模块中的全部表不需要生成实体类，可在该module模块中设置entityPackage标签内容为空字符）
+                	如下标签也一样
+                	</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>daoPackage</td>
+                <td>全局dao接口包名,实现类默认在该包的impl下。如：system.dao。</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>servicePackage</td>
+                <td>全局service接口包名,实现类默认在该包的impl下。如：system.service。</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>controllerPackage</td>
+                <td>全局controller类包名。如：controller。</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>mapperPackage</td>
+                <td>全局mapperXML包名。如：mapper。只有在mybatis持久层框架下会生成。</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>viewPackage</td>
+                <td>全局视图层包名。如：view.jsp。</td>
+                <td>是</td>
+                <td>tpl，type</td>
+                <td>tpl属性：配置模板，只需模板名，不需要后缀，多个可以用英文逗号分隔，如view,list。必需属性;
+                	type属性：配置生成文件类型，即文件后缀，如jsp。非必需属性，默认‘jsp’</td>
+              </tr>
+               <tr class="c_font">
+                <td>customPackage</td>
+                <td>自定义生成文件包名。如：custom。</td>
+                <td>是</td>
+                <td>tpl，type</td>
+                <td>tpl属性：配置模板，只需模板名，不需要后缀，多个可以用英文逗号分隔，如indexJs。必需属性;
+                	type属性：配置生成文件类型，即文件后缀，如js。非必需属性，默认‘ctm’</td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <p style="color:red;font-weight:bolder;">module标签</p>
+          <table class="layui-table">
+            <colgroup>
+              <col width="100">
+              <col width="200">
+              <col width="80">
+              <col width="80">
+              <col>
+            </colgroup>
+            <thead>
+              <tr>
+                <th>子标签</th>
+                <th>子标签说明</th>
+                <th>是否必需</th>
+                <th>子标签属性</th>
+                <th>子标签属性说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>name</td>
+                <td>模块名。主要用来当该模块中没有配置table时，会自动搜索like '模块名%'的所有表</td>
+                <td>是</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr class="c_font">
+                <td>table</td>
+                <td>配置数据库表，一个模块下可以配置多个table</td>
+                <td>否</td>
+                <td>entityName,name,
+                prefix,refType,
+                refColumns,exclude</td>
+                <td>entityName属性：配置自定义实体类名，非必需；
+                name属性：表名，必需；prefix属性：表的前缀，去除前缀的时候需要，非必需；
+                exclude属性：排除指定模板代码生成（entity,dao,service,controller,view,custom选择多个时，英文逗号分隔），非必需；
+               	refType属性：主从表的关系（OneToMany,OneToOne,ManyToOne,ManyToMany），从表必需，默认OneToMany。（主从关系说明看table标签）
+               	refColumns属性：主从表关联字段（主表字段=从表字段，多个英文逗号分隔），从表必需</td>
+              </tr>
+             <tr>
+                <td>entityPackage</td>
+                <td>自定义实体类包名。如：ai.entity。如配置会覆盖全局实体类包名</td>
+                <td>否</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>daoPackage</td>
+                <td>自定义dao接口包名,实现类默认在该包的impl下。如：ai.dao。</td>
+                <td>否</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>servicePackage</td>
+                <td>自定义service接口包名,实现类默认在该包的impl下。如：ai.service。</td>
+                <td>否</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>controllerPackage</td>
+                <td>自定义controller类包名。如：ai.controller。</td>
+                <td>否</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>mapperPackage</td>
+                <td>自定义mapperXML包名。如：mapper。</td>
+                <td>否</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>viewPackage</td>
+                <td>自定义视图层包名。如：ai.jsp。会覆盖全局视图包名及属性</td>
+                <td>否</td>
+                <td>tpl，type</td>
+                <td>参照packageSetting标签说明</td>
+              </tr>
+               <tr>
+                <td>customPackage</td>
+                <td>自定义(自定义生成文件)包名。如：ai.custom。会覆盖全局视图包名及属性</td>
+                <td>否</td>
+                <td>tpl，type</td>
+                <td>参照packageSetting标签说明</td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <p style="color:red;font-weight:bolder;">table标签</p>
+          <table class="layui-table">
+            <colgroup>
+              <col width="100">
+              <col>
+              <col width="80">
+              <col width="100">
+              <col>
+            </colgroup>
+            <thead>
+              <tr>
+                <th>子标签</th>
+                <th>子标签说明</th>
+                <th>是否必需</th>
+                <th>子标签属性</th>
+                <th>子标签属性说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>table</td>
+                <td class="c_font">table标签中可以包含多个table标签，table可以嵌套多层table。把这些表分为主表和从表，主表和从表是相对而言的。比如一个table在内部嵌套了一个table，
+               	 则外部的是主表，内部的是从表，如果这个从表内部还有table，则相对于它内部的表来说，它是主表了。需要注意的是主表一个，从表可以多个，不要重复配置表，会打乱表之间关系。理论上可以嵌套无限层table。
+               	 从表必需设置refType属性（主表对从表的对应关系），默认OneToMany（一对多）；必需设置refColumns属性，
+               	 主从关联字段（主表字段=从表字段，多个英文逗号分隔）
+               	 </td>
+                <td>否</td>
+                <td>参照module标签说明</td>
+                <td>参照module标签说明</td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+          
+        </div>
+      </div>
+     
+     
+    
+    
+    </div>
+  </div>
+</div>

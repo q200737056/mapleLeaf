@@ -1,0 +1,269 @@
+
+<div class="layui-fluid" id="VIEW-module-admin" lay-title="使用说明">
+  <div class="layui-row layui-col-space10">
+    <div class="layui-col-lg12">
+      
+      <div class="layui-card">
+        <div class="layui-card-body">
+          <h3 class="nepadmin-c-red">注意事项</h3>
+          <hr>
+          <p>
+          1.本项目运行不依赖数据库，重新打包部署时，请务必先保存好原来项目上新建的模板和配置文件。<br>
+          2.数据库建表时，最好写上COMMENT注释；最好每张表至少建立一个主键（不推荐组合主键）或唯一索引（复合索引），建议索引名、字段名、表名取的好一点。<br>
+          3.模板文件与配置文件请保持一致，否则出错，生成代码失败。<br>
+          4.同模块中表不要重复配置，后面的会覆盖前面的，从而会破坏表之间的关联关系。不同模块请配置不同包名。<br>
+          </p>
+        </div>
+      </div>
+      
+	  <div class="layui-card">
+        <div class="layui-card-body">
+          <h3 class="nepadmin-c-red">模板使用说明</h3>
+          <hr>
+          <p>
+          1.本项目模板是使用freemarker编写的，只要会点freemarker，编写模板也很容易。<br>
+          2.模板可用数据说明（如下表，可查看参考项目中的默认模板）。<br>
+          </p>
+          
+           <table class="layui-table">
+            <colgroup>
+              <col width="100">
+              <col width="100">
+              <col>
+              <col width="150">
+            </colgroup>
+            
+            <thead>
+              <tr>
+                <th>属性</th>
+                <th>类型</th>
+                <th>说明</th>
+                <th>示例</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+            	<th colspan="4" style="text-align:center;" class="nepadmin-c-red">基础属性</th>
+              </tr>
+              <tr>
+                <td>basePackage</td>
+                <td>String</td>
+                <td>基础包名</td>
+                <td>${basePackage}输出基础包名，如下一样</td>
+              </tr>
+              <tr>
+                <td>entityPackage</td>
+                <td>String</td>
+                <td>实体类包名</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>servicePackage</td>
+                <td>String</td>
+                <td>service接口包名</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>serviceImplPackage</td>
+                <td>String</td>
+                <td>service实现类包名，默认impl</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>daoPackage</td>
+                <td>String</td>
+                <td>dao接口包名</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>daoImplPackage</td>
+                <td>String</td>
+                <td>dao实现类包名，默认impl</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>controllerPackage</td>
+                <td>String</td>
+                <td>controller类包名</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>viewPackage</td>
+                <td>String</td>
+                <td>视图包名</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>mapperPackage</td>
+                <td>String</td>
+                <td>mapperXML包名</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>customPackage</td>
+                <td>String</td>
+                <td>自定义生成文件包名</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>persistance</td>
+                <td>String</td>
+                <td>持久层框架</td>
+                <td>可以用来判断，mybatis or hibernate</td>
+              </tr>
+              <tr>
+            	<th colspan="4" style="text-align:center;" class="nepadmin-c-red">Table属性</th>
+              </tr>
+              <tr>
+                <td>tableFullName</td>
+                <td>String</td>
+                <td>表名</td>
+                <td>${tableFullName}就可以输出表名，如下一样</td>
+              </tr>
+              <tr>
+                <td>tableName</td>
+                <td>String</td>
+                <td>去掉prefix的表名</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>fstLowEntityName</td>
+                <td>String</td>
+                <td>首字母小写的实体类名，下划线表名会自动转成驼峰命名</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>entityName</td>
+                <td>String</td>
+                <td>对应表的实体类，下划线表名会自动转成驼峰命名</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>remark</td>
+                <td>String</td>
+                <td>表comment</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>importClassList</td>
+                <td>List&lt;String&gt;</td>
+                <td>需要导入字段类型的全类名集合</td>
+                <td>如：java.util.Date</td>
+              </tr>
+              <tr>
+                <td>columns</td>
+                <td>List&lt;Column&gt;</td>
+                <td>表字段，属性等（详见Column属性）</td>
+                <td>利用&lt;#list columns as col&gt;freemarker标签，
+                	可循环取出Column属性</td>
+              </tr>
+              <tr>
+                <td>subTables</td>
+                <td>List&lt;Table&gt;</td>
+                <td>从表的信息（详见Table属性）</td>
+                <td>利用list标签, 循环取出Table属性</td>
+              </tr>
+              <tr>
+                <td>refType</td>
+                <td>String</td>
+                <td>主表对从表的关系(OneToMany,OneToOne,ManyToOne,ManyToMany)</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>refColumnMap</td>
+                <td>Map&lt;String,String&gt;</td>
+                <td>主从表关联字段，key主表字段，value从表字段</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>refPropertyMap</td>
+                <td>Map&lt;String,String&gt;</td>
+                <td>主从表实体类关联属性，key主表实体类属性，value从表实体类属性</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>parentTable</td>
+                <td>Table</td>
+                <td>获取从表的主表</td>
+                <td>${parentTable??}可以先判断是否有主表，从而可以获取到${parentTable.entityName}主表的实体类</td>
+              </tr>
+              <tr>
+                <td>uniIdxMap</td>
+                <td>Map&lt;String,List&lt;Column&gt;&gt;</td>
+                <td>主键，唯一索引map集合；key：主键名或索引名，value:Column集合</td>
+                <td>利用list标签, 循环取出key和主键或唯一索引的Column集合</td>
+              </tr>
+              <tr>
+            	<th colspan="4" style="text-align:center;" class="nepadmin-c-red">Column属性</th>
+              </tr>
+              <tr>
+                <td>columnName</td>
+                <td>String</td>
+                <td>表字段名</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>columnType</td>
+                <td>String</td>
+                <td>表字段类型，部分有转换过</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>remark</td>
+                <td>String</td>
+                <td>表字段comment</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>propertyName</td>
+                <td>String</td>
+                <td>字段对应的实体类属性名</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>propertyType</td>
+                <td>String</td>
+                <td>属性类型，即java类型</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>fstUpperProName</td>
+                <td>String</td>
+                <td>属性名首字母大写，主要用来get,set</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>nullable</td>
+                <td>boolean</td>
+                <td>表字段是否为空</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>pk</td>
+                <td>boolean</td>
+                <td>表字段是否为主键</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>length</td>
+                <td>String</td>
+                <td>表字段文本类型的长度</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>defaultValue</td>
+                <td>Object</td>
+                <td>表字段默认值</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          
+        </div>
+      </div>
+
+     
+     
+    </div>
+  </div>
+</div>

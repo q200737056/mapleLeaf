@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 使用前，请好好查看配置文件说明及使用说明-->
+<configure>
+	<basedir>f:\\code</basedir>
+	<basePackage>com.test</basePackage>
+	<isDeleteTablePrefix>false</isDeleteTablePrefix>
+	<columnIsCamel>false</columnIsCamel>
+	<persistance>mybatis</persistance>
+	<!-- 一些公共类，工具类,父类等原样输出，仅仅用来辅助下面的代码生成,不必需(包名=模板文件名(也是类名)，多个英文逗号隔开) -->
+	<!-- 这里配置了分页类，mybatis分页拦截器, mybatis通用配置-->
+	<common>common=Page,common=PageInterceptor,resource=Xml_mybatis</common>
+	<db>
+		<dbType>mysql</dbType>
+		<dbName>wxmp</dbName>
+		<user>root</user>
+		<pwd>q123</pwd>
+		<driver>com.mysql.jdbc.Driver</driver>
+		<url>jdbc:mysql://localhost:3306/wxmp?useUnicode=true&amp;characterEncoding=UTF-8</url>
+	</db>
+	<!-- 默认全局包名设置 -->
+	<packageSetting>
+		<entityPackage>entity</entityPackage>
+		<daoPackage>dao</daoPackage>
+		<servicePackage>service</servicePackage>
+		<controllerPackage>controller</controllerPackage>
+		<mapperPackage>mapper</mapperPackage>
+		<viewPackage tpl="Jsp_list" type="html">jsp</viewPackage>
+		<customPackage tpl="Jsp_add" type="java">custom</customPackage>
+	</packageSetting>
+	<module>
+		<name>test</name>
+		<mapperPackage>mapper.xml</mapperPackage>
+		<viewPackage tpl="Jsp_view" type="jsp">jsp</viewPackage>
+		<!-- 嵌套做关联，注意内部的表，必需设置refType(主对从的关系),refColumns(主表字段=从表字段) -->
+		<table name="sys_user" prefix="">
+			<table name="wxcms_login_info" prefix="" refType="OneToMany" refColumns="id=user_id" />
+		</table>
+		<table name="wxcms_account" exclude="view,custom"/>
+	</module>
+</configure>

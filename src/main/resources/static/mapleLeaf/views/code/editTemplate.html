@@ -1,0 +1,121 @@
+<div class="layui-fluid" lay-title="编辑模板">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="form-editTemplate">
+ <script type="text/html" id="tpl_template" template lay-url="code/renderTemplate" 
+	lay-type="post" lay-done="layui.form.render(null,'form-editTemplate')">
+	
+	<div class="layui-form-item">
+          <label class="layui-form-label">选择模板</label>
+          <div class="layui-input-block">
+            <div class="layui-inline">
+              <select name="dir" id="dir" lay-filter="dir-select">
+                
+				{{# layui.each(d.tpls,function(i,item){ }}
+             	 <option value="{{item}}">{{item}}</option>
+             	 {{# }) }}
+              </select>
+            </div>
+            <div class="layui-inline">
+              <select name="file" id="file" lay-filter="file-select">
+                {{# layui.each(d.tplFiles,function(i,item){ }}
+             	 <option value="{{item}}">{{item}}</option>
+             	 {{# }) }}
+              </select>
+            </div>
+          
+          </div>
+        </div>
+
+		<div class="layui-form-item layui-form-text">
+          <label class="layui-form-label">模板内容</label>
+          <div class="layui-input-block">
+            <textarea name="tplcontent" id="tplcontent" placeholder="请输入内容" class="layui-textarea" rows="30">
+				{{ d.tplContent }}
+			</textarea>
+          </div>
+        </div>
+	</script>     
+        
+        
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="save-submit">保存</button>
+          </div>
+        </div>
+        
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.use(['admin', 'form', 'laydate'], function () {
+    var $ = layui.$
+      , admin = layui.admin
+      , element = layui.element
+      , layer = layui.layer
+      , laydate = layui.laydate
+      , form = layui.form;
+
+    form.render(null, 'form-editTemplate');
+
+    
+ 	form.on('select(dir-select)',function(data){
+ 		admin.get({
+            url:'code/getTplFiles',
+            type:'get',
+            data:{
+            	dir:data.value
+            },
+            success:function(res){
+            	$("#file").html("");
+            	$("#tplcontent").val("");
+            	var d = res["data"];
+            	layui.each(d.tplFiles,function(i,item){
+            		$("#file").append("<option value='"+item+"'>"+item+"</option>");
+            	})
+            	$("#tplcontent").val(d.tplContent);
+            	form.render(null, 'form-editTemplate');
+            }
+        });
+ 		return false;
+ 	})
+ 	
+ 	form.on('select(file-select)',function(data){
+ 		admin.get({
+            url:'code/getTplContent',
+            type:'get',
+            data:{
+            	dir:$("#dir").val(),
+            	file:data.value
+            },
+            success:function(res){
+            	$("#tplcontent").val("");
+            	
+            	var d = res["data"];
+            	$("#tplcontent").val(d);
+            	form.render(null, 'form-editTemplate');
+            }
+        });
+ 		return false;
+ 	})
+    /* 保存 */
+    form.on('submit(save-submit)', function (data) {
+    	 admin.get({
+             url:'code/updateTplContent',
+             type:'post',
+             data:data.field,
+             success:function(res){
+            	 if(res.code=="0"){
+            		 admin.modal.success("保存成功！") 
+            	 }else{
+            		 admin.modal.error("保存失败！") 
+            	 }
+            	 
+             }
+         });
+         return false;
+    });
+  });
+</script>

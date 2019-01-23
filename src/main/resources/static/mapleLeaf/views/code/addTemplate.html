@@ -1,0 +1,142 @@
+<div class="layui-fluid" lay-title="新增模板文件">
+  <div class="layui-card">
+    <div class="layui-card-body" style="padding: 15px;">
+      <form class="layui-form" action="" lay-filter="form-editTemplate">
+    
+        <p style="color:red;font-weight:bolder;">
+        	*新增模板时，模板名取英文或数字,自动会添加前缀tpl_<br>
+        	*视图，公共类，自定义等等，可选Custom自定义模板文件，请输入名称（英文、数字、下划线），不需要后缀
+        </p>
+        <div class="layui-form-item">
+          <label class="layui-form-label">是否新增已有模板</label>
+          <div class="layui-input-block">
+            <input type="radio" name="flag" value="1" title="是" lay-filter="flag-radio" checked>
+            <input type="radio" name="flag" value="0" title="否" lay-filter="flag-radio">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">模板名</label>
+          <div class="layui-input-block">
+            <div class="layui-inline">
+            
+            	<script type="text/html" id="tpl_template" template lay-url="code/renderTemplate" 
+	lay-type="post" lay-done="layui.form.render('select')">
+				<select name="dir" id="dir" lay-filter="dir-select">
+					{{# layui.each(d.tpls,function(i,item){ }}
+             		 <option value="{{item}}">{{item}}</option>
+             	 	{{# }) }}
+            	</select>	
+				
+				</script>  
+            	
+        	</div>
+        	
+        	<div class="layui-inline">
+              <input type="text" id="tplname" name="tplname" class="layui-input" disabled="disabled">
+            </div>
+        	
+          </div>
+        </div>
+        
+         <div class="layui-form-item">
+          <label class="layui-form-label">模板文件</label>
+          <div class="layui-input-block">
+            <input type="radio" name="tpltype" value="Dao" title="Dao接口" lay-filter="tpltype-radio" checked>
+            <input type="radio" name="tpltype" value="DaoImpl" title="Dao实现类" lay-filter="tpltype-radio">
+            <input type="radio" name="tpltype" value="Mapper" title="MapperXml" lay-filter="tpltype-radio">
+            <input type="radio" name="tpltype" value="Service" title="Service接口" lay-filter="tpltype-radio">
+            <input type="radio" name="tpltype" value="ServiceImpl" title="Service实现类" lay-filter="tpltype-radio">
+            <input type="radio" name="tpltype" value="Controller" title="Controller类" lay-filter="tpltype-radio">
+            <input type="radio" name="tpltype" value="Entity" title="Entity实体类" lay-filter="tpltype-radio">
+            <input type="radio" name="tpltype" value="Other" title="Custom自定义" lay-filter="tpltype-radio">
+            <div class="layui-inline">
+            <input type="text" name="typename" id="typename" class="layui-input" disabled="disabled">
+           
+            </div>
+          </div>
+         
+        </div>
+        
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="save-submit">新增</button>
+          </div>
+        </div>
+        
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.use(['admin', 'form', 'laydate'], function () {
+    var $ = layui.$
+      , admin = layui.admin
+      , element = layui.element
+      , layer = layui.layer
+      , laydate = layui.laydate
+      , form = layui.form;
+
+    form.render(null, 'form-editTemplate');
+
+    form.on('radio(flag-radio)', function (data) {
+   	 	
+    	var v = data.value;
+    	if(v=="1"){
+    		$("#dir").attr("disabled",false);
+    		$("#tplname").val("");
+    		$("#tplname").attr("disabled",true);
+    		$("#tplname").removeAttr("lay-verify");
+    		$("#tplname").removeAttr("style");
+    	}else{
+    		$("#dir").attr("disabled",true);
+    		$("#tplname").attr("disabled",false);
+    		$("#tplname").attr("lay-verify","required");
+    		$("#tplname").attr("style","border-color:red");
+    	}
+    	form.render(null, 'form-editTemplate');
+        return false;
+   });
+    
+	 form.on('radio(tpltype-radio)', function (data) {
+    	var v = data.value;
+    	if(v=="Other"){
+    		$("#typename").attr("disabled",false);
+    		$("#typename").attr("lay-verify","required");
+    		$("#typename").attr("style","border-color:red");
+    	}else{
+    		$("#typename").val("");
+    		$("#typename").attr("disabled",true);
+    		$("#typename").removeAttr("lay-verify");
+    		$("#typename").removeAttr("style");
+    	}
+    	form.render(null, 'form-editTemplate');
+        return false;
+   });
+    
+ 	
+    /* 保存 */
+    form.on('submit(save-submit)', function (data) {
+    	 admin.get({
+             url:'code/addTemplate',
+             type:'post',
+             data:data.field,
+             success:function(res){
+            	 if(res.code=="0"){
+            		 admin.modal.success("新增成功！"); 
+            	 }else{
+            		 admin.modal.error("新增失败！"); 
+            	 }
+            	 
+            	 //$("input[name='flag']").val("1");
+            	 $("#tplname").val("");
+            	 $("#tplname").attr("disabled",true);
+         		 $("#tplname").removeAttr("lay-verify");
+         		 $("#tplname").removeAttr("style");
+         		 admin.render("tpl_template");
+             }
+         });
+         return false;
+    });
+  });
+</script>

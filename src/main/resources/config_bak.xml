@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configure>
+	<basedir>f:\\code</basedir>
+	<basePackage>com.test</basePackage>
+	<isDeleteTablePrefix>false</isDeleteTablePrefix>
+	<columnIsCamel>false</columnIsCamel>
+	<persistance>mybatis</persistance>
+	<common>common=Page</common>
+	<db>
+		<dbType>mysql</dbType>
+		<dbName>wxmp</dbName>
+		<user>root</user>
+		<pwd>q123</pwd>
+		<driver>com.mysql.jdbc.Driver</driver>
+		<url>jdbc:mysql://localhost:3306/wxmp?useUnicode=true&amp;characterEncoding=UTF-8</url>
+	</db>
+	<packageSetting>
+		<entityPackage>entity</entityPackage>
+		<daoPackage>dao</daoPackage>
+		<servicePackage>service</servicePackage>
+		<controllerPackage>controller</controllerPackage>
+		<mapperPackage>mapper</mapperPackage>
+		<viewPackage tpl="Jsp_list" type="html">jsp</viewPackage>
+		<customPackage tpl="Jsp_add" type="java">custom</customPackage>
+	</packageSetting>
+	<module>
+		<name>模块名</name>
+		<mapperPackage>mapper.xml</mapperPackage>
+		<viewPackage tpl="Jsp_view" type="jsp">jsp</viewPackage>
+		<table name="sys_user" prefix=""></table>
+	</module>
+</configure>
