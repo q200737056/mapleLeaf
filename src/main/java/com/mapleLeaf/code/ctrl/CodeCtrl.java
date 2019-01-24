@@ -250,11 +250,5 @@ public class CodeCtrl {
 		return rst;
 	}
 	
-	public static void main(String[] args) throws IOException {
-		CodeCtrl c = new CodeCtrl();
-		System.out.println(c.getClass().getResource("/").getPath()+"/tpl_中文");
-		File f = new File(c.getClass().getResource("/").getPath()+"/tpl_中文"+File.separator+"aa.ftl");
-		f.createNewFile();
-	}
 	
 }
