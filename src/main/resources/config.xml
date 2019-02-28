@@ -17,20 +17,17 @@
 		<driver>com.mysql.jdbc.Driver</driver>
 		<url>jdbc:mysql://localhost:3306/wxmp?useUnicode=true&amp;characterEncoding=UTF-8</url>
 	</db>
-	<!-- 默认全局包名设置 -->
-	<packageSetting>
+	
+	<module>
+		<name>test</name>
 		<entityPackage>entity</entityPackage>
 		<daoPackage>dao</daoPackage>
 		<servicePackage>service</servicePackage>
 		<controllerPackage>controller</controllerPackage>
 		<mapperPackage>mapper</mapperPackage>
-		<viewPackage tpl="Jsp_list" type="html">jsp</viewPackage>
+		<viewPackage tpl="Jsp_list" type="jsp">jsp</viewPackage>
 		<customPackage tpl="Jsp_add" type="java">custom</customPackage>
-	</packageSetting>
-	<module>
-		<name>test</name>
-		<mapperPackage>mapper.xml</mapperPackage>
-		<viewPackage tpl="Jsp_view" type="jsp">jsp</viewPackage>
+		
 		<!-- 嵌套做关联，注意内部的表，必需设置refType(主对从的关系),refColumns(主表字段=从表字段) -->
 		<table name="sys_user" prefix="">
 			<table name="wxcms_login_info" prefix="" refType="OneToMany" refColumns="id=user_id" />

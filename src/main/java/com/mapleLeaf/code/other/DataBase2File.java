@@ -63,9 +63,10 @@ public class DataBase2File {
         for (Module module : config.getModules()) {
         	log.info("module="+module.getName());
         	
-        	//如果没有配置数据表，则默认加载模块名为前缀的所有数据表
+        	
         	if (module.getTables()==null || module.getTables().isEmpty()) {
-        		module.setTables(tableService.getAllTables(module.getName()+"%"));
+        		//module.setTables(tableService.getAllTables(module.getName()+"%"));
+        		continue;
         	}
         	
         	if (module.getTables()!=null) {

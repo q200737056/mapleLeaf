@@ -14,19 +14,17 @@
 		<driver>com.mysql.jdbc.Driver</driver>
 		<url>jdbc:mysql://localhost:3306/wxmp?useUnicode=true&amp;characterEncoding=UTF-8</url>
 	</db>
-	<packageSetting>
+	
+	<module>
+		<name>模块名</name>
 		<entityPackage>entity</entityPackage>
 		<daoPackage>dao</daoPackage>
 		<servicePackage>service</servicePackage>
 		<controllerPackage>controller</controllerPackage>
-		<mapperPackage>mapper</mapperPackage>
+		<mapperPackage>mapper.xml</mapperPackage>
 		<viewPackage tpl="Jsp_list" type="html">jsp</viewPackage>
 		<customPackage tpl="Jsp_add" type="java">custom</customPackage>
-	</packageSetting>
-	<module>
-		<name>模块名</name>
-		<mapperPackage>mapper.xml</mapperPackage>
-		<viewPackage tpl="Jsp_view" type="jsp">jsp</viewPackage>
+		
 		<table name="sys_user" prefix=""></table>
 	</module>
 </configure>

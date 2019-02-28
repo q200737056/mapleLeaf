@@ -169,83 +169,8 @@
             </tbody>
           </table>
           
-          <p style="color:red;font-weight:bolder;">packageSetting标签</p>
-          <table class="layui-table">
-            <colgroup>
-              <col width="100">
-              <col>
-              <col width="80">
-              <col width="100">
-              <col>
-            </colgroup>
-            <thead>
-              <tr>
-                <th>子标签</th>
-                <th>子标签说明</th>
-                <th>是否必需</th>
-                <th>子标签属性</th>
-                <th>子标签属性说明</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>entityPackage</td>
-                <td class="c_font">全局实体类包名。如：entity。如为空字符，在module中又没配置，则不会去生成实体类代码
-                	（推荐全部设置，如果个别模块中的全部表不需要生成实体类，可在该module模块中设置entityPackage标签内容为空字符）
-                	如下标签也一样
-                	</td>
-                <td>是</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>daoPackage</td>
-                <td>全局dao接口包名,实现类默认在该包的impl下。如：system.dao。</td>
-                <td>是</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>servicePackage</td>
-                <td>全局service接口包名,实现类默认在该包的impl下。如：system.service。</td>
-                <td>是</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>controllerPackage</td>
-                <td>全局controller类包名。如：controller。</td>
-                <td>是</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>mapperPackage</td>
-                <td>全局mapperXML包名。如：mapper。只有在mybatis持久层框架下会生成。</td>
-                <td>是</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>viewPackage</td>
-                <td>全局视图层包名。如：view.jsp。</td>
-                <td>是</td>
-                <td>tpl，type</td>
-                <td>tpl属性：配置模板，只需模板名，不需要后缀，多个可以用英文逗号分隔，如view,list。必需属性;
-                	type属性：配置生成文件类型，即文件后缀，如jsp。非必需属性，默认‘jsp’</td>
-              </tr>
-               <tr class="c_font">
-                <td>customPackage</td>
-                <td>自定义生成文件包名。如：custom。</td>
-                <td>是</td>
-                <td>tpl，type</td>
-                <td>tpl属性：配置模板，只需模板名，不需要后缀，多个可以用英文逗号分隔，如indexJs。必需属性;
-                	type属性：配置生成文件类型，即文件后缀，如js。非必需属性，默认‘ctm’</td>
-              </tr>
-            </tbody>
-          </table>
-          
-          <p style="color:red;font-weight:bolder;">module标签</p>
+         
+          <p style="color:red;font-weight:bolder;">module标签（可配置多个）</p>
           <table class="layui-table">
             <colgroup>
               <col width="100">
@@ -266,7 +191,7 @@
             <tbody>
               <tr>
                 <td>name</td>
-                <td>模块名。主要用来当该模块中没有配置table时，会自动搜索like '模块名%'的所有表</td>
+                <td>模块名。</td>
                 <td>是</td>
                 <td>没有</td>
                 <td></td>
@@ -286,7 +211,7 @@
               </tr>
              <tr>
                 <td>entityPackage</td>
-                <td>自定义实体类包名。如：ai.entity。如配置会覆盖全局实体类包名</td>
+                <td>自定义实体类包名。如：ai.entity。如未配置或标签内容为空字符，则该模块下不会去生成实体类，如下一样</td>
                 <td>否</td>
                 <td>没有</td>
                 <td></td>
@@ -321,17 +246,19 @@
               </tr>
               <tr>
                 <td>viewPackage</td>
-                <td>自定义视图层包名。如：ai.jsp。会覆盖全局视图包名及属性</td>
+                <td>自定义视图层包名。如：ai.jsp。</td>
                 <td>否</td>
                 <td>tpl，type</td>
-                <td>参照packageSetting标签说明</td>
+                <td>tpl属性：配置模板，只需模板名，不需要后缀，多个可以用英文逗号分隔，如view,list。必需属性;
+                	type属性：配置生成文件类型，即文件后缀，如jsp。非必需属性，默认‘jsp’</td>
               </tr>
                <tr>
                 <td>customPackage</td>
-                <td>自定义(自定义生成文件)包名。如：ai.custom。会覆盖全局视图包名及属性</td>
+                <td>自定义(自定义生成文件)包名。如：ai.custom。</td>
                 <td>否</td>
                 <td>tpl，type</td>
-                <td>参照packageSetting标签说明</td>
+                <td>tpl属性：配置模板，只需模板名，不需要后缀，多个可以用英文逗号分隔，如indexJs。必需属性;
+                	type属性：配置生成文件类型，即文件后缀，如js。非必需属性，默认‘ctm’</td>
               </tr>
             </tbody>
           </table>

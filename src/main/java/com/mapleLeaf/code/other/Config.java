@@ -28,7 +28,7 @@ public class Config {
 	private String persistance; //持久层框架
 	private Db db; //连接数据库的配置信息
 	private List<Module> modules; //要生成的代码模块列表
-	private PackageSetting packageSetting; //全局包名设置
+	
 	private Map<String,List<String>> commonMap=new HashMap<>(); //公共类map
 	
 	
@@ -82,12 +82,7 @@ public class Config {
 		this.modules = modules;
 	}
 	
-	public PackageSetting getPackageSetting() {
-		return packageSetting;
-	}
-	public void setPackageSetting(PackageSetting packageSetting) {
-		this.packageSetting = packageSetting;
-	}
+	
 	@Override
 	public String toString() {
 		return "Config [baseDir=" + baseDir + ", basePackage=" + basePackage
@@ -136,30 +131,7 @@ public class Config {
 		db.setUser(XmlUtil.getChild(dbNode, "user").getTextTrim());
 		db.setDbName(XmlUtil.getChild(dbNode, "dbName").getTextTrim());
 		cfg.setDb(db);
-		//加载全局包名
-		Element pkg = XmlUtil.getChild(root, "packageSetting");
-		PackageSetting pkgSetting=new PackageSetting();
-		pkgSetting.setControllerPackage(XmlUtil.getChild(pkg, "controllerPackage").getTextTrim());
-		Element viewPackageEle=XmlUtil.getChild(pkg, "viewPackage");
-		pkgSetting.setViewPackage(viewPackageEle.getTextTrim());
-		pkgSetting.getAttrsMap().put("viewPackage_tpl", XmlUtil.attrValue(viewPackageEle, "tpl"));//属性
-		pkgSetting.getAttrsMap().put("viewPackage_type", XmlUtil.attrValue(viewPackageEle, "type"));//属性
 		
-		pkgSetting.setEntityPackage(XmlUtil.getChild(pkg, "entityPackage").getTextTrim());
-		pkgSetting.setMapperPackage(XmlUtil.getChild(pkg, "mapperPackage").getTextTrim());
-		pkgSetting.setDaoPackage(XmlUtil.getChild(pkg, "daoPackage").getTextTrim());
-		//pkgSetting.setDaoImplPackage(XmlUtil.getChild(pkg, "daoImplPackage").getTextTrim());
-		pkgSetting.setDaoImplPackage("impl");//设成默认
-		pkgSetting.setServicePackage(XmlUtil.getChild(pkg, "servicePackage").getTextTrim());
-		//pkgSetting.setServiceImplPackage(XmlUtil.getChild(pkg, "serviceImplPackage").getTextTrim());
-		pkgSetting.setServiceImplPackage("impl");//设成默认
-		
-		Element customPackageEle=XmlUtil.getChild(pkg, "customPackage");//自定义 
-		pkgSetting.setCustomPackage(customPackageEle.getTextTrim());
-		pkgSetting.getAttrsMap().put("customPackage_tpl", XmlUtil.attrValue(customPackageEle, "tpl"));
-		pkgSetting.getAttrsMap().put("customPackage_type", XmlUtil.attrValue(customPackageEle, "type"));
-		
-		cfg.setPackageSetting(pkgSetting);
 		//加载module
 		List<Module> moduleList = new ArrayList<Module>();
 		List<Element> modules = XmlUtil.getChildElements(root, "module");
@@ -175,25 +147,24 @@ public class Config {
 			m.setName(XmlUtil.getChild(e, "name").getTextTrim());
 			//加载自定义包名
 			Element elePkg = XmlUtil.getChild(e, "controllerPackage");
-			m.setControllerPackage(elePkg==null?pkgSetting.getControllerPackage():elePkg.getTextTrim());
-			elePkg=XmlUtil.getChild(e, "daoImplPackage");
-			m.setDaoImplPackage(elePkg==null?pkgSetting.getDaoImplPackage():elePkg.getTextTrim());
-			elePkg = XmlUtil.getChild(e, "daoPackage");
-			m.setDaoPackage(elePkg==null?pkgSetting.getDaoPackage():elePkg.getTextTrim());
-			elePkg = XmlUtil.getChild(e, "entityPackage");
-			m.setEntityPackage(elePkg==null?pkgSetting.getEntityPackage():elePkg.getTextTrim());
-			elePkg = XmlUtil.getChild(e, "mapperPackage");
-			m.setMapperPackage(elePkg==null?pkgSetting.getMapperPackage():elePkg.getTextTrim());
-			elePkg = XmlUtil.getChild(e, "serviceImplPackage");
-			m.setServiceImplPackage(elePkg==null?pkgSetting.getServiceImplPackage():elePkg.getTextTrim());
+			m.setControllerPackage(elePkg==null?null:elePkg.getTextTrim());
 			elePkg = XmlUtil.getChild(e, "servicePackage");
-			m.setServicePackage(elePkg==null?pkgSetting.getServicePackage():elePkg.getTextTrim());
+			m.setServicePackage(elePkg==null?null:elePkg.getTextTrim());
+			m.setServiceImplPackage("impl");
+			elePkg = XmlUtil.getChild(e, "daoPackage");
+			m.setDaoPackage(elePkg==null?null:elePkg.getTextTrim());
+			m.setDaoImplPackage("impl");
+			
+			elePkg = XmlUtil.getChild(e, "entityPackage");
+			m.setEntityPackage(elePkg==null?null:elePkg.getTextTrim());
+			elePkg = XmlUtil.getChild(e, "mapperPackage");
+			m.setMapperPackage(elePkg==null?null:elePkg.getTextTrim());
+		
 			
 			elePkg = XmlUtil.getChild(e, "viewPackage");
 			if(elePkg==null){
-				m.setViewPackage(pkgSetting.getViewPackage());
-				m.getAttrsMap().put("viewPackage_tpl", pkgSetting.getAttrsMap().get("viewPackage_tpl"));
-				m.getAttrsMap().put("viewPackage_type", pkgSetting.getAttrsMap().get("viewPackage_type"));
+				m.setViewPackage(null);
+				
 			}else{
 				m.setViewPackage(elePkg.getTextTrim());
 				m.getAttrsMap().put("viewPackage_tpl", XmlUtil.attrValue(elePkg, "tpl"));
@@ -201,9 +172,8 @@ public class Config {
 			}
 			elePkg = XmlUtil.getChild(e, "customPackage");
 			if(elePkg==null){
-				m.setCustomPackage(pkgSetting.getCustomPackage());
-				m.getAttrsMap().put("customPackage_tpl", pkgSetting.getAttrsMap().get("customPackage_tpl"));
-				m.getAttrsMap().put("customPackage_type", pkgSetting.getAttrsMap().get("customPackage_type"));
+				m.setCustomPackage(null);
+				
 			}else{
 				m.setCustomPackage(elePkg.getTextTrim());
 				m.getAttrsMap().put("customPackage_tpl", XmlUtil.attrValue(elePkg, "tpl"));
