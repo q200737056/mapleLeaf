@@ -23,50 +23,14 @@ import com.mapleLeaf.code.service.ITableService;
 import com.mapleLeaf.code.utils.CodeUtil;
 
 
-public class MysqlTableService implements ITableService {
+public class PostgresqlTableService implements ITableService {
 	
 	private Config config;
 	public void setConfig(Config config) {
 		this.config = config;
 	}
 
-	/* 
-     * 连接数据库获取所有表信息 
-     */  
-    public List<TableConf> getAllTables(String pattern) {  
-        if (CodeUtil.isEmpty(pattern)) {
-        	pattern="*";
-        }
-        List<TableConf> tbConfList = new ArrayList<TableConf>();
-        Connection con = null;  
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {  
-            Class.forName(config.getDb().getDriver());  
-            con = DriverManager.getConnection(config.getDb().getUrl(), config.getDb().getUser(),config.getDb().getPwd());  
-            // 获取所有表名  
-            String showTablesSql = "";  
-            showTablesSql = "show tables like '"+pattern+"'";  // MySQL查询所有表格名称命令  
-            ps = con.prepareStatement(showTablesSql);  
-            rs = ps.executeQuery();  
-              
-            // 循环生成所有表的表信息
-            while(rs.next()) {  
-                if(rs.getString(1)==null) continue;  
-                TableConf cf = new TableConf();
-                cf.setName(rs.getString(1));
-                tbConfList.add(cf);
-            }  
-              
-            rs.close();  
-            ps.close(); 
-            con.close();  
-        } catch (Exception e) {  
-            e.printStackTrace();  
-        }  
-          
-        return tbConfList;  
-    }  
+	
       
     /**
      * 获取指定表信息并封装成Table对象 
@@ -89,13 +53,7 @@ public class MysqlTableService implements ITableService {
         Map<String,String> m = this.getTableUniqueIdx(tableName, con);
         //获取表各字段的信息
         getTableColumns(table,con,m);
-        //去掉单主键配置
-        
-        /*table.setPrimaryKey(getTablePrimaryKey(tableName, con));
-        table.setPrimaryKeyType(getColumnType(table, table.getPrimaryKey()));
-        table.setPrimaryProperty(CodeUtil.convertToFirstLetterLowerCaseCamelCase(table.getPrimaryKey()));
-        table.setPrimaryPropertyType(CodeUtil.convertType(table.getPrimaryKeyType()));
-        table.setPrimaryCamelProperty(CodeUtil.convertToCamelCase(table.getPrimaryKey()));*/
+       
         
         table.setRemark(getTableRemark(tableName, con));//表 注释
         //实体类名,如果没设置实体类名属性，则,首字母大写的驼峰命名 
@@ -129,7 +87,6 @@ public class MysqlTableService implements ITableService {
         			tb.setRefPropertyMap(refPropertyMap);
         		}
         		
-        		
         		tb.setRefType(tc.getRefType());//关联 方式
         		subTables.add(tb);
         	}
@@ -152,9 +109,14 @@ public class MysqlTableService implements ITableService {
     	
     		Map<String,List<Column>> index = new HashMap<>();//唯一索引，主键
     		
-			String sql="select * from information_schema.COLUMNS where TABLE_SCHEMA=? and TABLE_NAME=?";
+			String sql="select A.*,B.column_comment from information_schema.COLUMNS A left join"+
+					" (SELECT col_description(a.attrelid,a.attnum) as column_comment,a.attname as name"+
+					" FROM pg_class as c,pg_attribute as a where c.relname=? and a.attrelid=c.oid"+
+					" and a.attnum>0) B on A.column_name=B.name"+
+					" where A.TABLE_NAME=?";
+			
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1,config.getDb().getDbName());
+			ps.setString(1,table.getTableFullName());
 			ps.setString(2,table.getTableFullName());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
@@ -162,7 +124,7 @@ public class MysqlTableService implements ITableService {
 	        	String colName = rs.getString("column_name");
 	        	col.setColumnName(colName);//字段名
 	        	String type = rs.getString("data_type");
-	        	
+	        
 	        	col.setColumnType(CodeUtil.convertJdbcType(type,table.getModule().getPersistance()));//字段类型
 	        	col.setRemark(rs.getString("column_comment"));//字段注释
 	        	
@@ -175,13 +137,7 @@ public class MysqlTableService implements ITableService {
 	        	col.setLength(rs.getLong("character_maximum_length"));//字段长度
 	        	col.setDefaultValue(rs.getString("column_default"));//字段默认值
 	        	
-	        	/*String colKey = rs.getString("column_key");
-	        	if (!CodeUtil.isEmpty(colKey) && colKey.toLowerCase().equals("pri")) {
-	        		col.setPrimaryKey(true);//字段是否 主键
-	        	}*/
-	        	/*if (col.getPropertyType().indexOf(".")!=-1 && !CodeUtil.existsType(table.getImportClassList(),col.getPropertyType())) {
-	        		table.getImportClassList().add(col.getPropertyType());//需要导入的类 的集合
-	        	}*/
+	        	
 	        	if ("Date,BigDecimal".contains(col.getPropertyType())
 	        			&& !CodeUtil.existsType(table.getImportClassList(),col.getPropertyType())) {
 	        		table.getImportClassList().add(CodeUtil.convertClassType(col.getPropertyType()));//需要导入的类 的集合
@@ -265,7 +221,8 @@ public class MysqlTableService implements ITableService {
 	 */
 	public String getTableRemark(String tableName, Connection con) throws SQLException {
 		String remark="";
-		String sql="show table status where name=?";
+		String sql="select cast(obj_description(relfilenode,'pg_class') as varchar) as comment "
+				+ "from pg_class where relkind = 'r' and relname=?";
 		PreparedStatement ps = con.prepareStatement(sql);
 		ps.setString(1, tableName);
 		ResultSet rs = ps.executeQuery();

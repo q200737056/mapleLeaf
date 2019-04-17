@@ -5,7 +5,7 @@
       
       <div class="layui-card">
         <div class="layui-card-body">
-          <h3 class="nepadmin-c-red">注意事项</h3>
+          <h3 class="nepadmin-c-red nepadmin-bold">注意事项</h3>
           <hr>
           <p>
           1.本项目运行不依赖数据库，重新打包部署时，请务必先保存好原来项目上新建的模板和配置文件。<br>
@@ -18,7 +18,7 @@
       
 	  <div class="layui-card">
         <div class="layui-card-body">
-          <h3 class="nepadmin-c-red">模板使用说明</h3>
+          <h3 class="nepadmin-c-red nepadmin-bold">模板使用说明</h3>
           <hr>
           <p>
           1.本项目模板是使用freemarker编写的，只要会点freemarker，编写模板也很容易。<br>
@@ -43,7 +43,7 @@
             </thead>
             <tbody>
               <tr>
-            	<th colspan="4" style="text-align:center;" class="nepadmin-c-red">基础属性</th>
+            	<th colspan="4" class="nepadmin-c-red nepadmin-bold nepadmin-font-14">基础属性</th>
               </tr>
               <tr>
                 <td>basePackage</td>
@@ -112,7 +112,7 @@
                 <td>可以用来判断，mybatis or hibernate</td>
               </tr>
               <tr>
-            	<th colspan="4" style="text-align:center;" class="nepadmin-c-red">Table属性</th>
+            	<th colspan="4" class="nepadmin-c-red nepadmin-bold nepadmin-font-14">Table属性</th>
               </tr>
               <tr>
                 <td>tableFullName</td>
@@ -194,7 +194,7 @@
                 <td>利用list标签, 循环取出key和主键或唯一索引的Column集合</td>
               </tr>
               <tr>
-            	<th colspan="4" style="text-align:center;" class="nepadmin-c-red">Column属性</th>
+            	<th colspan="4" class="nepadmin-c-red nepadmin-bold nepadmin-font-14">Column属性</th>
               </tr>
               <tr>
                 <td>columnName</td>
@@ -205,13 +205,13 @@
               <tr>
                 <td>columnType</td>
                 <td>String</td>
-                <td>表字段类型，部分有转换过</td>
+                <td>如果是mybatis则为jdbcType,hibernate则为hibernate的映射类型</td>
                 <td></td>
               </tr>
               <tr>
                 <td>remark</td>
                 <td>String</td>
-                <td>表字段comment</td>
+                <td>表字段comment,可做为页面字段label</td>
                 <td></td>
               </tr>
               <tr>
@@ -223,13 +223,13 @@
               <tr>
                 <td>propertyType</td>
                 <td>String</td>
-                <td>属性类型，即java类型</td>
+                <td>属性类型，即字段类型对应的java类型</td>
                 <td></td>
               </tr>
               <tr>
                 <td>fstUpperProName</td>
                 <td>String</td>
-                <td>属性名首字母大写，主要用来get,set</td>
+                <td>属性名首字母大写，主要用来get..,set..</td>
                 <td></td>
               </tr>
               <tr>
@@ -262,8 +262,6 @@
         </div>
       </div>
 
-     
-     
     </div>
   </div>
 </div>

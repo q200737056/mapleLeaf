@@ -224,8 +224,12 @@ public class CodeCtrl {
 		}else{
 			boo=FileTool.createLocalFile(this.getClass().getResource("/").getPath()+"/tpl_"+tplname, fileName);
 		}
+		if(boo){
+			rst.setCode("0");
+		}else{
+			rst.setCode("1");
+		}
 		
-		rst.setCode("0");
 		return rst;
 	}
 	

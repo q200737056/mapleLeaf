@@ -101,15 +101,14 @@ public class OracleTableService implements ITableService {
         
         table.setRemark(getTableRemark(tableName, con));
         table.setEntityName(CodeUtil.isEmpty(tbConf.getEntityName())?CodeUtil.convertToCamelCase(table.getTableName()):tbConf.getEntityName());
-        table.setFstLowEntityName(CodeUtil.convertToFirstLetterLowerCaseCamelCase(table.getTableName()));
+        table.setFstLowEntityName(CodeUtil.convertToFstLowerCamelCase(table.getTableName()));
         
         //设置子表的entity属性
         if (!tbConf.getSubTables().isEmpty()) {
         	List<Table> subTables = new ArrayList<Table>();
         	for (TableConf tc : tbConf.getSubTables()) {
         		Table tb = getTable(tc,module,con);
-        		//tb.setParentProperty(CodeUtil.convertToFirstLetterLowerCaseCamelCase(tc.getParentField()));
-        		//tb.setParentProperty(tc.getParentField());
+        		
         		
         		//主从表关联字段
         		String refColumn = tc.getRefColumns();
@@ -173,13 +172,13 @@ public class OracleTableService implements ITableService {
 				Column col = new Column();
 	        	String colName = rs.getString("column_name");
 	        	col.setColumnName(colName);
-	        	String type = rs.getString("data_type").toUpperCase();
-	            type=CodeUtil.convertJdbcType(type);
-	        	col.setColumnType(type);
-	        	col.setPropertyName(isCamel?CodeUtil.convertToFirstLetterLowerCaseCamelCase(colName)
+	        	String type = rs.getString("data_type");
+	         
+	        	col.setColumnType(CodeUtil.convertJdbcType(type,table.getModule().getPersistance()));
+	        	col.setPropertyName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)
 	        			:colName);
 	        	
-	        	col.setPropertyType(CodeUtil.convertType(col.getColumnType()));
+	        	col.setPropertyType(CodeUtil.convertType(type));
 	        	col.setFstUpperProName(isCamel?CodeUtil.convertToCamelCase(colName):
 	        		CodeUtil.converFirstUpper(colName));
 	        	col.setLength(rs.getLong("data_length"));
@@ -188,16 +187,13 @@ public class OracleTableService implements ITableService {
 	        	col.setRemark(rs.getString("comments"));
 	        	
 	       
-	        	/*if (col.getPropertyType().indexOf(".")!=-1 && !CodeUtil.existsType(table.getImportClassList(),col.getPropertyType())) {
-	        		table.getImportClassList().add(col.getPropertyType());
-	        	}*/
 	        	if ("Date,BigDecimal".contains(col.getPropertyType())
 	        			&& !CodeUtil.existsType(table.getImportClassList(),col.getPropertyType())) {
 	        		table.getImportClassList().add(CodeUtil.convertClassType(col.getPropertyType()));//需要导入的类 的集合
 	        	}
 	        	
 	        	//判断字段是否主键
-	        	if(this.isPrimaryKey(pkCols, colName)){
+	        	if(CodeUtil.isPrimaryKey(pkCols, colName)){
 	        		col.setPk(true);
 	        	}
 	        	table.getColumns().add(col);
@@ -227,20 +223,7 @@ public class OracleTableService implements ITableService {
 			ps.close();
 				
     }
-    /**
-     * 判断是否是主键
-     * @param priCols 主键列表
-     * @param columnName 要判断的列名
-     * @return
-     */
-    private boolean isPrimaryKey(List<String> priCols,String columnName){
-    	for (String pri : priCols) {
-    		if (pri.equalsIgnoreCase(columnName)) {
-    			return true;
-    		}
-    	}
-    	return false;
-    }
+ 
     
     public String getTablePrimaryKey(String tableName, Connection con) throws SQLException{
 		//DatabaseMetaData dbMeta = con.getMetaData(); 
@@ -280,22 +263,7 @@ public class OracleTableService implements ITableService {
 		rs.close();
 		return map;
 	}
-	/**
-	 * 主键类型
-	 * @param tableName
-	 * @param column 指定列名
-	 * @return
-	 * @throws SQLException
-	 */
-	/*public String getColumnType(Table table,String column) throws SQLException{
-		String colType="";
-		for (Column col : table.getColumns()) {
-			if (col.getColumnName().equalsIgnoreCase(column)) {
-				return col.getColumnType();
-			}
-		}
-		return colType;
-	}*/
+	
 	/**
 	 * 表注释
 	 * @param tableName

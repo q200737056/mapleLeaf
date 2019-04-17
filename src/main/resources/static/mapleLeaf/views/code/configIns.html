@@ -5,12 +5,7 @@
     <cite>admin</cite>
   </a>
 </div> -->
-<style>
-.c_font{
-	color:red;
-	font-weight:bolder;
-}
-</style>
+
 <div class="layui-fluid" id="VIEW-module-admin" lay-title="配置文件说明">
   <div class="layui-row layui-col-space10">
     <div class="layui-col-lg12">
@@ -20,7 +15,7 @@
           <span style="color:red;">{*必需：必需配置该标签（属性），内容可以为空；非必需：可以不配置该标签（属性）}</span>
           </h3>
           <hr>
-          <p style="color:red;font-weight:bolder;">configure根标签</p>
+          <p class="nepadmin-c-red nepadmin-bold">configure根标签</p>
           <table class="layui-table">
             <colgroup>
               <col width="100">
@@ -105,7 +100,7 @@
             </tbody>
           </table>
           
-          <p style="color:red;font-weight:bolder;">db标签</p>
+          <p class="nepadmin-c-red nepadmin-bold">db标签</p>
           <table class="layui-table">
             <colgroup>
               <col width="100">
@@ -126,7 +121,7 @@
             <tbody>
               <tr>
                 <td>dbType</td>
-                <td>数据库。（mysql,oracle,sqlserver）</td>
+                <td>数据库。（mysql,oracle,sqlserver,informix,postgresql）</td>
                 <td>是</td>
                 <td>没有</td>
                 <td></td>
@@ -170,7 +165,7 @@
           </table>
           
          
-          <p style="color:red;font-weight:bolder;">module标签（可配置多个）</p>
+          <p class="nepadmin-c-red nepadmin-bold">module标签（可配置多个）</p>
           <table class="layui-table">
             <colgroup>
               <col width="100">
@@ -196,7 +191,7 @@
                 <td>没有</td>
                 <td></td>
               </tr>
-              <tr class="c_font">
+              <tr class="nepadmin-c-red nepadmin-bold">
                 <td>table</td>
                 <td>配置数据库表，一个模块下可以配置多个table</td>
                 <td>否</td>
@@ -252,7 +247,7 @@
                 <td>tpl属性：配置模板，只需模板名，不需要后缀，多个可以用英文逗号分隔，如view,list。必需属性;
                 	type属性：配置生成文件类型，即文件后缀，如jsp。非必需属性，默认‘jsp’</td>
               </tr>
-               <tr>
+               <tr class="nepadmin-c-red nepadmin-bold">
                 <td>customPackage</td>
                 <td>自定义(自定义生成文件)包名。如：ai.custom。</td>
                 <td>否</td>
@@ -263,7 +258,7 @@
             </tbody>
           </table>
           
-          <p style="color:red;font-weight:bolder;">table标签</p>
+          <p class="nepadmin-c-red nepadmin-bold">table标签</p>
           <table class="layui-table">
             <colgroup>
               <col width="100">
@@ -284,7 +279,7 @@
             <tbody>
               <tr>
                 <td>table</td>
-                <td class="c_font">table标签中可以包含多个table标签，table可以嵌套多层table。把这些表分为主表和从表，主表和从表是相对而言的。比如一个table在内部嵌套了一个table，
+                <td class="nepadmin-c-red nepadmin-bold">table标签中可以包含多个table标签，table可以嵌套多层table。把这些表分为主表和从表，主表和从表是相对而言的。比如一个table在内部嵌套了一个table，
                	 则外部的是主表，内部的是从表，如果这个从表内部还有table，则相对于它内部的表来说，它是主表了。需要注意的是主表一个，从表可以多个，不要重复配置表，会打乱表之间关系。理论上可以嵌套无限层table。
                	 从表必需设置refType属性（主表对从表的对应关系），默认OneToMany（一对多）；必需设置refColumns属性，
                	 主从关联字段（主表字段=从表字段，多个英文逗号分隔）

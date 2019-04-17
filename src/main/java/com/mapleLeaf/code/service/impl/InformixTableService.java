@@ -93,7 +93,7 @@ public class InformixTableService implements ITableService {
         table.setEntityName(CodeUtil.isEmpty(tbConf.getEntityName())
         		?CodeUtil.convertToCamelCase(table.getTableName()):tbConf.getEntityName());
         //首字母小写的驼峰命名
-        table.setFstLowEntityName(CodeUtil.convertToFirstLetterLowerCaseCamelCase(table.getTableName()));
+        table.setFstLowEntityName(CodeUtil.convertToFstLowerCamelCase(table.getTableName()));
         
         //设置子表的entity属性
         if (!tbConf.getSubTables().isEmpty()) {
@@ -153,11 +153,11 @@ public class InformixTableService implements ITableService {
 	        	col.setColumnName(colName);
 	        	int type = rs.getInt("coltype");//字段类型
 	        	String type_str=Informixconvert(type);
-	        	col.setColumnType(type_str);
+	        	col.setColumnType(CodeUtil.convertJdbcType(type_str, table.getModule().getPersistance()));
 	        	col.setRemark(null);//没有
-	        	col.setPropertyName(isCamel?CodeUtil.convertToFirstLetterLowerCaseCamelCase(colName)
+	        	col.setPropertyName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)
 	        			:colName);//属性 就是 字段名
-	        	col.setPropertyType(this.convertJavaType(col.getColumnType()));//属性 类型
+	        	col.setPropertyType(CodeUtil.convertType(type_str));//属性 类型
 	        	col.setFstUpperProName(isCamel?CodeUtil.convertToCamelCase(colName)
 	        			:CodeUtil.converFirstUpper(colName));//首字母大写
 	        	col.setNullable(true);//默认 true
@@ -171,7 +171,7 @@ public class InformixTableService implements ITableService {
 	        	}
 	        	
 	        	//判断字段是否主键
-	        	if(this.isPrimaryKey(pkCols, colName)){
+	        	if(CodeUtil.isPrimaryKey(pkCols, colName)){
 	        		col.setPk(true);
 	        	}
 	        	table.getColumns().add(col);
@@ -192,7 +192,6 @@ public class InformixTableService implements ITableService {
 	        				
 	        			}
 	        			
-	        			
 	        		}
 	        	}
 			}
@@ -203,20 +202,7 @@ public class InformixTableService implements ITableService {
 			ps.close();
 		
     }
-    /**
-     * 判断是否是主键
-     * @param priCols 主键列表
-     * @param columnName 要判断的列名
-     * @return
-     */
-    private boolean isPrimaryKey(List<String> priCols,String columnName){
-    	for (String pri : priCols) {
-    		if (pri.equalsIgnoreCase(columnName)) {
-    			return true;
-    		}
-    	}
-    	return false;
-    }
+    
     public String getTablePrimaryKey(String tableName, Connection con) throws SQLException{
 		DatabaseMetaData dbMeta = con.getMetaData(); 
 		ResultSet rs = dbMeta.getPrimaryKeys(null,null,tableName);
@@ -251,22 +237,7 @@ public class InformixTableService implements ITableService {
 		rs.close();
 		return map;
 	}
-	/**
-	 * 主键类型
-	 * @param tableName
-	 * @param column 指定列名
-	 * @return
-	 * @throws SQLException
-	 */
-	/*public String getColumnType(Table table,String column) throws SQLException{
-		String colType="";
-		for (Column col : table.getColumns()) {
-			if (col.getColumnName().equalsIgnoreCase(column)) {
-				return col.getColumnType();
-			}
-		}
-		return colType;
-	}*/
+	
 	/**
 	 * 表注释
 	 * @param tableName
@@ -316,7 +287,7 @@ public class InformixTableService implements ITableService {
 		}
     	return "VARCHAR";
 	}
-	private String convertJavaType(String databaseType){
+	/*private String convertJavaType(String databaseType){
 		  
         String javaType = "";  
           
@@ -337,6 +308,6 @@ public class InformixTableService implements ITableService {
           
         return javaType;  
     
-	}
+	}*/
 
 }

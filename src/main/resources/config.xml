@@ -8,7 +8,9 @@
 	<persistance>mybatis</persistance>
 	<!-- 一些公共类，工具类,父类等原样输出，仅仅用来辅助下面的代码生成,不必需(包名=模板文件名(也是类名)，多个英文逗号隔开) -->
 	<!-- 这里配置了分页类，mybatis分页拦截器, mybatis通用配置-->
+	<!--  
 	<common>common=Page,common=PageInterceptor,resource=Xml_mybatis</common>
+	-->
 	<db>
 		<dbType>mysql</dbType>
 		<dbName>wxmp</dbName>

@@ -31,7 +31,7 @@ public class CodeUtil {
       * @param str
       * @return
       */
-    public static String convertToFirstLetterLowerCaseCamelCase(String str) {  
+    public static String convertToFstLowerCamelCase(String str) {  
         String resultCamelCase = convertToCamelCase(str);  
   
         String result = "";
@@ -51,26 +51,25 @@ public class CodeUtil {
     public static String converFirstUpper(String str){
     	return str.substring(0, 1).toUpperCase()+str.substring(1);
     }
-    /* 
+    
+    /**
      * 将数据库的数据类型转换为java的数据类型 
-     */  
+     * @param databaseType
+     * @return
+     */
     public static String convertType(String databaseType) {  
         String javaType = "";  
           
-        String databaseTypeStr = databaseType.trim().toLowerCase();
+        String databaseTypeStr = databaseType.toLowerCase().replace("unsigned","").trim();
         if(databaseTypeStr.startsWith("int")
         		||databaseTypeStr.equals("smallint")
-        		|| databaseTypeStr.equals("tinyint")
-        		) {  
+        		|| databaseTypeStr.equals("tinyint")) {  
             javaType = "Integer";  
-        } else if(databaseTypeStr.equals("char")) {  
+        } else if(databaseTypeStr.equals("char")||databaseTypeStr.indexOf("varchar")!=-1) {  
             javaType = "String";  
         } else if(databaseTypeStr.equals("number") 
-        		|| databaseTypeStr.equals("numeric")
-        		) {  
-            javaType = "Integer";  
-        } else if(databaseTypeStr.indexOf("varchar")!=-1) {  
-            javaType = "String";  
+        		|| databaseTypeStr.equals("numeric")) {  
+            javaType = "BigDecimal";  
         } else if(databaseTypeStr.equals("blob")) {  
             javaType = "Byte[]";  
         } else if(databaseTypeStr.equals("float")) {  
@@ -78,21 +77,13 @@ public class CodeUtil {
         } else if(databaseTypeStr.equals("double")) {  
             javaType = "Double";  
         } else if(databaseTypeStr.equals("decimal")) {  
-            //javaType = "java.math.BigDecimal";
             javaType = "BigDecimal";
         } else if(databaseTypeStr.startsWith("bigint")) {  
             javaType = "Long";  
-        } else if(databaseTypeStr.equals("date")) {  
+        } else if(databaseTypeStr.equals("date")||databaseTypeStr.equals("time")
+        		||databaseTypeStr.equals("datetime")||databaseTypeStr.startsWith("timestamp")
+        		||databaseTypeStr.equals("year")) {  
             javaType = "Date";  
-        } else if(databaseTypeStr.equals("time")) {  
-            javaType = "Date";  
-        } else if(databaseTypeStr.equals("datetime")) {  
-            javaType = "Date";  
-        } else if(databaseTypeStr.startsWith("timestamp")) {  
-            javaType = "Date";  
-        } else if(databaseTypeStr.equals("year")) {  
-            //javaType = "java.util.Date"; 
-        	javaType = "Date"; 
         } else {
             javaType = "String";  
         }  
@@ -110,25 +101,50 @@ public class CodeUtil {
     }
     
     /**
-     * 转换jdbc的类型，主要用于mybatis中的数据字段类型
+     * 转换(mybatis的jdbcType,hibernate的映射)
      * @param type
      * @return
      */
-    public static String convertJdbcType(String type) {
-    	type=type.replace(" UNSIGNED","");
-    	if (type.equals("INT")) {
-        	type="INTEGER";
-        } else if (type.equals("TEXT")){
-    		type="LONGVARCHAR";
-    	} else if (type.equals("DATETIME")) {
-    		type="DATE";
-    	} else if (type.equals("VARCHAR2")) {
-    		type="VARCHAR";
-    	} else if (type.equals("NUMBER")) {
-    		type="NUMERIC";
-    	} else if (type.equals("NVARCHAR")) {
-    		type="VARCHAR";
+    public static String convertJdbcType(String type,String ormType) {
+    	if("mybatis".equals(ormType.toLowerCase())){
+    		type=type.toUpperCase().replace("UNSIGNED","").trim();
+    		
+        	if (type.equals("INT")) {
+            	type="INTEGER";
+            } else if (type.equals("TEXT")||type.startsWith("LONG VARCHAR")){
+        		type="LONGVARCHAR";
+        	} else if (type.equals("DATETIME")) {
+        		type="DATE";
+        	} else if (type.equals("VARCHAR2")) {
+        		type="VARCHAR";
+        	} else if (type.equals("NUMBER")) {
+        		type="NUMERIC";
+        	} else if (type.equals("NVARCHAR")) {
+        		type="VARCHAR";
+        	}
+    	}else if("hibernate".equals(ormType.toLowerCase())){
+    		type=type.toLowerCase().replace("unsigned","").trim();
+    		if(type.equals("tinyint")){
+    			type="byte";
+    		}else if(type.equals("smallint")){
+    			type="short";
+    		}else if(type.equals("bigint")){
+    			type="long";
+    		}else if(type.equals("numeric")){
+    			type="big_decimal";
+    		}else if(type.equals("datetime")){
+    			type="date";
+    		}else if(type.equals("varchar2")||type.equals("varchar")||type.equals("char")){
+    			type="string";
+    		}else if(type.equals("bit")){
+    			type="boolean";
+    		}else if(type.equals("blob")){
+    			type="binary";
+    		}else if(type.equals("clob")){
+    			type="text";
+    		}
     	}
+    	
     	return type;
     }
     
@@ -144,5 +160,19 @@ public class CodeUtil {
     
     public static boolean existsType(List<String> list , String type) {
     	return list.contains(convertClassType(type));
+    }
+    /**
+     * 判断是否是主键
+     * @param priCols 主键列表
+     * @param columnName 要判断的列名
+     * @return
+     */
+    public static boolean isPrimaryKey(List<String> priCols,String columnName){
+    	for (String pri : priCols) {
+    		if (pri.equalsIgnoreCase(columnName)) {
+    			return true;
+    		}
+    	}
+    	return false;
     }
 }

@@ -3,8 +3,8 @@
     <div class="layui-card-body" style="padding: 15px;">
       <form class="layui-form" action="" lay-filter="form-editTemplate">
     
-        <p style="color:red;font-weight:bolder;">
-        	*新增模板时，模板名取英文或数字,自动会添加前缀tpl_<br>
+        <p class="nepadmin-c-red nepadmin-bold">
+        	*新增模板时，模板名取（英文、数字、下划线）,自动会添加前缀tpl_<br>
         	*视图，公共类，自定义等等，可选Custom自定义模板文件，请输入名称（英文、数字、下划线），不需要后缀
         </p>
         <div class="layui-form-item">
@@ -91,7 +91,7 @@
     	}else{
     		$("#dir").attr("disabled",true);
     		$("#tplname").attr("disabled",false);
-    		$("#tplname").attr("lay-verify","required");
+    		$("#tplname").attr("lay-verify","required|tplname");
     		$("#tplname").attr("style","border-color:red");
     	}
     	form.render(null, 'form-editTemplate');
@@ -102,7 +102,7 @@
     	var v = data.value;
     	if(v=="Other"){
     		$("#typename").attr("disabled",false);
-    		$("#typename").attr("lay-verify","required");
+    		$("#typename").attr("lay-verify","required|typename");
     		$("#typename").attr("style","border-color:red");
     	}else{
     		$("#typename").val("");
@@ -114,6 +114,22 @@
         return false;
    });
     
+	 form.verify({
+		 typename :function(val,item){
+			 if(val.indexOf(".")!=-1){
+				 return "Custom自定义模板文件不需要后缀！";
+			 }else if(!/^[0-9_a-zA-Z]+$/.test(val)){
+				 return "Custom自定义模板文件包含除数字、字母、下划线之外字符！";
+			 }
+		 },
+		 tplname :function(val,item){
+			 if(val.indexOf("tpl_")==0){
+				 return "模板名不需要前缀tpl_！";
+			 }else if(!/^[0-9_a-zA-Z]+$/.test(val)){
+				 return "模板名包含除数字、字母、下划线之外字符！";
+			 }
+		 }
+	 });
  	
     /* 保存 */
     form.on('submit(save-submit)', function (data) {
@@ -124,6 +140,8 @@
              success:function(res){
             	 if(res.code=="0"){
             		 admin.modal.success("新增成功！"); 
+            	 }else if(res.code=="1"){
+            		 admin.modal.warn("新增失败,模板文件已经存在！"); 
             	 }else{
             		 admin.modal.error("新增失败！"); 
             	 }

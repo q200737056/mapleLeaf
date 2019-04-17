@@ -18,7 +18,7 @@
 			"title": "新增模板文件",
 			"href":"/code/addTemplate"
 		},{
-			"title": "编辑模板",
+			"title": "编辑模板内容",
 			"href":"/code/editTemplate"
 		},{
 			"title": "生成代码",

@@ -4,6 +4,7 @@ import com.mapleLeaf.code.service.ITableService;
 import com.mapleLeaf.code.service.impl.InformixTableService;
 import com.mapleLeaf.code.service.impl.MysqlTableService;
 import com.mapleLeaf.code.service.impl.OracleTableService;
+import com.mapleLeaf.code.service.impl.PostgresqlTableService;
 import com.mapleLeaf.code.service.impl.SqlServerTableService;
 
 /**
@@ -16,27 +17,18 @@ public class TableServiceFactory {
 	public static ITableService getInstance(String dbType) {
 		dbType = dbType.toLowerCase();
 		if (dbType.equals("mysql")) {
-			return getMysqlService();
+			return new MysqlTableService();
 		} else if (dbType.equals("oracle")) {
-			return getOracleService();
+			return new OracleTableService();
 		} else if (dbType.equals("sqlserver")) {
-			return getSqlServerService();
+			return new SqlServerTableService();
 		}else if (dbType.equals("informix")) {
 			return new InformixTableService();
+		}else if (dbType.equals("postgresql")) {
+			return new PostgresqlTableService();
 		}
 		throw new RuntimeException("不支持的数据库类型");
 	}
 	
-	private static ITableService getMysqlService(){
-		return new MysqlTableService();
-	}
-	
-	private static ITableService getOracleService(){
-		return new OracleTableService();
-	}
-	
-	private static ITableService getSqlServerService(){
-		return new SqlServerTableService();
-	}
 
 }

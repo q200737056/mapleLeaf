@@ -623,6 +623,9 @@ html,
 .nepadmin-c-gray {
   color: #aaadb2 !important;
 }
+.nepadmin-c-black {
+  color: #000000 !important;
+}
 
 .nepadmin-br-green {
   border-color: #00d57b !important;
@@ -672,6 +675,9 @@ html,
 }
 .nepadmin-font-14 {
   font-size: 14px !important;
+}
+.nepadmin-font-16 {
+  font-size: 16px !important;
 }
 .nepadmin-bold {
   font-weight: bold !important;

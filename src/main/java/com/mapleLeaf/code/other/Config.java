@@ -83,11 +83,6 @@ public class Config {
 	}
 	
 	
-	@Override
-	public String toString() {
-		return "Config [baseDir=" + baseDir + ", basePackage=" + basePackage
-				+ ", db=" + db + ", modules=" + modules + "]";
-	}
 	public static Config loadConfig(){
 		Config cfg = new Config();
 		String configFile = "config.xml";
