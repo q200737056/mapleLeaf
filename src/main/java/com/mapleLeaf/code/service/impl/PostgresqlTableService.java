@@ -15,23 +15,22 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.mapleLeaf.code.model.Column;
+import com.mapleLeaf.code.model.Config;
+import com.mapleLeaf.code.model.Db;
 import com.mapleLeaf.code.model.Module;
 import com.mapleLeaf.code.model.Table;
 import com.mapleLeaf.code.model.TableConf;
-import com.mapleLeaf.code.other.Config;
 import com.mapleLeaf.code.service.ITableService;
 import com.mapleLeaf.code.utils.CodeUtil;
 
 
 public class PostgresqlTableService implements ITableService {
 	
-	private Config config;
-	public void setConfig(Config config) {
-		this.config = config;
+	private Db db;
+	public void setDb(Db db) {
+		this.db = db;
 	}
-
-	
-      
+ 
     /**
      * 获取指定表信息并封装成Table对象 
      * @param tbConf 
@@ -41,7 +40,7 @@ public class PostgresqlTableService implements ITableService {
     public Table getTable(TableConf tbConf,Module module, Connection con) throws SQLException {
     	String tableName =tbConf.getName();
         Table table = new Table(); 
-        table.setModule(module);
+        
         table.setExclude(tbConf.getExclude());
         table.setTableFullName(tableName);//表名
         table.setTableName(tableName);//如果去前缀,则去了前缀的 表名
@@ -52,7 +51,7 @@ public class PostgresqlTableService implements ITableService {
         
         Map<String,String> m = this.getTableUniqueIdx(tableName, con);
         //获取表各字段的信息
-        getTableColumns(table,con,m);
+        getTableColumns(table,module,con,m);
        
         
         table.setRemark(getTableRemark(tableName, con));//表 注释
@@ -61,7 +60,7 @@ public class PostgresqlTableService implements ITableService {
         		?CodeUtil.convertToCamelCase(table.getTableName()):tbConf.getEntityName());
         //首字母小写的驼峰命名
         table.setFstLowEntityName(CodeUtil.convertToFstLowerCamelCase(table.getTableName()));
-        //设置子表的entity属性
+        //设置从表的entity属性
         if (!tbConf.getSubTables().isEmpty()) {
         	List<Table> subTables = new ArrayList<Table>();
         	for (TableConf tc : tbConf.getSubTables()) {
@@ -90,7 +89,7 @@ public class PostgresqlTableService implements ITableService {
         		tb.setRefType(tc.getRefType());//关联 方式
         		subTables.add(tb);
         	}
-        	table.setSubTables(subTables);//子表
+        	table.setSubTables(subTables);
         }
         return table;  
     } 
@@ -101,11 +100,11 @@ public class PostgresqlTableService implements ITableService {
      * @param conn
      * @throws SQLException
      */
-    public void getTableColumns(Table table,Connection conn,Map<String,String> map) throws SQLException {
+    public void getTableColumns(Table table,Module module,Connection conn,Map<String,String> map) throws SQLException {
 	    	String pks = getTablePrimaryKey(table.getTableFullName(),conn);
 	    	List<String> pkCols = Arrays.asList(pks.split(","));
 	    	
-    		boolean isCamel = table.getModule().isColumnIsCamel();
+    		boolean isCamel = module.isColumnIsCamel();
     	
     		Map<String,List<Column>> index = new HashMap<>();//唯一索引，主键
     		
@@ -125,7 +124,7 @@ public class PostgresqlTableService implements ITableService {
 	        	col.setColumnName(colName);//字段名
 	        	String type = rs.getString("data_type");
 	        
-	        	col.setColumnType(CodeUtil.convertJdbcType(type,table.getModule().getPersistance()));//字段类型
+	        	col.setColumnType(CodeUtil.convertJdbcType(type,module.getPersistance()));//字段类型
 	        	col.setRemark(rs.getString("column_comment"));//字段注释
 	        	
 	        	col.setPropertyName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)

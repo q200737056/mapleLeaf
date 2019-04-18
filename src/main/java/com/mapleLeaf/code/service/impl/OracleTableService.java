@@ -15,10 +15,11 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.mapleLeaf.code.model.Column;
+import com.mapleLeaf.code.model.Config;
+import com.mapleLeaf.code.model.Db;
 import com.mapleLeaf.code.model.Module;
 import com.mapleLeaf.code.model.Table;
 import com.mapleLeaf.code.model.TableConf;
-import com.mapleLeaf.code.other.Config;
 import com.mapleLeaf.code.service.ITableService;
 import com.mapleLeaf.code.utils.CodeUtil;
 
@@ -26,9 +27,9 @@ import com.mapleLeaf.code.utils.CodeUtil;
 
 public class OracleTableService implements ITableService {
 	
-	private Config config;
-	public void setConfig(Config config) {
-		this.config = config;
+	private Db db;
+	public void setDb(Db db) {
+		this.db = db;
 	}
 
 	/* 
@@ -43,14 +44,14 @@ public class OracleTableService implements ITableService {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {  
-            Class.forName(config.getDb().getDriver());  
-            con = DriverManager.getConnection(config.getDb().getUrl(), config.getDb().getUser(),config.getDb().getPwd());  
+            Class.forName(db.getDriver());  
+            con = DriverManager.getConnection(db.getUrl(), db.getUser(),db.getPwd());  
             // 获取所有表名  
             String showTablesSql = "";  
             showTablesSql = "select table_name from user_tables where table_name like ? and owner=upper(?)"; // ORACLE查询所有表格名称命令  
             ps = con.prepareStatement(showTablesSql);
             ps.setString(1, pattern);
-            ps.setString(2, config.getDb().getUser());
+            ps.setString(2, db.getUser());
             rs = ps.executeQuery();  
               
             // 循环生成所有表的表信息
@@ -80,7 +81,7 @@ public class OracleTableService implements ITableService {
     public Table getTable(TableConf tbConf,Module module, Connection con) throws SQLException {
     	String tableName =tbConf.getName();
         Table table = new Table(); 
-        table.setModule(module);
+        
         table.setExclude(tbConf.getExclude());
         table.setTableFullName(tableName);
         table.setTableName(tableName);
@@ -91,7 +92,7 @@ public class OracleTableService implements ITableService {
         
         Map<String,String> m = this.getTableUniqueIdx(tableName, con);
         //获取表各字段的信息
-        getTableColumns(table,con,m);
+        getTableColumns(table,module,con,m);
         
        /* table.setPrimaryKey(getTablePrimaryKey(tableName, con));
         table.setPrimaryProperty(CodeUtil.convertToFirstLetterLowerCaseCamelCase(table.getPrimaryKey())); 
@@ -144,11 +145,11 @@ public class OracleTableService implements ITableService {
      * @param conn
      * @throws SQLException
      */
-    public void getTableColumns(Table table,Connection conn,Map<String,String> map) throws SQLException {
+    public void getTableColumns(Table table,Module module,Connection conn,Map<String,String> map) throws SQLException {
     	String pks = getTablePrimaryKey(table.getTableFullName(),conn);
     	List<String> pkCols = Arrays.asList(pks.split(","));
     	
-    	boolean isCamel = table.getModule().isColumnIsCamel();
+    	boolean isCamel = module.isColumnIsCamel();
     	Map<String,List<Column>> index = new HashMap<>();//索引
     	
 		
@@ -174,7 +175,7 @@ public class OracleTableService implements ITableService {
 	        	col.setColumnName(colName);
 	        	String type = rs.getString("data_type");
 	         
-	        	col.setColumnType(CodeUtil.convertJdbcType(type,table.getModule().getPersistance()));
+	        	col.setColumnType(CodeUtil.convertJdbcType(type,module.getPersistance()));
 	        	col.setPropertyName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)
 	        			:colName);
 	        	

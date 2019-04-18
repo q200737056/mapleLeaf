@@ -1,6 +1,5 @@
 package com.mapleLeaf.code.ctrl;
 
-import java.io.File;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -16,9 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mapleLeaf.code.other.AjaxResult;
 import com.mapleLeaf.code.other.DataBase2File;
-import com.mapleLeaf.code.utils.FreemarkerUtil;
+
 import com.mapleLeaf.common.util.FileTool;
-import com.mapleLeaf.common.util.OfficeUtil;
+
 
 
 @Controller
@@ -41,6 +40,7 @@ public class CodeCtrl {
 		
 		try {
 			resultMap.put("config", FileTool.readLocalFileContent(configPath));
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 			rst.setCode("500");
@@ -73,7 +73,7 @@ public class CodeCtrl {
 		AjaxResult<String> rst = new AjaxResult<>();
 		String configPath = this.getClass().getResource("/config.xml").getPath();
 		try {
-			FileTool.writeLocalFileContent(configPath, config);
+			FileTool.writeLocalFileContent(configPath, config.trim().replace("&", "&amp;"));
 			rst.setCode("0");
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -197,7 +197,7 @@ public class CodeCtrl {
 		AjaxResult<String> rst = new AjaxResult<>();
 		
 		try {
-			FileTool.writeLocalFileContent(this.getClass().getResource("/"+dir+"/"+file).getPath(), tplcontent);
+			FileTool.writeLocalFileContent(this.getClass().getResource("/"+dir+"/"+file).getPath(), tplcontent.trim());
 			rst.setCode("0");
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -240,11 +240,9 @@ public class CodeCtrl {
 		AjaxResult<String> rst = new AjaxResult<>();
 		
 		//生成代码
-		FreemarkerUtil.configuration.setClassForTemplateLoading(OfficeUtil.class, "/"+tplname);//模板路径
-		dataBase2File.loadConfig();
         try {
-        	dataBase2File.generateFiles();
-		} catch (ClassNotFoundException | IOException | SQLException e) {
+        	dataBase2File.generateFiles("/"+tplname);
+		} catch (Exception e) {
 			e.printStackTrace();
 			rst.setCode("500");
 			return rst;

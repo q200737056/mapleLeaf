@@ -1,101 +1,40 @@
 package com.mapleLeaf.code.other;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
+import com.mapleLeaf.code.model.Config;
 import com.mapleLeaf.code.model.Db;
 import com.mapleLeaf.code.model.Module;
-import com.mapleLeaf.code.model.PackageSetting;
 import com.mapleLeaf.code.model.TableConf;
 import com.mapleLeaf.code.utils.XmlUtil;
 
-/**
- * 读取配置文件
- * @author
- *
- */
-public class Config {
-	private String baseDir; //文件存放默认路径
-	private String basePackage; //包路径的前缀，如com.test，后面则跟上模块名等
-	private boolean columnIsCamel;//表字段是否驼峰命名
-	private boolean isDeleteTablePrefix;//是否删除表名前缀
-	private String persistance; //持久层框架
-	private Db db; //连接数据库的配置信息
-	private List<Module> modules; //要生成的代码模块列表
-	
-	private Map<String,List<String>> commonMap=new HashMap<>(); //公共类map
-	
-	
-	
-	public String getPersistance() {
-		return persistance;
-	}
-	public void setPersistance(String persistance) {
-		this.persistance = persistance;
-	}
-	public Map<String, List<String>> getCommonMap() {
-		return commonMap;
-	}
-	public void setCommonMap(Map<String, List<String>> commonMap) {
-		this.commonMap = commonMap;
-	}
-	public boolean isDeleteTablePrefix() {
-		return isDeleteTablePrefix;
-	}
-	public void setDeleteTablePrefix(boolean isDeleteTablePrefix) {
-		this.isDeleteTablePrefix = isDeleteTablePrefix;
-	}
-	public boolean isColumnIsCamel() {
-		return columnIsCamel;
-	}
-	public void setColumnIsCamel(boolean columnIsCamel) {
-		this.columnIsCamel = columnIsCamel;
-	}
-	public String getBaseDir() {
-		return baseDir;
-	}
-	public void setBaseDir(String baseDir) {
-		this.baseDir = baseDir;
-	}
-	public String getBasePackage() {
-		return basePackage;
-	}
-	public void setBasePackage(String basePackage) {
-		this.basePackage = basePackage;
-	}
-	public Db getDb() {
-		return db;
-	}
-	public void setDb(Db db) {
-		this.db = db;
-	}
-	public List<Module> getModules() {
-		return modules;
-	}
-	public void setModules(List<Module> modules) {
-		this.modules = modules;
-	}
-	
-	
-	public static Config loadConfig(){
-		Config cfg = new Config();
-		String configFile = "config.xml";
+import freemarker.template.Configuration;
+
+public class ConfigFactory {
+	public static Config createConfig(String configFile,String tplPath){
+		Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);  
+	    configuration.setDefaultEncoding("utf-8");
+	    configuration.setClassForTemplateLoading(ConfigFactory.class,tplPath);
+	    
+		Config config = new Config();
+		
+		config.setFmkConf(configuration);
+		
 		Document doc = XmlUtil.getDocument(Config.class.getClassLoader().getResourceAsStream(configFile));
 		
 		Element root = XmlUtil.getRootNode(doc);
 		
-		cfg.setBaseDir(XmlUtil.getChild(root, "baseDir").getTextTrim());//生成文件路径
-		cfg.setBasePackage(XmlUtil.getChild(root, "basePackage").getTextTrim());//基础包名
+		config.setBaseDir(XmlUtil.getChild(root, "baseDir").getTextTrim());//生成文件路径
+		config.setBasePackage(XmlUtil.getChild(root, "basePackage").getTextTrim());//基础包名
 		
-		cfg.setColumnIsCamel(Boolean.valueOf(XmlUtil.getChild(root, "columnIsCamel").getTextTrim()));//表字段是否驼峰命名
-		cfg.setDeleteTablePrefix(Boolean.valueOf(XmlUtil.getChild(root, "isDeleteTablePrefix").getTextTrim()));
-		cfg.setPersistance(XmlUtil.getChild(root, "persistance").getTextTrim());//持久层 框架
+		config.setColumnIsCamel(Boolean.valueOf(XmlUtil.getChild(root, "columnIsCamel").getTextTrim()));//表字段是否驼峰命名
+		config.setDeleteTablePrefix(Boolean.valueOf(XmlUtil.getChild(root, "isDeleteTablePrefix").getTextTrim()));
+		config.setPersistance(XmlUtil.getChild(root, "persistance").getTextTrim());//持久层 框架
 		//公共类(包名+模板)非必需
 		Element commonElm = XmlUtil.getChild(root, "common");
 		if(commonElm!=null){
@@ -104,11 +43,11 @@ public class Config {
 				String[] commons = common.split(",");
 				for(int i=0;i<commons.length;i++){
 					String[] items = commons[i].split("=");
-					List<String> v=cfg.getCommonMap().get(items[0].trim());
+					List<String> v=config.getCommonMap().get(items[0].trim());
 					if(v==null||v.isEmpty()){
 						v = new ArrayList<>();
 						v.add(items[1].trim());
-						cfg.getCommonMap().put(items[0].trim(), v);
+						config.getCommonMap().put(items[0].trim(), v);
 					}else{
 						v.add(items[1].trim());
 					}
@@ -125,7 +64,7 @@ public class Config {
 		db.setUrl(XmlUtil.getChild(dbNode, "url").getTextTrim());
 		db.setUser(XmlUtil.getChild(dbNode, "user").getTextTrim());
 		db.setDbName(XmlUtil.getChild(dbNode, "dbName").getTextTrim());
-		cfg.setDb(db);
+		config.setDb(db);
 		
 		//加载module
 		List<Module> moduleList = new ArrayList<Module>();
@@ -133,12 +72,12 @@ public class Config {
 		for (Element e : modules) {
 			Module m = new Module();
 			//全局参数 设置
-			m.setColumnIsCamel(cfg.isColumnIsCamel());//字段是否驼峰命名，全局参数
-			m.setDeleteTablePrefix(cfg.isDeleteTablePrefix());//是否删除表名前缀，全局参数
-			m.setPersistance(cfg.getPersistance());//持久层框架 ，全局参数
+			m.setColumnIsCamel(config.isColumnIsCamel());//字段是否驼峰命名，全局参数
+			m.setDeleteTablePrefix(config.isDeleteTablePrefix());//是否删除表名前缀，全局参数
+			m.setPersistance(config.getPersistance());//持久层框架 ，全局参数
 			
 			
-			//模块名  如没配置table，则查 name前缀的所有表,必需
+			//模块名
 			m.setName(XmlUtil.getChild(e, "name").getTextTrim());
 			//加载自定义包名
 			Element elePkg = XmlUtil.getChild(e, "controllerPackage");
@@ -178,8 +117,9 @@ public class Config {
 			m.setTables(readTableConfList(e));
 			moduleList.add(m);
 		}
-		cfg.setModules(moduleList);
-		return cfg;
+		config.setModules(moduleList);
+		
+		return config;
 	}
 	
 	/**
@@ -205,7 +145,7 @@ public class Config {
 	 * @param e
 	 * @return
 	 */
-	private static TableConf initTableConf(Element e){
+	private static  TableConf initTableConf(Element e){
 		TableConf m = new TableConf();
 		Attribute attr = XmlUtil.getAttribute(e, "entityName");//实体类型
 		if (attr!=null) {
@@ -243,6 +183,5 @@ public class Config {
 		}
 		return m;
 	}
-	
 	
 }

@@ -15,10 +15,11 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.mapleLeaf.code.model.Column;
+import com.mapleLeaf.code.model.Config;
+import com.mapleLeaf.code.model.Db;
 import com.mapleLeaf.code.model.Module;
 import com.mapleLeaf.code.model.Table;
 import com.mapleLeaf.code.model.TableConf;
-import com.mapleLeaf.code.other.Config;
 import com.mapleLeaf.code.service.ITableService;
 import com.mapleLeaf.code.utils.CodeUtil;
 
@@ -26,9 +27,9 @@ import com.mapleLeaf.code.utils.CodeUtil;
 
 public class SqlServerTableService implements ITableService {
 	
-	private Config config;
-	public void setConfig(Config config) {
-		this.config = config;
+	private Db db;
+	public void setDb(Db db) {
+		this.db = db;
 	}
 
 	/* 
@@ -43,8 +44,8 @@ public class SqlServerTableService implements ITableService {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {  
-            Class.forName(config.getDb().getDriver());  
-            con = DriverManager.getConnection(config.getDb().getUrl(), config.getDb().getUser(),config.getDb().getPwd());  
+            Class.forName(db.getDriver());  
+            con = DriverManager.getConnection(db.getUrl(), db.getUser(),db.getPwd());  
             // 获取所有表名  
             String showTablesSql = "";  
             showTablesSql = "SELECT [name] FROM sys.objects ds  where type='U' and [name] like '"+pattern+"'";
@@ -78,7 +79,7 @@ public class SqlServerTableService implements ITableService {
     public Table getTable(TableConf tbConf,Module module, Connection con) throws SQLException {
     	String tableName =tbConf.getName();
         Table table = new Table();
-        table.setModule(module);
+       
         table.setExclude(tbConf.getExclude());
         table.setTableFullName(tableName);
         table.setTableName(tableName);
@@ -89,7 +90,7 @@ public class SqlServerTableService implements ITableService {
         
         Map<String,String> m = this.getTableUniqueIdx(tableName, con);
         //获取表各字段的信息
-        getTableColumns(table,con,m);
+        getTableColumns(table,module,con,m);
         
         //去掉主键
         /*table.setPrimaryKey(getTablePrimaryKey(tableName, con));
@@ -143,11 +144,11 @@ public class SqlServerTableService implements ITableService {
      * @param conn
      * @throws SQLException
      */
-    public void getTableColumns(Table table,Connection conn,Map<String,String> map) throws SQLException {
+    public void getTableColumns(Table table,Module module,Connection conn,Map<String,String> map) throws SQLException {
     	String pks = getTablePrimaryKey(table.getTableFullName(),conn);
     	List<String> pkCols = Arrays.asList(pks.split(","));
     	
-    	boolean isCamel = table.getModule().isColumnIsCamel();
+    	boolean isCamel = module.isColumnIsCamel();
     	Map<String,List<Column>> index = new HashMap<>();//唯一索引，主键
     	//查询表主键
     	StringBuffer sb = new StringBuffer();
@@ -186,7 +187,7 @@ public class SqlServerTableService implements ITableService {
 	        	col.setColumnName(colName);
 	        	String type = rs.getString("data_type");
 	        	
-	        	col.setColumnType(CodeUtil.convertJdbcType(type,table.getModule().getPersistance()));
+	        	col.setColumnType(CodeUtil.convertJdbcType(type,module.getPersistance()));
 	        	col.setRemark(rs.getString("comments"));
 	        	
 	        	col.setPropertyName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)

@@ -22,6 +22,7 @@ public class FileTool {
 			byte[] tmp = new byte[1024];
 			int len=0;
 			while((len=fis.read(tmp))!=-1){
+				
 				content+=new String(tmp,0,len);
 			}
 		} 

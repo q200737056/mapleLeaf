@@ -5,13 +5,12 @@ package com.mapleLeaf.code.service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 
+import com.mapleLeaf.code.model.Db;
 import com.mapleLeaf.code.model.Module;
 import com.mapleLeaf.code.model.Table;
 import com.mapleLeaf.code.model.TableConf;
-import com.mapleLeaf.code.other.Config;
 
 
 /**
@@ -20,8 +19,8 @@ import com.mapleLeaf.code.other.Config;
  *
  */
 public interface ITableService {
-	
-	void setConfig(Config config);
+
+	void setDb(Db db);
 	
 	
 	 /**

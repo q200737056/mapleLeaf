@@ -15,18 +15,19 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.mapleLeaf.code.model.Column;
+import com.mapleLeaf.code.model.Config;
+import com.mapleLeaf.code.model.Db;
 import com.mapleLeaf.code.model.Module;
 import com.mapleLeaf.code.model.Table;
 import com.mapleLeaf.code.model.TableConf;
-import com.mapleLeaf.code.other.Config;
 import com.mapleLeaf.code.service.ITableService;
 import com.mapleLeaf.code.utils.CodeUtil;
 
 public class InformixTableService implements ITableService {
 	
-	private Config config;
-	public void setConfig(Config config) {
-		this.config = config;
+	private Db db;
+	public void setDb(Db db) {
+		this.db = db;
 	}
 
 	/* 
@@ -41,13 +42,13 @@ public class InformixTableService implements ITableService {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {  
-            Class.forName(config.getDb().getDriver());  
-            con = DriverManager.getConnection(config.getDb().getUrl(), config.getDb().getUser(),config.getDb().getPwd());  
+            Class.forName(db.getDriver());  
+            con = DriverManager.getConnection(db.getUrl(), db.getUser(),db.getPwd());  
             // 获取所有表名  
             String showTablesSql = "select * from systables where owner=? and tabname like '"+pattern+"%'";  
            
             ps = con.prepareStatement(showTablesSql);  
-            ps.setString(1, config.getDb().getDbName());
+            ps.setString(1, db.getDbName());
             rs = ps.executeQuery();  
               
             // 循环生成所有表的表信息
@@ -77,7 +78,7 @@ public class InformixTableService implements ITableService {
     public Table getTable(TableConf tbConf,Module module, Connection con) throws SQLException {
     	String tableName =tbConf.getName();//表名
         Table table = new Table();
-        table.setModule(module);
+        
         table.setExclude(tbConf.getExclude());
         table.setTableFullName(tableName);
         table.setTableName(tableName);
@@ -87,7 +88,7 @@ public class InformixTableService implements ITableService {
         System.out.println("表名："+table.getTableFullName());
         Map<String,String> m = this.getTableUniqueIdx(tableName, con);
         //获取表各字段的信息
-        getTableColumns(table,con,m);
+        getTableColumns(table,module,con,m);
         
         table.setRemark(null);
         table.setEntityName(CodeUtil.isEmpty(tbConf.getEntityName())
@@ -135,11 +136,11 @@ public class InformixTableService implements ITableService {
      * @param conn
      * @throws SQLException
      */
-    public void getTableColumns(Table table,Connection conn,Map<String,String> map) throws SQLException {
+    public void getTableColumns(Table table,Module module,Connection conn,Map<String,String> map) throws SQLException {
 	    	String pks = getTablePrimaryKey(table.getTableFullName(),conn);
 	    	List<String> pkCols = Arrays.asList(pks.split(","));
 	    	
-	    	boolean isCamel = table.getModule().isColumnIsCamel();
+	    	boolean isCamel = module.isColumnIsCamel();
 	    	
     		Map<String,List<Column>> index = new HashMap<>();//唯一索引，主键
     		
@@ -153,7 +154,7 @@ public class InformixTableService implements ITableService {
 	        	col.setColumnName(colName);
 	        	int type = rs.getInt("coltype");//字段类型
 	        	String type_str=Informixconvert(type);
-	        	col.setColumnType(CodeUtil.convertJdbcType(type_str, table.getModule().getPersistance()));
+	        	col.setColumnType(CodeUtil.convertJdbcType(type_str, module.getPersistance()));
 	        	col.setRemark(null);//没有
 	        	col.setPropertyName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)
 	        			:colName);//属性 就是 字段名

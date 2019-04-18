@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Table {
-	private Module module;
-	
+
 	private String tableFullName;// 完整表名
 	private String tableName; // 去掉prefix的表名
 	private String fstLowEntityName; // 首字母小写的实体类名
@@ -144,14 +143,7 @@ public class Table {
 		this.primaryPropertyType = primaryPropertyType;
 	}
 
-	public Module getModule() {
-		return module;
-	}
-
-	public void setModule(Module module) {
-		this.module = module;
-	}
-
+	
 	public String getTableFullName() {
 		return tableFullName;
 	}

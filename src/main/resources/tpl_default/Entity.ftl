@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 /**
 * ${remark!}
 */
-<#if module.persistance=="hibernate" || module.persistance=="jpa">
+<#if persistance=="hibernate" || persistance=="jpa">
 @Entity
 @Table(name="${tableFullName!}")
 </#if>
@@ -33,7 +33,7 @@ public class ${entityName!} {
 			<#assign defaultValue=defaultValue+"d">
 		</#if>
 	</#if>
-	<#if col.nullable==false && (module.persistance=="hibernate" || module.persistance=="jpa")>
+	<#if col.nullable==false && (persistance=="hibernate" || persistance=="jpa")>
 		<#if type=="String">
 	@NotEmpty(message="${col.remark!}不能为空")
 		<#else>
@@ -69,7 +69,7 @@ public class ${entityName!} {
 	public void set${col.fstUpperProName}(${type} ${col.propertyName}){
 		this.${col.propertyName}=${col.propertyName};
 	}
-	<#if module.persistance=="hibernate" || module.persistance=="jpa">
+	<#if persistance=="hibernate" || persistance=="jpa">
 	<#if col.pk>
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -88,7 +88,7 @@ public class ${entityName!} {
 	public void set${sub.entityName}(${sub.entityName} ${sub.fstLowEntityName?uncap_first}){
 		this.${sub.fstLowEntityName?uncap_first}=${sub.fstLowEntityName?uncap_first};
 	}
-	<#if module.persistance=="hibernate" || module.persistance=="jpa">
+	<#if persistance=="hibernate" || persistance=="jpa">
 	@Transient
 	</#if>
 	public ${sub.entityName} get${sub.entityName}(){
@@ -98,7 +98,7 @@ public class ${entityName!} {
 	public void set${sub.entityName}List(List<${sub.entityName}> ${sub.fstLowEntityName?uncap_first}List){
 		this.${sub.fstLowEntityName?uncap_first}List=${sub.fstLowEntityName?uncap_first}List;
 	}
-	<#if module.persistance=="hibernate" || module.persistance=="jpa">
+	<#if persistance=="hibernate" || persistance=="jpa">
 	@Transient
 	</#if>
 	public List<${sub.entityName}> get${sub.entityName}List(){
