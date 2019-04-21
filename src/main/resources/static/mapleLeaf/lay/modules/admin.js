@@ -75,7 +75,15 @@ layui
       layui.each(layui.conf.style, function(index, url) {
         layui.link(url + '?v=' + conf.v)
       })
-      self.initView(self.route)
+      //加载或重载时，默认首页 
+      self.route = layui.router('#' + conf.entry)
+      self.route.fileurl = '/' + self.route.path.join('/')
+      if(window.location.hash=="#"+conf.entry){//相等时 ，赋值/，使hash变化
+    	  window.location.hash="/"
+      }else{
+    	  window.location.hash=conf.entry
+      }
+      //self.initView(self.route)
     }
     self.post = function(params) {
       view.request($.extend({ type: 'post' }, params))
@@ -158,6 +166,7 @@ layui
       }
     }
     self.flexible = function(open) {
+	  
       if (open == true) {
         view.container.removeClass(self.shrinkCls)
       } else {
@@ -404,6 +413,9 @@ layui
     })
 
     self.on('flexible', function(init) {
+	  $(view.tab.menu).removeAttr("style") //重置导航条位置
+      view.tab.minLeft=null
+      view.tab.maxLeft=null
       var status = view.container.hasClass(self.shrinkCls)
       self.flexible(status)
       self.data({ key: 'flexible', value: status })

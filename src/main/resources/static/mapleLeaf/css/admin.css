@@ -365,6 +365,7 @@ html,
   z-index: 999;
   position: fixed;
   top: 50px;
+  left: 0;
   white-space: nowrap;
   padding: 0 80px 0 30px;
   box-sizing: border-box;

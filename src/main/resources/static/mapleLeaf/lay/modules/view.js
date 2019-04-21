@@ -181,9 +181,7 @@ layui
           $(document).on('click', btnCls, function(e) {
             var url = $(this).attr('lay-url')
             if ($(e.target).hasClass('nepadmin-tabs-close')) {
-            	if(url!==conf.entry){
-            		tab.del(url)
-            	}
+            	tab.del(url)
             } else {
               var type = $(this).attr('data-type')
               if (type == 'page') {
@@ -221,11 +219,17 @@ layui
         delAll: function(type) {
           var tab = this
           var menuBtnClas = tab.menu + ' .nepadmin-tabs-btn'
-          $(menuBtnClas).each(function() {
-            var url = $(this).attr('lay-url')
-            if (url === conf.entry) return true
-            tab.del(url)
+          $(menuBtnClas + '.nepadmin-tabs-active')
+          .siblings()
+          .each(function() {
+	           var url = $(this).attr('lay-url')
+	            
+	           tab.del(url)
           })
+          tab.del($(menuBtnClas+'.nepadmin-tabs-active').attr('lay-url')) //最后删选中的页面
+          $(tab.menu).removeAttr("style")//重置导航条位置
+          tab.minLeft=null
+          tab.maxLeft=null
         },
         delOther: function() {
           var tab = this
@@ -234,15 +238,17 @@ layui
             .siblings()
             .each(function() {
               var url = $(this).attr('lay-url')
-              if(url!==conf.entry){
-            	  tab.del(url)
-              }
+              
+              tab.del(url)
               
             })
+            $(tab.menu).removeAttr("style")//重置导航条位置
+            tab.minLeft=null
+            tab.maxLeft=null
         },
         del: function(url, backgroundDel) {
           var tab = this
-          if (tab.data.length <= 1 && backgroundDel === undefined) return
+          if ((tab.data.length <= 1 && backgroundDel === undefined)||url===conf.entry) return
           layui.each(tab.data, function(i, data) {
             if (data.fileurl == url) {
               tab.data.splice(i, 1)
