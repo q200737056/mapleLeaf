@@ -1,4 +1,4 @@
-package com.mapleLeaf.code.other;
+package com.mapleLeaf.common.bean;
 
 public class AjaxResult<T> {
 	private String code;//状态码

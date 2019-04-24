@@ -24,5 +24,12 @@
 			"title": "生成代码",
 			"href":"/code/generateCode"
 		}]
+	},{
+		"title":"扒取工具",
+		"icon": "layui-icon-star",
+		"childs":[{
+			"title": "扒取网页",
+			"href":"/crawl/crabWebPages"
+		}]
 	}]
 }

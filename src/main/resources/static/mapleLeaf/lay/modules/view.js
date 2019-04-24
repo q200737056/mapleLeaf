@@ -513,8 +513,8 @@ layui
               layui.admin.logout()
             } */
             else {
-              layer.msg('服务异常！')
-              self.log('服务异常：' + JSON.stringify(res))
+              layer.msg('请求超时！')
+              self.log('请求超时：' + JSON.stringify(res))
             }
 
           }

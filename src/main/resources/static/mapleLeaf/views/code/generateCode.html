@@ -60,9 +60,8 @@
   
     /* 保存 */
     form.on('submit(save-submit)', function (data) {
-    	 admin.get({
+    	 admin.post({
              url:'code/updateConfig',
-             type:'post',
              data:data.field,
              success:function(res){
             	 if(res.code=="0"){
@@ -76,10 +75,12 @@
     });
     /* 生成代码 */
     form.on('submit(generate-submit)', function (data) {
-    	
+    	$(".layui-btn").attr("disabled",true);
+    	$(".layui-btn").addClass("layui-disabled");
+    	//admin.modal.info("正在生成代码，请稍等！");
     	 admin.get({
+    		 timeout:-1,
              url:'code/generateCode',
-             type:'get',
              data:{
             	 tplname:$("#templ").val()
              },
@@ -90,6 +91,10 @@
             		admin.modal.error("生成代码失败！")
             	 }
             	 
+             },
+             complete:function(){
+            	 $(".layui-btn").attr("disabled",false);
+            	 $(".layui-btn").removeClass("layui-disabled");
              }
          });
          return false;

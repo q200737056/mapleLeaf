@@ -102,9 +102,8 @@
  	})
     /* 保存 */
     form.on('submit(save-submit)', function (data) {
-    	 admin.get({
+    	 admin.post({
              url:'code/updateTplContent',
-             type:'post',
              data:data.field,
              success:function(res){
             	 if(res.code=="0"){
