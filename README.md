@@ -52,7 +52,11 @@
 
 ```
 
-#### 项目图片：
+#### 整个项目：
 
-![输入图片说明](https://oscimg.oschina.net/oscnet/a38e9948364d54b7d23710c708ae8a7d05f.jpg "在这里输入图片标题")
+![输入图片说明](http://i2.bvimg.com/686411/a823965ebd1981aa.gif "在这里输入图片标题")
+
+#### 扒取登陆用户页面时，通过浏览器工具获取cookies，把HTTP打钩的name,value填进cookie文本域就行：
+
+![输入图片说明](https://gitee.com/uploads/images/2019/0506/193643_baffe7d2_1135865.gif "在这里输入图片标题")
 
