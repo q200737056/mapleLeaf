@@ -5,5 +5,6 @@ public class GlobalConst {
 	public final static String CACHE_STRING = "_*CACHE*_";
 	public final static int SUCCESS=1;
 	public final static int FAILURE=0;
-
+	public final static String TEMPLATE_PATH="template";
+	public final static String CONFIG="config.xml";
 }

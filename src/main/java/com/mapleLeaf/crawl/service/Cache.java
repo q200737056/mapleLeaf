@@ -38,8 +38,7 @@ public class Cache {
 			downFile(resource);
 			//将绝对路径其加入缓存
 			cacheMap.get().put(resource.getNetUrl(), resource);
-			//将其原始引用路径加入缓存
-			//cacheMap.put(resource.getOriginalUrl(), resource);
+			
 			
 		}
 		resource.setResult(GlobalConst.SUCCESS);

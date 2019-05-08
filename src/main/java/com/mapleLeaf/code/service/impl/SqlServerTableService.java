@@ -15,7 +15,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.mapleLeaf.code.model.Column;
-import com.mapleLeaf.code.model.Config;
 import com.mapleLeaf.code.model.Db;
 import com.mapleLeaf.code.model.Module;
 import com.mapleLeaf.code.model.Table;

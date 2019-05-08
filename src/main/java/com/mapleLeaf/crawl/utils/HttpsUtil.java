@@ -173,7 +173,8 @@ public class HttpsUtil {
 		try {
 			streamReader = new InputStreamReader(conn.getInputStream(), "UTF-8");//出错
 		} catch (IOException e) {
-			streamReader = new InputStreamReader(conn.getErrorStream(), "UTF-8");//出错
+			//streamReader = new InputStreamReader(conn.getErrorStream(), "UTF-8");//出错
+			e.printStackTrace();
 		} finally {
 			if (streamReader != null) {
 				bufferedReader = new BufferedReader(streamReader);
@@ -199,31 +200,31 @@ public class HttpsUtil {
     private HttpResponse makeContent(String urlString, HttpURLConnection urlConnection, String content) throws IOException { 
         HttpResponse httpResponser = new HttpResponse(); 
         try { 
-            httpResponser.contentCollection = new Vector<String>(); 
+            httpResponser.setContentCollection(new Vector<String>()); 
             String ecod = urlConnection.getContentEncoding(); 
             if (ecod == null) 
                 ecod = this.encode; 
-            httpResponser.urlString = urlString; 
+            httpResponser.setUrlString(urlString); 
             this.cookies=urlConnection.getHeaderField("Set-Cookie");
-            httpResponser.cookie=this.cookies;
-            httpResponser.defaultPort = urlConnection.getURL().getDefaultPort(); 
-            httpResponser.file = urlConnection.getURL().getFile(); 
-            httpResponser.host = urlConnection.getURL().getHost(); 
-            httpResponser.path = urlConnection.getURL().getPath(); 
-            httpResponser.port = urlConnection.getURL().getPort(); 
-            httpResponser.protocol = urlConnection.getURL().getProtocol(); 
-            httpResponser.query = urlConnection.getURL().getQuery(); 
-            httpResponser.ref = urlConnection.getURL().getRef(); 
-            httpResponser.userInfo = urlConnection.getURL().getUserInfo(); 
-            httpResponser.content = content;
-            httpResponser.contentEncoding = ecod; 
-            httpResponser.code = urlConnection.getResponseCode(); 
-            httpResponser.message = urlConnection.getResponseMessage(); 
-            httpResponser.contentType = urlConnection.getContentType(); 
-            httpResponser.method = urlConnection.getRequestMethod(); 
-            httpResponser.connectTimeout = urlConnection.getConnectTimeout(); 
-            httpResponser.readTimeout = urlConnection.getReadTimeout(); 
-            httpResponser.headerFields = urlConnection.getHeaderFields();
+            httpResponser.setCookie(this.cookies);
+            httpResponser.setDefaultPort(urlConnection.getURL().getDefaultPort()); 
+            httpResponser.setFile(urlConnection.getURL().getFile()); 
+            httpResponser.setHost(urlConnection.getURL().getHost()); 
+            httpResponser.setPath(urlConnection.getURL().getPath()); 
+            httpResponser.setPort(urlConnection.getURL().getPort()); 
+            httpResponser.setProtocol(urlConnection.getURL().getProtocol()); 
+            httpResponser.setQuery(urlConnection.getURL().getQuery()); 
+            httpResponser.setRef(urlConnection.getURL().getRef());
+            httpResponser.setUserInfo(urlConnection.getURL().getUserInfo()); 
+            httpResponser.setContent(content);
+            httpResponser.setContentEncoding(ecod); 
+            httpResponser.setCode(urlConnection.getResponseCode()) ; 
+            httpResponser.setMessage(urlConnection.getResponseMessage()); 
+            httpResponser.setContentType(urlConnection.getContentType()); 
+            httpResponser.setMethod(urlConnection.getRequestMethod()); 
+            httpResponser.setConnectTimeout(urlConnection.getConnectTimeout()); 
+            httpResponser.setReadTimeout(urlConnection.getReadTimeout()); 
+            httpResponser.setHeaderFields(urlConnection.getHeaderFields());
             return httpResponser; 
         } catch (IOException e) { 
             throw e; 

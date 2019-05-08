@@ -1,12 +1,14 @@
 package com.mapleLeaf.crawl.utils;
 
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.mapleLeaf.common.util.StrUtil;
+import com.mapleLeaf.crawl.bean.PageParamter;
 
 /**
  * url网址相关操作
@@ -64,6 +66,7 @@ public class UrlUtil {
 	 * @return 返回访问的文件名，如以上url返回： a.jpg
 	 */
 	public static String getFileName(String url){
+		
 		//排除问号及其后的字符串
 		int wenhao = url.indexOf("?");
 		if(wenhao > -1){
@@ -82,7 +85,6 @@ public class UrlUtil {
 		if(last > 8){
 			url = url.substring(last+1, url.length());
 
-			System.out.println("文件名："+url);
 			return url;
 		}else{
 			//不是正常的url地址
@@ -261,109 +263,68 @@ public class UrlUtil {
 
 	/**
 	 * 
-	 * @param netUrl 网络资源绝对地址
-	 * @param rootPath 本地储存 的根路径
-	 * @return 文件夹+文件名
+	 * @param url  原地址
+	 * @param param
+	 * @return  完整地址http开头，对原地址不全的 进行补全
 	 */
-	public static String getPathByUrl(String netUrl){
-		String filename="";
-		String localUrl="";
-		if(netUrl.lastIndexOf("/") < 5){
-			System.out.println("debug netUrl.lastIndexOf < 5, netUrl:"+netUrl);
-			return "";
+	public static String getFullPath(String url,PageParamter param){
+		String srcUrl = "";
+		if(isAbsoluteUrl(url)){
+			srcUrl=url;
+			if(srcUrl.indexOf("//") == 0){
+				srcUrl=param.getProtocol()+":"+url;
+			}
 		}else{
-			//文件名
-			filename = getFileName(netUrl);
-
-		}
-		//判断资源类型，是html、css、js、image
-		//获取资源的后缀名＋后面？的一堆
-		String suffix = StrUtil.subString(filename, ".", null, 4);//获取文件后缀
-		
-		if(suffix==null){//不是文件
-			return "";
-		}
-		//图片文件后缀
-		String[] imgs = {"jpg","jpeg","gif","png","bmp","ico"};
-		String type = null;
-		for (int i = 0; i < imgs.length; i++) {
-			if(suffix.equalsIgnoreCase(imgs[i])){
-				type = "image";
-				break;
-			}
-		}
-		if(type == null){
-			//判断是否是js后缀
-			if(suffix.equalsIgnoreCase("js")){
-				type = "js";
-			}
-		}
-		if(type == null){
-			//判断是否是css后缀
-			if(suffix.equalsIgnoreCase("css")){
-				type = "css";
-			}
-		}
-		if(type == null){
-			//判断是否是css后缀
-			String[] fonts = {"woff2","woff","eot","ttf","otf","svg"};
-			for (int i = 0; i < fonts.length; i++) {
-				if(suffix.equalsIgnoreCase(fonts[i])){
-					type = "font";
-					break;
+			if(url.indexOf("/") == 0){
+				srcUrl=param.getProtocol()+":"+param.getDomain()+url;
+			}else{
+				while(url.indexOf("./") == 0 || url.indexOf("../") == 0){
+					if(url.indexOf("./") == 0){
+						//过滤前面的./
+						url = url.substring(2, url.length());
+					}else if (url.indexOf("../") == 0) {
+						//过滤前面的../
+						url = url.substring(3, url.length());
+						
+					}
 				}
+				srcUrl=param.getProtocol()+":"+param.getDomain()+"/"+url;
 			}
-		}
-		if(type == null){
-			//判断是否是html文件
-			String[] htmls = {"htm","html","shtml","jsp","action","do","asp","aspx","php"};
-			for (int i = 0; i < htmls.length; i++) {
-				if(suffix.equalsIgnoreCase(htmls[i])){
-					type = "html";
-					suffix = "html";	//后缀名变为html
-					filename.replace(htmls[i], "html");	//文件后缀改为html
-					break;
-				}
-			}
-		}
-		if(type == null){
-			System.out.println("未发现什么类型。后缀:"+suffix+",--"+netUrl);
 			
-			
-		}else{
-			switch (type) {
-			case "image":
-				localUrl = "images/";
-				
-				break;
-			case "js":
-				localUrl = "js/";
-				
-				break;
-			case "css":
-				localUrl = "css/";
-				
-				break;
-			case "font":
-				localUrl = "fonts/";
-				
-				break;
-			case "html":
-				localUrl = "";
-				
-				break;
-			default:
-				localUrl = "";
-				break;
-			}
+			srcUrl=param.getProtocol()+":"+param.getDomain()+"/"+url;
 		}
-
-		//判断磁盘上这个文件是否存在
-		/*if(FileUtil.exists(this.localUrl + localFile)){
-			//已经存在了，那么要重新命名，不能覆盖
-			this.localFile = StringUtil.subString(this.localFile, null, ".")+"_"+StringUtil.uuid()+"."+suffix;
+		srcUrl =srcUrl.trim();
+		//如果url中包含空格，要将其变为 url 编码
+		/*if(srcUrl.indexOf(" ") > 0){
+			srcUrl = srcUrl.replaceAll(" ", "%20");
 		}*/
-		
-		return  localUrl + filename;
+		return srcUrl;
+	}
+	/**
+	 * 把 //开头的地址 加上协议
+	 * @param protocol 协议 
+	 * @param content 标签的内容
+	 * @return 替换后的内容
+	 */
+	public static String convertRawPath(String protocol,String content){
+		//Pattern pattern2 = Pattern.compile("'\\s*//.+?'|\"\\s*//.+?\"");
+		Pattern p = Pattern.compile("'//.+?'|\"//.+?\"");
+		Matcher m = p.matcher(content);
+		while (m.find()) {
+			String src = m.group();
+			//排除不是地址的
+			if(src.indexOf("||")!=-1||
+					src.indexOf("+")!=-1){
+				continue;
+			}
+			System.out.println("js中需要补全的地址： "+src);
+			
+			//src = src.substring(1, src.length()-1).trim();//去掉 引号
+			String f = src.substring(0, 1);//引号
+			
+			//引号包裹的一起替换
+			content=content.replace(src, f+protocol+":"+src.substring(1, src.length()-1).trim()+f);
+		}
+		return content;
 	}
 }

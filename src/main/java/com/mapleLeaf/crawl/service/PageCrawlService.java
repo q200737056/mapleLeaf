@@ -25,8 +25,6 @@ import com.mapleLeaf.crawl.other.ResouceFactory;
 import com.mapleLeaf.crawl.utils.FileUtil;
 import com.mapleLeaf.crawl.utils.UrlUtil;
 
-
-
 /**
  * 爬取抓取某个指定的页面
  * @author
@@ -46,7 +44,7 @@ public class PageCrawlService {
 		String rootPath = param.getLocalRootPath();
 		
 		
-		System.out.println("扒取开始");
+		log.info("扒取开始");
 		for (int i = 0; i < curls.length; i++) {
 			if(curls[i].length() > 6){
 				
@@ -67,14 +65,14 @@ public class PageCrawlService {
 				Cache.cacheMap.get().clear();
 			}
 		}
-		System.out.println("扒取完毕");
+		log.info("扒取完毕");
 		Cache.cacheMap.get().clear();
 		Cache.cacheMap.set(null);
 	}
 	
 	private void execute(String curl,PageParamter param) {
 		
-		System.out.println("开始抓取："+curl);
+		log.info("开始抓取："+curl);
 		try {
 
 			Map<String, String> headersMap = new HashMap<String, String>();
@@ -99,7 +97,7 @@ public class PageCrawlService {
 				
 				param.setCharset(en);
 			}
-			System.out.println("自动提取页面编码："+param.getCharset());
+			log.info("自动提取页面编码："+param.getCharset());
 			
 			String html = HandlHtml(curl,doc,param);
 			
@@ -132,7 +130,7 @@ public class PageCrawlService {
 				e.printStackTrace();
 			}
 		} catch (IOException e) {
-			System.out.println(e.getMessage()+" -- "+curl);
+			log.info(e.getMessage()+" -- "+curl);
 			e.printStackTrace();
 		}
 		
@@ -147,71 +145,89 @@ public class PageCrawlService {
 		
 		//取CSS
 		Elements cssEles = doc.getElementsByTag("link");
-		System.out.println("开始提取CSS:"+cssEles.size());
+		log.info("开始提取CSS");
 		for (int i = 0; i < cssEles.size(); i++) {
 			Element ele = cssEles.get(i);
 			//过滤掉 预加载解析的
 			String rel = ele.attr("rel");
 			if(!StringUtils.isBlank(rel)&&!rel.trim().equalsIgnoreCase("stylesheet")){
+				if(rel.trim().equalsIgnoreCase("icon")||
+						rel.trim().equalsIgnoreCase("shortcut icon")){//图标
+					String url = ele.attr("abs:href");
+					if(url.length() > 3){
+						
+						this.drawElement(ele, url, param,"href");
+					}
+				}
 				continue;
 			}
+			
 			String url = ele.attr("abs:href");
 			if(url.length() > 3){
-				//找到地址了，将其下载
-				//Resource res = new Resource(url, curl,param.getLocalRootPath());
-				Resource res = ResouceFactory.createResouce(url, param);
-				
-				if(res == null){
-					continue;
-				}
-				//判断是否已经下载过
-				if(Cache.cacheMap.get().get(res.getNetUrl()) == null){
-					//未下载，则去下载
-					String cssText = UrlUtil.getContent(res.getNetUrl(),param.getCharset());
-					if(cssText != null){
+				//一种特殊情况 地址后??跟多个css文件，中间英文逗号分隔
+				if(url.indexOf("??")!=-1){
+					String[] tmpArr = url.split("\\?\\?");
+					String[] cssPaths = tmpArr[1].split(",");
+					for(int j=0;j<cssPaths.length;j++){
+						String cssPath = tmpArr[0]+cssPaths[j].trim();
+						//创建新的 link
+						Element newEle = new Element("link");
+						newEle.attr("rel", "stylesheet");
 						
-						Cache.cacheMap.get().put(res.getNetUrl(), res);
-						cssText = replaceContent(cssText, res.getNetUrl(), "../",param);//图片路径
-						try {
-							FileUtil.write(res.getLocalUrl(), cssText, param.getCharset());
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}else{
-						try {
-							FileUtil.write(res.getLocalUrl(), "/* not find url */", param.getCharset());
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+						ele.after(newEle);
+						
+						this.drawCss(newEle, null,cssPath, param);
 					}
+					//移除原来的link
+					ele.remove();;
 				}else{
-					res = Cache.cacheMap.get().get(res.getNetUrl());
+					//下载 css
+					this.drawCss(ele, null,url, param);
 				}
 				
-				//替换css文件路径
-				ele.attr("href", "./css/"+res.getLocalFile());
 			}
 		}
 		
-		
 		//取JS
 		Elements jsEles = doc.getElementsByTag("script");
-		System.out.println("开始提取JS:"+jsEles.size());
+		log.info("开始提取JS");
 		for (int i = 0; i < jsEles.size(); i++) {
 			Element ele = jsEles.get(i);
 			String url = ele.attr("abs:src");
 			if(url.length() > 3){
-				//找到地址了，将其下载
-				//Resource res = new Resource(url, curl, param.getLocalRootPath());
-				Resource res = ResouceFactory.createResouce(url, param);
-				if(res==null){
-					continue;
+				
+				this.drawJs(ele, null,url, param);
+				
+			}else{//没有src ，页面脚本
+				
+				String jsContent = ele.html().trim();
+				
+				if(!StringUtils.isBlank(jsContent)){
+					// '//'开头的地址加上 协议
+					jsContent=UrlUtil.convertRawPath(param.getProtocol(), jsContent);
+					
+					//找出 js ,css，动态加载
+					/*
+					Pattern pattern = Pattern.compile(param.getProtocol()+"://.{1,500}?\\.(js|css)");
+					Matcher matcher = pattern.matcher(jsContent);
+					while (matcher.find()) {
+						String src = matcher.group();
+						//过滤不合格地址
+						if(src.lastIndexOf("http://")>0||
+								src.lastIndexOf("https://")>0){
+							continue;
+						}
+						
+						if(src.endsWith(".js")){
+							jsContent=this.drawJs(ele,jsContent,src, param);
+						}else if(src.endsWith(".css")){
+							jsContent=this.drawCss(ele,jsContent,src, param);
+						}
+					}*/
+					
+					ele.html(jsContent);
 				}
-				res = Cache.addCache(res);
-				if(res.getResult() == GlobalConst.SUCCESS){
-					//替换标签
-					ele.attr("src", "./"+res.getDir()+"/"+res.getLocalFile());
-				}
+				
 			}
 		}
 		
@@ -219,37 +235,16 @@ public class PageCrawlService {
 		//取img
 		Elements imgEles = doc.getElementsByTag("img");
 		
-		System.out.println("开始提取IMG:"+imgEles.size());
+		log.info("开始提取IMG");
 		for (int i = 0; i < imgEles.size(); i++) {
 			Element ele = imgEles.get(i);
 			String url = ele.attr("abs:src");
 			if(url.length() > 3){
-				//找到地址了，将其下载
-				//Resource res = new Resource(url, curl, param.getLocalRootPath());
-				Resource res = ResouceFactory.createResouce(url, param);
-				if(res == null){
-					continue;
-				}
-				res = Cache.addCache(res);
-				if(res.getResult()==GlobalConst.SUCCESS){
-					//替换标签
-					ele.attr("src", "./"+res.getDir()+"/"+res.getLocalFile());
-				}
+				
+				this.drawElement(ele, url, param,"src");
+				
 			}
 		}
-		// 页面中的样式
-		/*System.out.println("开始提取页面中的style");
-		Elements styEles = doc.getElementsByTag("style");
-		for (int i = 0; i < styEles.size(); i++) {
-			Element ele = styEles.get(i);
-			String styContent =  ele.html();
-			if(!StringUtils.isBlank(styContent)){
-				
-				styContent = replaceContent(styContent, curl, "./images/");
-				ele.html(styContent);
-				
-			}
-		}*/
 		
 		
 		//去掉base标签
@@ -265,6 +260,141 @@ public class PageCrawlService {
 
 		
 		return html;
+	}
+	
+	/**
+	 * 扒取 css
+	 * @param ele 标签
+	 * @param content 标签内容(如果有的话)
+	 * @param url 原始地址(标签中的src或标签内容中的一个地址)
+	 * @param param
+	 */
+	private String drawCss(Element ele,String content,String url,PageParamter param){
+		Resource res = ResouceFactory.createResouce(url, param);
+		
+		if(res == null){
+			return "";
+		}
+		//判断是否已经下载过
+		if(Cache.cacheMap.get().get(res.getNetUrl()) == null){
+			//未下载，则去下载
+			String cssText = UrlUtil.getContent(res.getNetUrl(),param.getCharset());
+			if(cssText != null){
+				
+				Cache.cacheMap.get().put(res.getNetUrl(), res);
+				cssText = replaceContent(cssText, res.getNetUrl(), "../",param);//图片路径
+				try {
+					FileUtil.write(res.getLocalUrl(), cssText, param.getCharset());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}else{
+				try {
+					FileUtil.write(res.getLocalUrl(), "/* not find url or connect timeout */", param.getCharset());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}else{
+			res = Cache.cacheMap.get().get(res.getNetUrl());
+		}
+		
+		if(StringUtils.isBlank(content)){//内容为空时
+			//替换css文件路径
+			ele.attr("href", "./"+res.getDir()+"/"+res.getLocalFile());
+		}else{
+			content.replace(url, "./"+res.getDir()+"/"+res.getLocalFile());
+		}
+		return content;
+	}
+	/**
+	 * 扒取 js
+	 * @param ele 标签
+	 * @param content 标签内容(如果有的话)
+	 * @param url 原始地址(标签中的src或标签内容中的一个地址)
+	 * @param param
+	 */
+	private String drawJs(Element ele,String content,String url,PageParamter param){
+		Resource res = ResouceFactory.createResouce(url, param);
+		if(res==null){
+			return "";
+		}
+		//判断是否已经下载过
+		if(Cache.cacheMap.get().get(res.getNetUrl()) == null){
+			
+			//获取js文件 文本
+			String jsText = UrlUtil.getContent(res.getNetUrl(),param.getCharset());
+			
+			if(!StringUtils.isBlank(jsText)){
+				Cache.cacheMap.get().put(res.getNetUrl(), res);
+				// '//'开头的地址加上 协议
+				jsText=UrlUtil.convertRawPath(param.getProtocol(), jsText);
+				
+				//找出 js ,css，动态加载
+				/*
+				Pattern pattern = Pattern.compile(param.getProtocol()+"://.{1,500}?\\.(js|css)");
+				Matcher matcher = pattern.matcher(jsText);
+				while (matcher.find()) {
+					String src = matcher.group();
+					//过滤不合格地址
+					if(src.lastIndexOf("http://")>0||
+							src.lastIndexOf("https://")>0){
+						continue;
+					}
+					
+					if(src.endsWith(".js")){
+						jsText=this.drawJs(ele,jsText,src, param);//递归
+					}else if(src.endsWith(".css")){
+						jsText=this.drawCss(ele,jsText,src, param);
+					}
+				}*/
+				try {
+					FileUtil.write(res.getLocalUrl(), jsText, param.getCharset());//下载
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}else{
+				try {
+					FileUtil.write(res.getLocalUrl(), "/* not find url or connect timeout */", param.getCharset());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			
+		}else{
+			res = Cache.cacheMap.get().get(res.getNetUrl());
+		}
+		
+		
+		//res = Cache.addCache(res);
+		//if(res.getResult() == GlobalConst.SUCCESS){
+			
+		if(StringUtils.isBlank(content)){//内容为空时
+			//替换标签
+			ele.attr("src", "./"+res.getDir()+"/"+res.getLocalFile());
+		}else{
+			content =content.replace(url, "./"+res.getDir()+"/"+res.getLocalFile());
+		}
+		//}
+		return content;
+	}
+	/**
+	 * 扒取页面中的特定元素 ，如图片
+	 * @param ele
+	 * @param url
+	 * @param param
+	 */
+	private void drawElement(Element ele,String url,PageParamter param,String addr){
+		Resource res = ResouceFactory.createResouce(url, param);
+		if(res == null){
+			return;
+		}
+		res = Cache.addCache(res);
+		if(res.getResult()==GlobalConst.SUCCESS){
+			//替换标签
+			ele.attr(addr, "./"+res.getDir()+"/"+res.getLocalFile());
+		}
 	}
 	
 	
@@ -284,34 +414,8 @@ public class PageCrawlService {
 			String src = matcher.group(1);	//src的地址
 			src=src.replaceAll("\\\\/", "/");
 			
-			/*System.out.println("获取到的地址："+src);
-			if(src != null && src.length() > 2){
-				String srcUrl = "";
-				if(UrlUtil.isAbsoluteUrl(src)){
-					srcUrl=src;
-				}else{
-					if(src.indexOf("/") == 0){
-						srcUrl=param.getProtocol()+":"+param.getDomain()+src;
-					}else{
-						while(src.indexOf("./") == 0 || src.indexOf("../") == 0){
-							if(src.indexOf("./") == 0){
-								//过滤前面的./
-								src = src.substring(2, src.length());
-							}else if (src.indexOf("../") == 0) {
-								//过滤前面的../
-								src = src.substring(3, src.length());
-								
-							}
-						}
-						srcUrl=param.getProtocol()+":"+param.getDomain()+"/"+src;
-					}
-					
-					srcUrl=param.getProtocol()+":"+param.getDomain()+"/"+src;
-				}*/
-				
-				
 				if(src.indexOf(GlobalConst.CACHE_STRING) == -1){//排除已下载过的资源路径
-					//Resource res = new Resource(srcUrl, url, param.getLocalRootPath());
+					
 					Resource res = ResouceFactory.createResouce(src, param);
 					if(res == null){
 						continue;
@@ -336,21 +440,25 @@ public class PageCrawlService {
 	
 	
 	public static void main(String[] args) {
-		/*String content="#head{padding-bottom:100px;text-align:center;*z-index:1}#ftCon{height:50px;"
-				+ "position:absolute;bottom:47px;text-align:left;width:100%;margin:0 auto;z-index:0;"
-				+ "overflow:hidden}.ftCon-Wrapper{overflow:hidden;margin:0 auto;text-align:center;*"
-				+ "width:640px}#qrcode .qrcode-item-1 .qrcode-img{background:"
-				+ "url(https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/cache"
-				+ "/static/protocol/https/home/img/qrcode/zbios_efde696.png) 0 0 no-repeat}#qrcode "
-				+ ".qrcode-item-2 .qrcode-img{background:url(https://ss1.bdstatic.com/5eN1bjq8AAUYm2z"
-				+ "goY3K/r/www/cache/static/protocol/https/home/img/qrcode/nuomi_365eabd.png) 0 0 no-repeat}"
-				;
-		Pattern pattern = Pattern.compile("url\\('?\"?(.*?)'?\"?\\)");
+		String content="var fixReferer = '',"+
+                "curReferer = document.referrer,"
+                +"site = 'anjuke',"
+                +"st = new SiteTracker();"
+                +"st.setSite(site); st.setPage(\"Ershou_Web_Home_HomePage\");st.setPageName(\"Ershou_Web_Home_HomePage\");"
+                +"st.setReferer(curReferer ? curReferer : fixReferer);"
+                +"st.buildParams();var _trackUrl = st.getParams();"
+                +"delete _trackUrl.sc; delete _trackUrl.cp;window._trackURL = JSON.stringify(_trackUrl);"
+            	+"function loadTrackjs(){"
+                +" var s = document.createElement('script');"
+                 +"s.type = 'text/javascript'; s.async = true; s.src = '//tracklog.58.com/referrer_anjuke_pc.js?_=' + Math.random();";
+		//Pattern pattern = Pattern.compile("('|\")\\s*//.+?('|\")");
+		Pattern pattern = Pattern.compile("'\\s*//.+?'|\"\\s*//.+?\"");
+		//Pattern pattern = Pattern.compile("https://.+?\\.(js|css)");
 		Matcher matcher = pattern.matcher(content);
 		while (matcher.find()) {
-			String src = matcher.group(1);	//src的地址
+			String src = matcher.group();	//src的地址
 			System.out.println(src);
-		}*/
+		}
 		
 	}
 }

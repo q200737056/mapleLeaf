@@ -486,6 +486,10 @@ public class FileUtil {
 		createCacheFileByPath(path+"css/");
 		createCacheFileByPath(path+"fonts/");
 	}
+	/**
+	 * 创建文件夹
+	 * @param path
+	 */
 	public static void createCacheFileByPath(String path){
 		File file = new File(path);
 		if(!file.exists()){

@@ -2,7 +2,6 @@ package com.mapleLeaf.code.service.impl;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +14,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.mapleLeaf.code.model.Column;
-import com.mapleLeaf.code.model.Config;
 import com.mapleLeaf.code.model.Db;
 import com.mapleLeaf.code.model.Module;
 import com.mapleLeaf.code.model.Table;

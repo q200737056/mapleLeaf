@@ -25,6 +25,7 @@ import com.mapleLeaf.code.model.Table;
 import com.mapleLeaf.code.model.TableConf;
 import com.mapleLeaf.code.service.ITableService;
 import com.mapleLeaf.code.utils.FreemarkerUtil;
+import com.mapleLeaf.common.util.GlobalConst;
 
 
 
@@ -180,6 +181,7 @@ public class DataBase2File {
     	obj.put("mapperPackage", module.getMapperPackage());
     	
     	obj.put("persistance", module.getPersistance());//持久层框架
+    	obj.put("param", module.getParamMap());
     	
     }
     
@@ -363,7 +365,7 @@ public class DataBase2File {
     public static void main(String[] args) {  
         DataBase2File reverser = new DataBase2File(); 
         try {
-			reverser.generateFiles("/tpl_default_mybatis");
+			reverser.generateFiles("/"+GlobalConst.TEMPLATE_PATH+"/tpl_default_mybatis");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

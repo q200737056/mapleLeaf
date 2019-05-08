@@ -11,37 +11,13 @@ public class ResouceFactory {
 	public static Resource createResouce(String url,PageParamter param){
 		System.out.println("原地址："+url);
 		
-		String srcUrl = "";
-		if(UrlUtil.isAbsoluteUrl(url)){
-			srcUrl=url;
-			if(srcUrl.indexOf("//") == 0){
-				srcUrl=param.getProtocol()+":"+url;
-			}
-		}else{
-			if(url.indexOf("/") == 0){
-				srcUrl=param.getProtocol()+":"+param.getDomain()+url;
-			}else{
-				while(url.indexOf("./") == 0 || url.indexOf("../") == 0){
-					if(url.indexOf("./") == 0){
-						//过滤前面的./
-						url = url.substring(2, url.length());
-					}else if (url.indexOf("../") == 0) {
-						//过滤前面的../
-						url = url.substring(3, url.length());
-						
-					}
-				}
-				srcUrl=param.getProtocol()+":"+param.getDomain()+"/"+url;
-			}
-			
-			srcUrl=param.getProtocol()+":"+param.getDomain()+"/"+url;
+		if(url.indexOf("+")!=-1){//不是有效地址，拼接的，暂不处理
+			return null;
 		}
-		srcUrl =srcUrl.trim();
-		//如果url中包含空格，要将其变为 url 编码
-		if(srcUrl.indexOf(" ") > 0){
-			srcUrl = srcUrl.replaceAll(" ", "%20");
-		}
-		System.out.println("绝对地址："+srcUrl);
+		
+		String srcUrl = UrlUtil.getFullPath(url, param);
+		
+		//System.out.println("绝对地址："+srcUrl);
 		if(srcUrl.length() > 500){
 			return null;
 		}

@@ -27,6 +27,8 @@ public class Module {
 	private List<TableConf> tables; //配置的数据表信息 
 	private boolean columnIsCamel;//表字段是否驼峰命名  全局参数
 	private Map<String,String> attrsMap=new HashMap<>();//标签属性集  key:标签名_属性名  value:属性值
+	private Map<String,String> paramMap=new HashMap<>();//自定义参数
+	
 	public String getName() {
 		return name;
 	}
@@ -129,6 +131,12 @@ public class Module {
 	}
 	public void setAttrsMap(Map<String, String> attrsMap) {
 		this.attrsMap = attrsMap;
+	}
+	public Map<String, String> getParamMap() {
+		return paramMap;
+	}
+	public void setParamMap(Map<String, String> paramMap) {
+		this.paramMap = paramMap;
 	}
 	
 }

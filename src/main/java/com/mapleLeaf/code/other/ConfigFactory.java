@@ -113,6 +113,21 @@ public class ConfigFactory {
 				m.getAttrsMap().put("customPackage_tpl", XmlUtil.attrValue(elePkg, "tpl"));
 				m.getAttrsMap().put("customPackage_type", XmlUtil.attrValue(elePkg, "type"));
 			}
+			//加载自定义参数
+			List<Element> paramEle = XmlUtil.getChildElements(e, "param");
+			if(paramEle!=null&&paramEle.size()>0){
+				for(int i=0;i<paramEle.size();i++){
+					Attribute keyAttr = XmlUtil.getAttribute(paramEle.get(i), "key");//键
+					Attribute valAttr = XmlUtil.getAttribute(paramEle.get(i), "value");//值
+					
+					if (keyAttr!=null&&valAttr!=null) {
+					
+						m.getParamMap().put(keyAttr.getValue().trim(), 
+								valAttr.getValue().trim());
+					}
+				}
+				
+			}
 			//加载table
 			m.setTables(readTableConfList(e));
 			moduleList.add(m);

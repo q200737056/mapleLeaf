@@ -261,11 +261,11 @@ public class HttpUtil {
         try { 
             InputStream in = urlConnection.getInputStream(); 
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in)); 
-            httpResponser.contentCollection = new Vector<String>(); 
+            httpResponser.setContentCollection(new Vector<String>()); 
             StringBuffer temp = new StringBuffer(); 
             String line = bufferedReader.readLine(); 
             while (line != null) { 
-                httpResponser.contentCollection.add(line); 
+                httpResponser.getContentCollection().add(line); 
                 temp.append(line).append("\r\n"); 
                 line = bufferedReader.readLine(); 
             } 
@@ -273,7 +273,7 @@ public class HttpUtil {
             String ecod = urlConnection.getContentEncoding(); 
             if (ecod == null) 
                 ecod = this.encode; 
-            httpResponser.urlString = urlString; 
+            httpResponser.setUrlString(urlString); 
             //urlConnection.getHeaderField("Set-Cookie");获取到的COOKIES不全，会将JSESSIONID漏掉，故而采用此中方式
             if(this.cookies == null || this.cookies.equals("")){
             	if(urlConnection.getHeaderFields().get("Set-Cookie") != null){
@@ -287,29 +287,31 @@ public class HttpUtil {
                 		cookie = urlConnection.getHeaderField("Set-Cookie");
                 	}
                 	this.cookies=cookie;
-                	httpResponser.cookie=this.cookies;
+                	httpResponser.setCookie(this.cookies);
             	}
             }
-            httpResponser.defaultPort = urlConnection.getURL().getDefaultPort(); 
-            httpResponser.file = urlConnection.getURL().getFile(); 
-            httpResponser.host = urlConnection.getURL().getHost(); 
-            httpResponser.path = urlConnection.getURL().getPath(); 
-            httpResponser.port = urlConnection.getURL().getPort(); 
-            httpResponser.protocol = urlConnection.getURL().getProtocol(); 
-            httpResponser.query = urlConnection.getURL().getQuery(); 
-            httpResponser.ref = urlConnection.getURL().getRef(); 
-            httpResponser.userInfo = urlConnection.getURL().getUserInfo(); 
-            httpResponser.content = new String(temp.toString().getBytes(), ecod); 
-            httpResponser.contentEncoding = ecod; 
-            httpResponser.code = urlConnection.getResponseCode(); 
-            httpResponser.message = urlConnection.getResponseMessage(); 
-            httpResponser.contentType = urlConnection.getContentType(); 
-            httpResponser.method = urlConnection.getRequestMethod(); 
-            httpResponser.connectTimeout = urlConnection.getConnectTimeout(); 
-            httpResponser.readTimeout = urlConnection.getReadTimeout(); 
-            httpResponser.headerFields = urlConnection.getHeaderFields();
+            
+            httpResponser.setDefaultPort(urlConnection.getURL().getDefaultPort()); 
+            httpResponser.setFile(urlConnection.getURL().getFile()); 
+            httpResponser.setHost(urlConnection.getURL().getHost()); 
+            httpResponser.setPath(urlConnection.getURL().getPath()); 
+            httpResponser.setPort(urlConnection.getURL().getPort()); 
+            httpResponser.setProtocol(urlConnection.getURL().getProtocol()); 
+            httpResponser.setQuery(urlConnection.getURL().getQuery()); 
+            httpResponser.setRef(urlConnection.getURL().getRef());
+            httpResponser.setUserInfo(urlConnection.getURL().getUserInfo()); 
+            httpResponser.setContent(new String(temp.toString().getBytes(), ecod));
+            httpResponser.setContentEncoding(ecod); 
+            httpResponser.setCode(urlConnection.getResponseCode()) ; 
+            httpResponser.setMessage(urlConnection.getResponseMessage()); 
+            httpResponser.setContentType(urlConnection.getContentType()); 
+            httpResponser.setMethod(urlConnection.getRequestMethod()); 
+            httpResponser.setConnectTimeout(urlConnection.getConnectTimeout()); 
+            httpResponser.setReadTimeout(urlConnection.getReadTimeout()); 
+            httpResponser.setHeaderFields(urlConnection.getHeaderFields());
+            
         } catch (IOException e) { 
-        	httpResponser.code = 404;
+        	httpResponser.setCode(404);
         } finally { 
             if (urlConnection != null) 
                 urlConnection.disconnect(); 

@@ -8,7 +8,7 @@ public class Test {
 	public static void main(String[] args) {
 		
 		
-		final String[] urls = {"https://www.duba.com/?f=liebao"};
+		final String[] urls = {"https://www.guazi.com/hz/?ca_s=dh_jinshanmz&ca_n=jskz&scode=10104337812"};
 		
 		
 		
