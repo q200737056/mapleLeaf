@@ -7,25 +7,27 @@
 		<div class="layui-form-item">
           <label class="layui-form-label">储存路径</label>
          <div class="layui-input-block">
-            <input type="text" name="rootpath" lay-verify="required" 
+         <div class="layui-inline">
+            <input type="text" name="rootpath" id="rootpath" lay-verify="required" 
             	placeholder="如：f:\\test\\" class="layui-input" >
+            </div>
           </div>
         </div>
 
         <div class="layui-form-item layui-form-text">
           <label class="layui-form-label">URL</label>
           <div class="layui-input-block">
-            <textarea name="urls" lay-verify="required"  class="layui-textarea" rows="5" >
+            <textarea name="urls" id="urls" lay-verify="notNull"  class="layui-textarea" rows="4" >
 				
 			</textarea>
-			<p class="nepadmin-c-red nepadmin-bold">请输入完整url地址，如：http://127.0.0.1/xiangmu 扒取多个页面请换行 可以不同域名</p>
+			<p class="nepadmin-c-red nepadmin-bold">必填，请输入完整url地址，如：http://127.0.0.1/project 扒取多个页面请换行 可以不同域名</p>
           </div>
         </div>
         
         <div class="layui-form-item layui-form-text">
           <label class="layui-form-label">Cookie</label>
           <div class="layui-input-block">
-            <textarea name="cookie"  class="layui-textarea" rows="5">
+            <textarea name="cookie" id="cookie"  class="layui-textarea" rows="3">
 				
 			</textarea>
 			<p class="nepadmin-c-red nepadmin-bold">扒取有用户登录的页面，请填入Cookie(形式：k1=v1;k2=v2...)</p>
@@ -35,7 +37,7 @@
    		<div class="layui-form-item layui-form-text">
           <label class="layui-form-label">User-Agent</label>
           <div class="layui-input-block">
-            <textarea name="useragent"  class="layui-textarea" rows="5">
+            <textarea name="useragent" id="useragent"  class="layui-textarea" rows="3">
 				
 			</textarea>
 			<p class="nepadmin-c-red nepadmin-bold">不填则使用系统内置User-Agent</p>
@@ -46,7 +48,7 @@
           <div class="layui-input-block">
           	
           
-            <button class="layui-btn" lay-submit lay-filter="start">开始扒取</button>
+            <button class="layui-btn" lay-submit lay-filter="start-crabpages">开始扒取</button>
            	
           </div>
         </div>
@@ -57,6 +59,43 @@
 </div>
 
 <script>
+editAreaLoader.init({
+	id: "urls"		
+	,start_highlight: true	
+	,font_size: "10"
+	,font_family: "verdana, monospace"
+	,allow_resize: "no"
+	,allow_toggle: false
+	,word_wrap: true
+	,language: "en"
+	,syntax: "Basic"	
+	,toolbar: "new_document"	
+});
+editAreaLoader.init({
+	id: "cookie"		
+	,start_highlight: true	
+	,font_size: "10"
+	,font_family: "verdana, monospace"
+	,allow_resize: "no"
+	,allow_toggle: false
+	,word_wrap: true
+	,language: "en"
+	,syntax: "Basic"	
+	,toolbar: "new_document"	
+});
+editAreaLoader.init({
+	id: "useragent"		
+	,start_highlight: true	
+	,font_size: "10"
+	,font_family: "verdana, monospace"
+	,allow_resize: "no"
+	,allow_toggle: false
+	,word_wrap: true
+	,language: "en"
+	,syntax: "Basic"	
+	,toolbar: "new_document"	
+});
+
   layui.use(['admin', 'form', 'laydate'], function () {
     var $ = layui.$
       , admin = layui.admin
@@ -66,16 +105,32 @@
       , form = layui.form;
 
     form.render(null, 'form-crabpages');
-
+    
+    form.verify({
+		 notNull :function(val,item){
+			 var val = editAreaLoader.getValue(item.id);
+			 if($.trim(val)==""){
+				 return "必填项不能为空";
+			 }
+		 }
+	 });
    
-    form.on('submit(start)', function (data) {
+    form.on('submit(start-crabpages)', function (data) {
     	 $(".layui-btn").attr("disabled",true);
     	 $(".layui-btn").addClass("layui-disabled");
     	 admin.modal.info("正在扒取中，请稍等！");
+    	 var urls = editAreaLoader.getValue("urls");
+    	 var cookie = editAreaLoader.getValue("cookie");
+    	 var useragent = editAreaLoader.getValue("useragent");
     	 admin.post({
     		 timeout: -1,
              url:'pageCrawl/startCrab',
-             data:data.field,
+             data:{
+            	 rootpath:$("#rootpath").val(),
+            	 urls:urls,
+            	 cookie:cookie,
+            	 useragent:useragent
+             },
              success:function(res){
             	 if(res.code=="0"){
             		admin.modal.success("扒取成功！"); 

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -209,35 +211,76 @@ public class CodeCtrl {
 			e.printStackTrace();
 			rst.setCode("500");
 		}
+		
 		return rst;
 	}
 	@RequestMapping(value = "/addTemplate")
 	@ResponseBody
-	public AjaxResult<String> addTemplate(String dir,String flag,String tplname,String tpltype,String typename){
+	public AjaxResult<String> addTemplate(String dir,String flag,String tplname,String  tpltype,String typename){
 		
 		//System.out.println(dir+"--"+flag+"--"+tplname+"--"+tpltype+"--"+typename);
+		
+		String addnew="";
+		String addold="";
+		
+		String[] tpltypes = tpltype.split(",");
+		String[] typenames = typename.split(",");
+		
 		AjaxResult<String> rst = new AjaxResult<>();
 		boolean boo=false;
-		String fileName="";
-		if("Other".equals(tpltype)){
-			fileName = typename+".ftl";
-		}else{
-			fileName = tpltype+".ftl";
+		
+		for(int i=0;i<tpltypes.length;i++){
+			String fileName="";
+			
+			if(!"Other".equals(tpltypes[i])){
+				fileName = tpltypes[i]+".ftl";
+				
+				if("1".equals(flag)){
+					boo=FileTool.createLocalFile(this.getClass().getResource("/"+GlobalConst.TEMPLATE_PATH+"/"
+							+dir).getPath(), fileName);
+				}else{
+					boo=FileTool.createLocalFile(this.getClass().getResource("/"+GlobalConst.TEMPLATE_PATH).getPath()
+							+"/tpl_"+tplname, fileName);
+				}
+				if(boo){
+					addnew+=tpltypes[i]+",";
+				}else{
+					addold+=tpltypes[i]+",";
+				}
+			}else{
+				for(int j=0;j<typenames.length;j++){
+					fileName = typenames[j].trim()+".ftl";
+					
+					if("1".equals(flag)){
+						boo=FileTool.createLocalFile(this.getClass().getResource("/"+GlobalConst.TEMPLATE_PATH+"/"
+								+dir).getPath(), fileName);
+					}else{
+						boo=FileTool.createLocalFile(this.getClass().getResource("/"+GlobalConst.TEMPLATE_PATH).getPath()
+								+"/tpl_"+tplname, fileName);
+					}
+					if(boo){
+						addnew+=typenames[j]+",";
+					}else{
+						addold+=typenames[j]+",";
+					}
+				}
+				
+			}
+			
 		}
 		
-		if("1".equals(flag)){
-			boo=FileTool.createLocalFile(this.getClass().getResource("/"+GlobalConst.TEMPLATE_PATH+"/"
-					+dir).getPath(), fileName);
-		}else{
-			boo=FileTool.createLocalFile(this.getClass().getResource("/"+GlobalConst.TEMPLATE_PATH).getPath()
-					+"/tpl_"+tplname, fileName);
-		}
-		if(boo){
+		if(addold.equals("")){
 			rst.setCode("0");
 		}else{
 			rst.setCode("1");
+			if(!addnew.equals("")){
+				rst.setMsg("新增了"+addnew.substring(0,addnew.length()-1)+"模板文件，"
+						+addold.substring(0,addold.length()-1)+"模板文件已存在！");
+			}else{
+				rst.setMsg(addold.substring(0,addold.length()-1)+"模板文件已存在！");
+			}
+			
 		}
-		
 		return rst;
 	}
 	

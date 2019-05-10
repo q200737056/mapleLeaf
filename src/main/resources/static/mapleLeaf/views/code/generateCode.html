@@ -1,12 +1,12 @@
 <div class="layui-fluid" lay-title="生成代码">
   <div class="layui-card">
     <div class="layui-card-body" style="padding: 15px;">
-      <form class="layui-form" action="" lay-filter="form-group">
+      <form class="layui-form" action="" lay-filter="form-code">
         
 
 <script type="text/html" id="tpl_config" template lay-url="code/renderConfig" 
 	lay-type="post" 
-	lay-done="layui.form.render('select');">
+	lay-done="layui.form.render('select');initArea();">
         
 		<div class="layui-form-item">
           <label class="layui-form-label">模板</label>
@@ -25,7 +25,7 @@
         <div class="layui-form-item layui-form-text">
           <label class="layui-form-label">配置文件</label>
           <div class="layui-input-block">
-            <textarea name="config" placeholder="请输入内容" class="layui-textarea" rows="30">
+            <textarea id="config" name="config" placeholder="请输入内容" class="layui-textarea" rows="18">
 				{{d.config}}
 			</textarea>
           </div>
@@ -35,8 +35,8 @@
         <div class="layui-form-item">
           <div class="layui-input-block">
           	<p class="nepadmin-c-red nepadmin-bold">如有修改，请先保存配置文件</p>
-            <button class="layui-btn" lay-submit lay-filter="save-submit">保存</button>
-            <button class="layui-btn" lay-submit lay-filter="generate-submit">生成代码</button>
+            <button class="layui-btn" lay-submit lay-filter="save-code">保存</button>
+            <button class="layui-btn" lay-submit lay-filter="generate-code">生成代码</button>
            	
           </div>
         </div>
@@ -47,6 +47,21 @@
 </div>
 
 <script>
+function initArea(){
+	  editAreaLoader.init({
+			id: "config"		
+			,start_highlight: true	
+			,font_size: "10"
+			,font_family: "verdana, monospace"
+			,allow_resize: "no"
+			,allow_toggle: false
+			,word_wrap: true
+			,language: "en"
+			,syntax: "xml"	
+			,toolbar: "new_document, |, search, go_to_line, |, select_font, |, change_smooth_selection, highlight, reset_highlight, |, help"
+				
+		});
+}
   layui.use(['admin', 'form', 'laydate'], function () {
     var $ = layui.$
       , admin = layui.admin
@@ -55,14 +70,16 @@
       , laydate = layui.laydate
       , form = layui.form;
 
-    form.render(null, 'form-group');
+    form.render(null, 'form-code');
 
   
-    /* 保存 */
-    form.on('submit(save-submit)', function (data) {
+    form.on('submit(save-code)', function (data) {
+    	 var content = editAreaLoader.getValue("config");
     	 admin.post({
              url:'code/updateConfig',
-             data:data.field,
+             data:{
+            	 config:content
+             },
              success:function(res){
             	 if(res.code=="0"){
             		admin.modal.success("保存成功！") 
@@ -74,7 +91,7 @@
          return false;
     });
     /* 生成代码 */
-    form.on('submit(generate-submit)', function (data) {
+    form.on('submit(generate-code)', function (data) {
     	$(".layui-btn").attr("disabled",true);
     	$(".layui-btn").addClass("layui-disabled");
     	//admin.modal.info("正在生成代码，请稍等！");

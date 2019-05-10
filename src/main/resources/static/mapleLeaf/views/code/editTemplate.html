@@ -3,7 +3,7 @@
     <div class="layui-card-body" style="padding: 15px;">
       <form class="layui-form" action="" lay-filter="form-editTemplate">
  <script type="text/html" id="tpl_template" template lay-url="code/renderTemplate" 
-	lay-type="post" lay-done="layui.form.render(null,'form-editTemplate')">
+	lay-type="post" lay-done="layui.form.render(null,'form-editTemplate');initArea();">
 	
 	<div class="layui-form-item">
           <label class="layui-form-label">选择模板</label>
@@ -30,7 +30,7 @@
 		<div class="layui-form-item layui-form-text">
           <label class="layui-form-label">模板内容</label>
           <div class="layui-input-block">
-            <textarea name="tplcontent" id="tplcontent" placeholder="请输入内容" class="layui-textarea" rows="30">
+            <textarea name="tplcontent" id="tplcontent" placeholder="请输入内容" class="layui-textarea" rows="19">
 				{{ d.tplContent }}
 			</textarea>
           </div>
@@ -40,7 +40,7 @@
         
         <div class="layui-form-item">
           <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="save-submit">保存</button>
+            <button class="layui-btn" lay-submit lay-filter="save-editTemplate">保存</button>
           </div>
         </div>
         
@@ -50,6 +50,22 @@
 </div>
 
 <script>
+  function initArea(){
+	  editAreaLoader.init({
+			id: "tplcontent"		
+			,start_highlight: true	
+			,font_size: "10"
+			,font_family: "verdana, monospace"
+			,allow_resize: "no"
+			,allow_toggle: false
+			,word_wrap: true
+			,language: "en"
+			,syntax: "java"	
+			,toolbar: "new_document, |, search, go_to_line, |, select_font, |, syntax_selection, "+
+			 	"|, change_smooth_selection, highlight, reset_highlight, |, help"
+				
+		});
+  }
   layui.use(['admin', 'form', 'laydate'], function () {
     var $ = layui.$
       , admin = layui.admin
@@ -77,6 +93,7 @@
             	})
             	$("#tplcontent").val(d.tplContent);
             	form.render(null, 'form-editTemplate');
+            	editAreaLoader.setValue("tplcontent", d.tplContent);
             }
         });
  		return false;
@@ -96,15 +113,22 @@
             	var d = res["data"];
             	$("#tplcontent").val(d);
             	form.render(null, 'form-editTemplate');
+            	editAreaLoader.setValue("tplcontent", d);
             }
         });
  		return false;
  	})
-    /* 保存 */
-    form.on('submit(save-submit)', function (data) {
+    
+    form.on('submit(save-editTemplate)', function (data) {
+    	 var content = editAreaLoader.getValue("tplcontent");
     	 admin.post({
              url:'code/updateTplContent',
-             data:data.field,
+             //data:data.field,
+             data:{
+            	 dir:$("#dir").val(),
+            	 file:$("#file").val(),
+            	 tplcontent:content
+             },
              success:function(res){
             	 if(res.code=="0"){
             		 admin.modal.success("保存成功！") 
