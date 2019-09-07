@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 使用前，请好好查看配置文件说明及使用说明-->
 <configure>
+	<!--生成代码路径  -->
 	<basedir>f:\\code</basedir>
+	<!--基础包名-->
 	<basePackage>com.test</basePackage>
-	<isDeleteTablePrefix>false</isDeleteTablePrefix>
+	<!-- 是否去表名前缀 ,默认false-->
+	<isDeleteTablePrefix>true</isDeleteTablePrefix>
+	<!-- 全局表名前缀，可以多个，英文逗号分隔 ,默认""-->
+	<baseTabPrefix>sys_,wxcms_</baseTabPrefix>
+	<!-- 表字段下划线是否转成驼峰命名 ,默认false-->
 	<columnIsCamel>false</columnIsCamel>
+	<!-- 持久层框架 -->
 	<persistance>mybatis</persistance>
 	<!-- 一些公共类，工具类,父类等原样输出，仅仅用来辅助下面的代码生成,不必需(包名=模板文件名(也是类名)，多个英文逗号隔开) -->
 	<!-- 这里配置了分页类，mybatis分页拦截器, mybatis通用配置-->
 	<!--  
 	<common>common=Page,common=PageInterceptor,resource=Xml_mybatis</common>
 	-->
+	<!-- 数据库配置 -->
 	<db>
 		<dbType>mysql</dbType>
 		<dbName>wxmp</dbName>
@@ -19,14 +27,17 @@
 		<driver>com.mysql.jdbc.Driver</driver>
 		<url>jdbc:mysql://localhost:3306/wxmp?useUnicode=true&amp;characterEncoding=UTF-8</url>
 	</db>
-	
+	<!-- 模块配置，可以有多个 -->
 	<module>
+		<!-- 模块名，默认"" -->
 		<name>test</name>
+		<!-- 以下各个类的包名 -->
 		<entityPackage>entity</entityPackage>
 		<daoPackage>dao</daoPackage>
 		<servicePackage>service</servicePackage>
 		<controllerPackage>controller</controllerPackage>
 		<mapperPackage>mapper</mapperPackage>
+		<!-- 视图，tpl 模板名，type 视图后缀;标签文本 包名-->
 		<viewPackage tpl="Jsp_list" type="jsp">jsp</viewPackage>
 		<customPackage tpl="Jsp_add" type="java">custom</customPackage>
 		

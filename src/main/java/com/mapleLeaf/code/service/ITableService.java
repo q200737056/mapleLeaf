@@ -62,5 +62,13 @@ public interface ITableService {
 	 * @return
 	 * @throws SQLException
 	 */
-	//String getTableRemark(String tableName, Connection con) throws SQLException;
+	String getTableRemark(String tableName, Connection con) throws SQLException;
+	/**
+     * 获取数据表的所有字段
+     * @param table
+     * @param conn
+     * @throws SQLException
+     */
+    void getTableColumns(Table table,Module module,Connection conn,Map<String,String> map) throws SQLException;
+    
 }

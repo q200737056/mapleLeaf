@@ -535,5 +535,19 @@ public class XmlUtil{
                 j++;  
         }  
         return j;  
-    }  
+    }
+    /**
+     * 获取 子节点文本 ，如果为空，则返回默认值
+     * @param parent 父节点
+     * @param childName 子节点名
+     * @param defaultVal 默认值
+     * @return
+     */
+    public static String getChildValue(Element parent,String childName,String defaultVal){
+    	Element e = getChild(parent, childName);
+    	if(e==null||"".equals(e.getTextTrim())){
+    		return defaultVal;
+    	}
+    	return e.getTextTrim();
+    }
 }  

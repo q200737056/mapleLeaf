@@ -49,7 +49,7 @@ public class DataBase2File {
         
         try {
         	
-        	 Config config= ConfigFactory.createConfig("config.xml",tplPath);
+        	 Config config= ConfigFactory.createConfig(GlobalConst.CONFIG,tplPath);
              
              ITableService tableService = TableServiceFactory.getInstance(config.getDb().getDbType());
              tableService.setDb(config.getDb());
@@ -365,7 +365,7 @@ public class DataBase2File {
     public static void main(String[] args) {  
         DataBase2File reverser = new DataBase2File(); 
         try {
-			reverser.generateFiles("/"+GlobalConst.TEMPLATE_PATH+"/tpl_default_mybatis");
+			reverser.generateFiles(GlobalConst.TEMPLATE_PATH+"/tpl_default_mybatis");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

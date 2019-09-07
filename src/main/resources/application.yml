@@ -1,4 +1,4 @@
-# Tomcat
+# 内置Tomcat配置
 server:
     tomcat:
         uri-encoding: UTF-8
@@ -11,9 +11,10 @@ server:
 
 
 spring:
-    resources:
-        static-locations: classpath:/static/,classpath:/
-        
+    devtools:
+        restart:
+            #热部署开关
+            enabled: false    
 # log文件输出在项目根目录，打包后，也回输出在jar文件统计目录。
 # Spring boot的默认log配置很好用，默认10MB一个文件，回定期归档log文件为gz
 logging:

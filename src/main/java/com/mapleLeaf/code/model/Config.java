@@ -18,6 +18,7 @@ public class Config {
 	private String basePackage; //包路径的前缀，如com.test，后面则跟上模块名等
 	private boolean columnIsCamel;//表字段是否驼峰命名
 	private boolean isDeleteTablePrefix;//是否删除表名前缀
+	private String baseTabPrefix;//表名前缀，可以多个
 	private String persistance; //持久层框架
 	private Db db; //连接数据库的配置信息
 	private List<Module> modules; //要生成的代码模块列表
@@ -79,6 +80,12 @@ public class Config {
 	}
 	public void setFmkConf(Configuration fmkConf) {
 		this.fmkConf = fmkConf;
+	}
+	public String getBaseTabPrefix() {
+		return baseTabPrefix;
+	}
+	public void setBaseTabPrefix(String baseTabPrefix) {
+		this.baseTabPrefix = baseTabPrefix;
 	}
 	
 	

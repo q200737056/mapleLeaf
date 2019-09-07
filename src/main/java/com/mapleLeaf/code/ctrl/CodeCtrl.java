@@ -1,12 +1,11 @@
 package com.mapleLeaf.code.ctrl;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,8 +34,9 @@ public class CodeCtrl {
 		
 		AjaxResult<Map<String,Object>> rst = new AjaxResult<>();
 		
-		Map<String,Object> resultMap = new HashMap<String, Object>(); 
-		String configPath = this.getClass().getResource("/"+GlobalConst.CONFIG).getPath();
+		Map<String,Object> resultMap = new HashMap<String, Object>();
+		
+		String configPath = FileTool.getRealPath(GlobalConst.CONFIG);
 		
 		try {
 			resultMap.put("config", FileTool.readLocalFileContent(configPath));
@@ -48,8 +48,8 @@ public class CodeCtrl {
 		}
 		
 		//列出模板
-		List<String> files = FileTool.listLocalFiles(this.getClass().getResource("/"+GlobalConst.TEMPLATE_PATH)
-				.getPath(),"1");
+		List<String> files = FileTool.listLocalFiles(FileTool.getRealPath(GlobalConst.TEMPLATE_PATH)
+				,"1");
 		
 		List<String> tpls = new ArrayList<>();
 		for(String f:files){
@@ -72,7 +72,7 @@ public class CodeCtrl {
 		
 	
 		AjaxResult<String> rst = new AjaxResult<>();
-		String configPath = this.getClass().getResource("/"+GlobalConst.CONFIG).getPath();
+		String configPath = FileTool.getRealPath(GlobalConst.CONFIG);
 		try {
 			FileTool.writeLocalFileContent(configPath, config.trim().replace("&", "&amp;"));
 			rst.setCode("0");
@@ -91,8 +91,8 @@ public class CodeCtrl {
 		
 		Map<String,Object> resultMap = new HashMap<String, Object>(); 
 		
-		List<String> files = FileTool.listLocalFiles(this.getClass().getResource("/"+GlobalConst.TEMPLATE_PATH)
-					.getPath(),"1");
+		List<String> files = FileTool.listLocalFiles(
+				FileTool.getRealPath(GlobalConst.TEMPLATE_PATH),"1");
 		
 		List<String> tpls = new ArrayList<>();
 		for(String f:files){
@@ -105,8 +105,8 @@ public class CodeCtrl {
 		//第一个文件夹下的 文件
 		String firstDir = tpls.get(0);
 		
-		List<String> firstFiles = FileTool.listLocalFiles(this.getClass().getResource("/"+GlobalConst.TEMPLATE_PATH
-				+"/"+firstDir).getPath(),"2");
+		List<String> firstFiles = FileTool.listLocalFiles(
+				FileTool.getRealPath(GlobalConst.TEMPLATE_PATH+"/"+firstDir),"2");
 		
 		List<String> tplFiles = new ArrayList<>();
 		for(String f:firstFiles){
@@ -120,8 +120,8 @@ public class CodeCtrl {
 		String firstFile = tplFiles.get(0);
 		String content="";
 		try {
-			content = FileTool.readLocalFileContent(this.getClass().getResource("/"+GlobalConst.TEMPLATE_PATH
-					+"/"+firstDir+"/"+firstFile).getPath());
+			content = FileTool.readLocalFileContent(
+					FileTool.getRealPath(GlobalConst.TEMPLATE_PATH+"/"+firstDir+"/"+firstFile));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -146,9 +146,8 @@ public class CodeCtrl {
 		
 		Map<String,Object> resultMap = new HashMap<String, Object>(); 
 		
-		
-		List<String> firstFiles = FileTool.listLocalFiles(this.getClass().getResource("/"+GlobalConst.TEMPLATE_PATH
-				+"/"+dir).getPath(),"2");
+		List<String> firstFiles = FileTool.listLocalFiles(
+				FileTool.getRealPath(GlobalConst.TEMPLATE_PATH+"/"+dir),"2");
 		List<String> tplFiles = new ArrayList<>();
 		for(String f:firstFiles){
 			if(f.endsWith("ftl")){
@@ -161,8 +160,8 @@ public class CodeCtrl {
 		String firstFile = tplFiles.get(0);
 		String content="";
 		try {
-			content = FileTool.readLocalFileContent(this.getClass().getResource("/"+GlobalConst.TEMPLATE_PATH+"/"
-					+dir+"/"+firstFile).getPath());
+			content = FileTool.readLocalFileContent(
+					FileTool.getRealPath(GlobalConst.TEMPLATE_PATH+"/"+dir+"/"+firstFile));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -185,8 +184,9 @@ public class CodeCtrl {
 		
 		String content="";
 		try {
-			content = FileTool.readLocalFileContent(this.getClass().getResource("/"+GlobalConst.TEMPLATE_PATH+"/"
-					+dir+"/"+file).getPath());
+			content = FileTool.readLocalFileContent(
+					FileTool.getRealPath(GlobalConst.TEMPLATE_PATH+"/"
+					+dir+"/"+file));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -204,8 +204,9 @@ public class CodeCtrl {
 		AjaxResult<String> rst = new AjaxResult<>();
 		
 		try {
-			FileTool.writeLocalFileContent(this.getClass().getResource("/"+GlobalConst.TEMPLATE_PATH
-					+"/"+dir+"/"+file).getPath(), tplcontent.trim());
+			FileTool.writeLocalFileContent(
+					FileTool.getRealPath(GlobalConst.TEMPLATE_PATH
+							+"/"+dir+"/"+file), tplcontent.trim());
 			rst.setCode("0");
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -236,11 +237,13 @@ public class CodeCtrl {
 				fileName = tpltypes[i]+".ftl";
 				
 				if("1".equals(flag)){
-					boo=FileTool.createLocalFile(this.getClass().getResource("/"+GlobalConst.TEMPLATE_PATH+"/"
-							+dir).getPath(), fileName);
+					boo=FileTool.createLocalFile(
+							FileTool.getRealPath(GlobalConst.TEMPLATE_PATH+"/"
+							+dir), fileName);
 				}else{
-					boo=FileTool.createLocalFile(this.getClass().getResource("/"+GlobalConst.TEMPLATE_PATH).getPath()
-							+"/tpl_"+tplname, fileName);
+					boo=FileTool.createLocalFile(
+							FileTool.getRealPath(GlobalConst.TEMPLATE_PATH)
+								+File.separator+"tpl_"+tplname, fileName);
 				}
 				if(boo){
 					addnew+=tpltypes[i]+",";
@@ -252,11 +255,12 @@ public class CodeCtrl {
 					fileName = typenames[j].trim()+".ftl";
 					
 					if("1".equals(flag)){
-						boo=FileTool.createLocalFile(this.getClass().getResource("/"+GlobalConst.TEMPLATE_PATH+"/"
-								+dir).getPath(), fileName);
+						boo=FileTool.createLocalFile(
+								FileTool.getRealPath(GlobalConst.TEMPLATE_PATH+"/"+dir), fileName);
 					}else{
-						boo=FileTool.createLocalFile(this.getClass().getResource("/"+GlobalConst.TEMPLATE_PATH).getPath()
-								+"/tpl_"+tplname, fileName);
+						boo=FileTool.createLocalFile(
+								FileTool.getRealPath(GlobalConst.TEMPLATE_PATH)
+								+File.separator+"tpl_"+tplname, fileName);
 					}
 					if(boo){
 						addnew+=typenames[j]+",";
@@ -292,7 +296,8 @@ public class CodeCtrl {
 		
 		//生成代码
         try {
-        	dataBase2File.generateFiles("/"+GlobalConst.TEMPLATE_PATH+"/"+tplname);
+        	
+        	dataBase2File.generateFiles(GlobalConst.TEMPLATE_PATH+"/"+tplname);
 		} catch (Exception e) {
 			e.printStackTrace();
 			rst.setCode("500");

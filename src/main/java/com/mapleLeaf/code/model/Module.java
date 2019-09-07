@@ -13,6 +13,8 @@ public class Module {
 	
 	private String persistance; //持久层框架  全局参数
 	private boolean isDeleteTablePrefix; //是否删除表前缀  全局参数
+	private boolean columnIsCamel;//表字段是否驼峰命名  全局参数
+	private String baseTabPrefix;//表名前缀，可以多个 全局参数
 	
 	private String daoPackage;
 	private String daoImplPackage;
@@ -25,7 +27,7 @@ public class Module {
 	private String mapperPackage;
 	private String myBatisPackage;
 	private List<TableConf> tables; //配置的数据表信息 
-	private boolean columnIsCamel;//表字段是否驼峰命名  全局参数
+	
 	private Map<String,String> attrsMap=new HashMap<>();//标签属性集  key:标签名_属性名  value:属性值
 	private Map<String,String> paramMap=new HashMap<>();//自定义参数
 	
@@ -137,6 +139,12 @@ public class Module {
 	}
 	public void setParamMap(Map<String, String> paramMap) {
 		this.paramMap = paramMap;
+	}
+	public String getBaseTabPrefix() {
+		return baseTabPrefix;
+	}
+	public void setBaseTabPrefix(String baseTabPrefix) {
+		this.baseTabPrefix = baseTabPrefix;
 	}
 	
 }

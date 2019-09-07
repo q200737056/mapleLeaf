@@ -1,10 +1,14 @@
 package com.mapleLeaf.common.util;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,16 +22,28 @@ public class FileTool {
 	public static String readLocalFileContent(String filepath) throws IOException{
 		File file = new File(filepath);
 		String content="";
-		try(FileInputStream fis = new FileInputStream(file);) {
-			byte[] tmp = new byte[1024];
-			int len=0;
-			while((len=fis.read(tmp))!=-1){
+		try(FileInputStream fis = new FileInputStream(file);
+				BufferedReader br = new  BufferedReader(new InputStreamReader(fis,"UTF-8"))) {
+			
+			
+			while(br.ready()){
+				content+=br.readLine()+"\n";
+				
+			}
+			/*
+			 byte[] tmp = new byte[1024];
+			 int len=0;
+			 while((len=fis.read(tmp))!=-1){
 				
 				content+=new String(tmp,0,len);
-			}
+			}*/
 		} 
+		if(content.length()>0){
+			return content.substring(0, content.length()-1);
+		}
 		return content;
 	}
+	
 	/**
 	 * 写入本地文件内容
 	 * @param filepath
@@ -38,9 +54,11 @@ public class FileTool {
 	public static void writeLocalFileContent(String filepath,String content) 
 			throws IOException{
 		File file = new File(filepath);
-		try(FileOutputStream fos = new FileOutputStream(file);) {
-			fos.write(content.getBytes());
-			
+		try(FileOutputStream fos = new FileOutputStream(file);
+				BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos,"UTF-8"))) {
+			//fos.write(content.getBytes());
+			bw.write(content);
+			bw.flush();
 		} 
 	}
 	/**
@@ -75,6 +93,7 @@ public class FileTool {
 		}
 		return fileList;
 	}
+	
 	/**
 	 * 创建文件
 	 * @param path
@@ -96,5 +115,28 @@ public class FileTool {
 			}
 		 }
 		 return boo;
+	}
+	/**
+	 * 得到 真实路径，
+	 * 如果是jar包，获取jar所在文件中下的 文件路径;
+	 * 如果开发工具 ，则获取项目根目录下的 文件路径
+	 * @param path
+	 * @return
+	 */
+	public static String getRealPath(String path){
+		if(path==null||"".equals(path)){
+			return path;
+		}
+		if(path.startsWith("/")){
+			path = path.substring(1);
+		}
+		String spath = Thread.currentThread().getContextClassLoader().getResource("").getFile();
+		if(spath.indexOf(".jar!")!=-1){//说明 在jar包中
+			String rootPath = System.getProperty("user.dir");
+			return rootPath+File.separator+path;
+		}else{
+			spath = Thread.currentThread().getContextClassLoader().getResource(path).getFile();
+			return spath;
+		}
 	}
 }

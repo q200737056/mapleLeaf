@@ -1,5 +1,9 @@
 package com.mapleLeaf.code.other;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +16,7 @@ import com.mapleLeaf.code.model.Db;
 import com.mapleLeaf.code.model.Module;
 import com.mapleLeaf.code.model.TableConf;
 import com.mapleLeaf.code.utils.XmlUtil;
+import com.mapleLeaf.common.util.FileTool;
 
 import freemarker.template.Configuration;
 
@@ -19,22 +24,40 @@ public class ConfigFactory {
 	public static Config createConfig(String configFile,String tplPath){
 		Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);  
 	    configuration.setDefaultEncoding("utf-8");
-	    configuration.setClassForTemplateLoading(ConfigFactory.class,tplPath);
-	    
+	   
+	    tplPath = FileTool.getRealPath(tplPath);
+	    //configuration.setClassForTemplateLoading(ConfigFactory.class,tplPath);
+	    try {
+			configuration.setDirectoryForTemplateLoading(new File(tplPath));
+		} catch (IOException e2) {
+			e2.printStackTrace();
+		}
 		Config config = new Config();
 		
 		config.setFmkConf(configuration);
 		
-		Document doc = XmlUtil.getDocument(Config.class.getClassLoader().getResourceAsStream(configFile));
+		String realPath = FileTool.getRealPath(configFile);
+		Document doc=null;
+		try {
+			doc = XmlUtil.getDocument(new FileInputStream(realPath));
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		
+		//Document doc = XmlUtil.getDocument(Config.class.getClassLoader().getResourceAsStream(configFile));
 		
 		Element root = XmlUtil.getRootNode(doc);
 		
 		config.setBaseDir(XmlUtil.getChild(root, "baseDir").getTextTrim());//生成文件路径
 		config.setBasePackage(XmlUtil.getChild(root, "basePackage").getTextTrim());//基础包名
-		
-		config.setColumnIsCamel(Boolean.valueOf(XmlUtil.getChild(root, "columnIsCamel").getTextTrim()));//表字段是否驼峰命名
-		config.setDeleteTablePrefix(Boolean.valueOf(XmlUtil.getChild(root, "isDeleteTablePrefix").getTextTrim()));
-		config.setPersistance(XmlUtil.getChild(root, "persistance").getTextTrim());//持久层 框架
+		//表字段是否驼峰命名  默认false
+		config.setColumnIsCamel(Boolean.valueOf(XmlUtil.getChildValue(root, "columnIsCamel","false")));
+		//是否去掉表前缀  默认false
+		config.setDeleteTablePrefix(Boolean.valueOf(XmlUtil.getChildValue(root, "isDeleteTablePrefix","false")));
+		//表名前缀 默认""
+		config.setBaseTabPrefix(XmlUtil.getChildValue(root, "baseTabPrefix",""));
+		//持久层 框架
+		config.setPersistance(XmlUtil.getChild(root, "persistance").getTextTrim());
 		//公共类(包名+模板)非必需
 		Element commonElm = XmlUtil.getChild(root, "common");
 		if(commonElm!=null){
@@ -75,27 +98,26 @@ public class ConfigFactory {
 			m.setColumnIsCamel(config.isColumnIsCamel());//字段是否驼峰命名，全局参数
 			m.setDeleteTablePrefix(config.isDeleteTablePrefix());//是否删除表名前缀，全局参数
 			m.setPersistance(config.getPersistance());//持久层框架 ，全局参数
+			m.setBaseTabPrefix(config.getBaseTabPrefix());
 			
+			//模块名 ,默认 空字符
+			m.setName(XmlUtil.getChildValue(e, "name", ""));
 			
-			//模块名
-			m.setName(XmlUtil.getChild(e, "name").getTextTrim());
-			//加载自定义包名
-			Element elePkg = XmlUtil.getChild(e, "controllerPackage");
-			m.setControllerPackage(elePkg==null?null:elePkg.getTextTrim());
-			elePkg = XmlUtil.getChild(e, "servicePackage");
-			m.setServicePackage(elePkg==null?null:elePkg.getTextTrim());
+			//加载模板中的 包名
+			m.setControllerPackage(XmlUtil.getChildValue(e, "controllerPackage",null));
+		
+			m.setServicePackage(XmlUtil.getChildValue(e, "servicePackage",null));
 			m.setServiceImplPackage("impl");
-			elePkg = XmlUtil.getChild(e, "daoPackage");
-			m.setDaoPackage(elePkg==null?null:elePkg.getTextTrim());
+		
+			m.setDaoPackage(XmlUtil.getChildValue(e, "daoPackage",null));
 			m.setDaoImplPackage("impl");
 			
-			elePkg = XmlUtil.getChild(e, "entityPackage");
-			m.setEntityPackage(elePkg==null?null:elePkg.getTextTrim());
-			elePkg = XmlUtil.getChild(e, "mapperPackage");
-			m.setMapperPackage(elePkg==null?null:elePkg.getTextTrim());
+			m.setEntityPackage(XmlUtil.getChildValue(e, "entityPackage",null));
+		
+			m.setMapperPackage(XmlUtil.getChildValue(e, "mapperPackage",null));
 		
 			
-			elePkg = XmlUtil.getChild(e, "viewPackage");
+			Element elePkg = XmlUtil.getChild(e, "viewPackage");
 			if(elePkg==null){
 				m.setViewPackage(null);
 				

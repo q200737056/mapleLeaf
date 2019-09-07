@@ -50,15 +50,22 @@
               </tr>
               <tr>
                 <td>isDeleteTablePrefix</td>
-                <td>是否删除表名前缀。（true或false)</td>
-                <td>是</td>
+                <td>是否删除表名前缀。（true或false)默认false</td>
+                <td>否</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>baseTabPrefix</td>
+                <td>全局表名前缀，可以多个英文逗号分隔，如：sys_,log_。默认""</td>
+                <td>否</td>
                 <td>没有</td>
                 <td></td>
               </tr>
               <tr>
                 <td>columnIsCamel</td>
-                <td>是否表字段中下划线转成驼峰命名。（true或false)</td>
-                <td>是</td>
+                <td>是否表字段中下划线转成驼峰命名。（true或false)默认false</td>
+                <td>否</td>
                 <td>没有</td>
                 <td></td>
               </tr>
@@ -79,13 +86,6 @@
               <tr>
                 <td>db</td>
                 <td>连接数据库的配置，含有子标签，详情看db标签说明</td>
-                <td>是</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>packageSetting</td>
-                <td>全局包设置，详情看packageSetting标签说明</td>
                 <td>是</td>
                 <td>没有</td>
                 <td></td>
@@ -186,8 +186,8 @@
             <tbody>
               <tr>
                 <td>name</td>
-                <td>模块名。</td>
-                <td>是</td>
+                <td>模块名。默认 ""</td>
+                <td>否</td>
                 <td>没有</td>
                 <td></td>
               </tr>
