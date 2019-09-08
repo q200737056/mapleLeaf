@@ -64,7 +64,7 @@ public class ConfigFactory {
 		if(commonElm!=null){
 			String common = commonElm.getTextTrim();
 			if(!common.equals("")){
-				String[] commons = common.split(",");
+				String[] commons = common.replace("，", ",").split(",");
 				for(int i=0;i<commons.length;i++){
 					String[] items = commons[i].split("=");
 					List<String> v=config.getCommonMap().get(items[0].trim());
@@ -268,16 +268,17 @@ public class ConfigFactory {
 		//如果  配置exclude了，就exclude生效
 		String exclude = XmlUtil.getAttrValue(e, "exclude", null);
 		if(exclude!=null){
-			cnf.setExclude(exclude);
+			cnf.setExclude(exclude.toLowerCase());
 		}else{
-			cnf.setInclude(XmlUtil.getAttrValue(e, "include", null));
+			String include = XmlUtil.getAttrValue(e, "include", null);
+			cnf.setInclude(include==null?null:include.toLowerCase());
 		}
 		//读取 column 标签
 		List<Element> columns = XmlUtil.getChildElements(e, "column");
 		if(columns!=null&&columns.size()>0){
 			for(Element ele : columns){
 				ColumnConf tmp = initColumnConf(ele);
-				cnf.getColConfMap().put(tmp.getColName(), tmp);
+				cnf.getColConfMap().put(tmp.getColName().toLowerCase(), tmp);
 			}
 		}
 		

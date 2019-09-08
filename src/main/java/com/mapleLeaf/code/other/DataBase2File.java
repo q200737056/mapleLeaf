@@ -302,7 +302,7 @@ public class DataBase2File {
      */
     private void generateViewFile(JSONObject obj,Table table,Config config,Module module) throws Exception{
     	String tpls = module.getAttrsMap().get("viewPackage_tpl");
-    	String[] actions = tpls.split(",");
+    	String[] actions = tpls.replace("，", ",").split(",");
     	String type = module.getAttrsMap().get("viewPackage_suffix");
     	String suffix = "jsp";
     	if(!StringUtils.isBlank(type)){
@@ -324,7 +324,7 @@ public class DataBase2File {
 	 */
 	private void generateCustomFile(JSONObject obj,Table table,Config config,Module module) throws Exception {
 		String tpls = module.getAttrsMap().get("customPackage_tpl");
-    	String[] actions = tpls.split(",");
+    	String[] actions = tpls.replace("，", ",").split(",");
     	String type = module.getAttrsMap().get("customPackage_suffix");
     	String suffix = "ctm";
     	if(!StringUtils.isBlank(type)){

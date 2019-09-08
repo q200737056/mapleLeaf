@@ -91,7 +91,7 @@ public abstract class AbstractTableService implements ITableService {
 		 	table.setTableName(tableName.toLowerCase().replaceFirst(tbConf.getPrefix().toLowerCase(), ""));
 		 //全局 表名前缀
 		 }else if(module.isDeleteTablePrefix() && !CodeUtil.isEmpty(module.getBaseTabPrefix())){
-		 	String[] prefixs = module.getBaseTabPrefix().split(",");
+		 	String[] prefixs = module.getBaseTabPrefix().replace("，", ",").split(",");
 		 	for(int i=0;i<prefixs.length;i++){
 		 		if(tableName.toLowerCase().indexOf(prefixs[i].trim().toLowerCase())==0){
 		 			table.setTableName(tableName.toLowerCase().replaceFirst(prefixs[i].trim().toLowerCase(), ""));
@@ -197,7 +197,7 @@ public abstract class AbstractTableService implements ITableService {
 			 ref.setTableName(tableName.toLowerCase().replaceFirst(refCof.getPrefix().toLowerCase(), ""));
 		 //全局 表名前缀
 		 }else if(module.isDeleteTablePrefix() && !CodeUtil.isEmpty(module.getBaseTabPrefix())){
-		 	String[] prefixs = module.getBaseTabPrefix().split(",");
+		 	String[] prefixs = module.getBaseTabPrefix().replace("，", ",").split(",");
 		 	for(int i=0;i<prefixs.length;i++){
 		 		if(tableName.toLowerCase().indexOf(prefixs[i].trim().toLowerCase())==0){
 		 			ref.setTableName(tableName.toLowerCase().replaceFirst(prefixs[i].trim().toLowerCase(), ""));
@@ -281,13 +281,13 @@ public abstract class AbstractTableService implements ITableService {
     	//判断字段 是否 包含或排除
 		String exc = colGoup.getExclude();
 		if(exc!=null){
-			if(Arrays.asList(exc.split(","))
+			if(Arrays.asList(exc.replace("，", ",").split(","))
 					.contains(col.getColumnName())){
 				return null;
 			}
 		}else{
 			String inc = colGoup.getInclude();
-			if(inc!=null && !Arrays.asList(inc.split(","))
+			if(inc!=null && !Arrays.asList(inc.replace("，", ",").split(","))
 					.contains(col.getColumnName())){
 				return null;
 			}
