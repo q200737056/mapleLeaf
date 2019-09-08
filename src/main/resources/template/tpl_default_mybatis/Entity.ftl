@@ -15,23 +15,16 @@ public class ${entityName} extends Page implements Serializable {
 	<#if columns?? && (columns?size>0)>
 	<#list columns as col>
 	/**
-	 * ${col.remark!}
+	 * ${col.labelName}
 	 */
 	<#assign type=col.propertyType>
 	
 	private ${type} ${col.propertyName};
 	</#list>
-	<#--关联表属性，是否有主表-->
-	<#if parentTable??>
-	<#if refType=="OneToOne" || refType=="OneToMany">
-	private ${parentTable.entityName} ${parentTable.fstLowEntityName};
-	<#elseif refType=="ManyToOne" || refType=="ManyToMany">
-	private List<${parentTable.entityName}> ${parentTable.fstLowEntityName}List;
-	</#if>
-	</#if>
-	<#--关联表属性，是否有从表-->
-	<#if subTables?? && (subTables?size>0)>
-	<#list subTables as subtb>
+	
+	<#--关联表属性-->
+	<#if refTables?? && (refTables?size>0)>
+	<#list refTables as subtb>
 	<#if subtb.refType=="OneToOne" || subtb.refType=="ManyToOne">
 	private ${subtb.entityName} ${subtb.fstLowEntityName};
 	<#elseif subtb.refType=="OneToMany" || subtb.refType=="ManyToMany">
@@ -49,27 +42,10 @@ public class ${entityName} extends Page implements Serializable {
 		return this.${col.propertyName};
 	}
 	</#list>
-	<#--关联表get,set，是否有主表-->
-	<#if parentTable??>
-	<#if refType=="OneToOne" || refType=="OneToMany">
-	public void set${parentTable.entityName}(${parentTable.entityName} ${parentTable.fstLowEntityName}){
-		this.${parentTable.fstLowEntityName}=${parentTable.fstLowEntityName};
-	}
-	public ${parentTable.entityName} get${parentTable.entityName}(){
-		return this.${parentTable.fstLowEntityName};
-	}
-	<#elseif refType=="ManyToOne" || refType=="ManyToMany">
-	public void set${parentTable.entityName}List(List<${parentTable.entityName}> ${parentTable.fstLowEntityName}List){
-		this.${parentTable.fstLowEntityName}List=${parentTable.fstLowEntityName}List;
-	}
-	public List<${parentTable.entityName}> get${parentTable.entityName}List(){
-		return this.${parentTable.fstLowEntityName}List;
-	}
-	</#if>
-	</#if>
-	<#--关联表get,set，是否有从表-->
-	<#if subTables?? && (subTables?size>0)>
-	<#list subTables as subtb>
+	
+	<#--关联表get,set-->
+	<#if refTables?? && (refTables?size>0)>
+	<#list refTables as subtb>
 	<#if subtb.refType=="OneToOne" || subtb.refType=="ManyToOne">
 	public void set${subtb.entityName}(${subtb.entityName} ${subtb.fstLowEntityName}){
 		this.${subtb.fstLowEntityName}=${subtb.fstLowEntityName};

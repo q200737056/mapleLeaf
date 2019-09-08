@@ -19,10 +19,10 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.mapleLeaf.code.model.Config;
-import com.mapleLeaf.code.model.Module;
+import com.mapleLeaf.code.confbean.Config;
+import com.mapleLeaf.code.confbean.Module;
+import com.mapleLeaf.code.confbean.TableConf;
 import com.mapleLeaf.code.model.Table;
-import com.mapleLeaf.code.model.TableConf;
 import com.mapleLeaf.code.service.ITableService;
 import com.mapleLeaf.code.utils.FreemarkerUtil;
 import com.mapleLeaf.common.util.GlobalConst;
@@ -61,14 +61,13 @@ public class DataBase2File {
              	
              	
              	if (module.getTables()==null || module.getTables().isEmpty()) {
-             		//module.setTables(tableService.getAllTables(module.getName()+"%"));
              		continue;
              	}
              	
              	
              	for (TableConf tbConf : module.getTables()) {
              		Table table = tableService.getTable(tbConf,module, con);//获取一个表的相关信息
-             		genFile(table,config, module);
+             		genFile(table,config, module);//生成代码
              	}
              	
              	
@@ -108,7 +107,7 @@ public class DataBase2File {
     	String exclude = tb.getExclude();
     	List<String> excludeList = new ArrayList<String>();
     	if(!StringUtils.isBlank(exclude)){
-    		String[] arr = exclude.split(",");
+    		String[] arr = exclude.replace("，", ",").split(",");
     		excludeList=Arrays.asList(arr);
     	}
     	if(!excludeList.contains("entity") &&
@@ -129,35 +128,18 @@ public class DataBase2File {
     	}
     	
         if (!excludeList.contains("view") &&
-        		!StringUtils.isBlank(module.getViewPackage())
-        		&&module.getAttrsMap().get("viewPackage_tpl")!=null
-        		&&!module.getAttrsMap().get("viewPackage_tpl").trim().equals("")) {
+        		!StringUtils.isBlank(module.getViewPackage()) &&
+        		!StringUtils.isBlank(module.getAttrsMap().get("viewPackage_tpl"))
+        		) {
         	generateViewFile(obj,tb,config,module);//生成 view
 			
         }
         if (!excludeList.contains("custom") &&
-        		!StringUtils.isBlank(module.getCustomPackage())
-        		&&module.getAttrsMap().get("customPackage_tpl")!=null
-        		&&!module.getAttrsMap().get("customPackage_tpl").trim().equals("")){
+        		!StringUtils.isBlank(module.getCustomPackage()) &&
+        		!StringUtils.isBlank(module.getAttrsMap().get("customPackage_tpl"))
+        		){
         	generateCustomFile(obj,tb,config,module);//生成 自定义 文件
         }
-        
-        
-        //如果有从表,从表文件生成,递归
-    	if(tb.getSubTables().size()>0){
-    		List<Table> subtabs = tb.getSubTables();
-    		tb.setSubTables(null);//去掉 从表列表 ，防止转成json时，死循环
-    		
-    		for(Table subtable:subtabs){
-    			
-    			subtable.setParentTable(tb);//设置主表 
-    			//JSONObject subobj = (JSONObject)JSON.toJSON(subtable);
-    	    	//setBaseInfo(subobj,module);
-    	    	
-    	    	genFile(subtable,config,module);
-    	    	
-    		}
-    	}
         
     }
       
@@ -181,7 +163,7 @@ public class DataBase2File {
     	obj.put("mapperPackage", module.getMapperPackage());
     	
     	obj.put("persistance", module.getPersistance());//持久层框架
-    	obj.put("param", module.getParamMap());
+    	obj.put("param", module.getParamMap());//自定义参数
     	
     }
     
@@ -242,9 +224,7 @@ public class DataBase2File {
     	File saveDir=getSaveFilePath(module.getDaoPackage(),config);
     	
     	String fileName = table.getEntityName()+"Dao.java";
-    	if("mybatis".equals(module.getPersistance())){
-    		fileName = table.getEntityName()+"Mapper.java";
-    	}
+    	
     	File saveFile = new File(saveDir,fileName);
     	String savePath =saveFile.getAbsolutePath();
     	
@@ -255,7 +235,6 @@ public class DataBase2File {
     			.equals("hibernate")){
         	File implDir=getSaveFilePath(module.getDaoPackage()+File.separator+module.getDaoImplPackage(),config);
 	    	
-	    	//generateMapperFile(table, module);
 	    	File implFile = new File(implDir,table.getEntityName()+"DaoImpl.java");
 	    	String implPath =implFile.getAbsolutePath();
 	    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, "DaoImpl", implPath);
@@ -324,7 +303,7 @@ public class DataBase2File {
     private void generateViewFile(JSONObject obj,Table table,Config config,Module module) throws Exception{
     	String tpls = module.getAttrsMap().get("viewPackage_tpl");
     	String[] actions = tpls.split(",");
-    	String type = module.getAttrsMap().get("viewPackage_type");
+    	String type = module.getAttrsMap().get("viewPackage_suffix");
     	String suffix = "jsp";
     	if(!StringUtils.isBlank(type)){
     		suffix = type.toLowerCase();
@@ -346,7 +325,7 @@ public class DataBase2File {
 	private void generateCustomFile(JSONObject obj,Table table,Config config,Module module) throws Exception {
 		String tpls = module.getAttrsMap().get("customPackage_tpl");
     	String[] actions = tpls.split(",");
-    	String type = module.getAttrsMap().get("customPackage_type");
+    	String type = module.getAttrsMap().get("customPackage_suffix");
     	String suffix = "ctm";
     	if(!StringUtils.isBlank(type)){
     		suffix = type.toLowerCase();

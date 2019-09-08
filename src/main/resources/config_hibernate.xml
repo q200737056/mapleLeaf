@@ -27,15 +27,17 @@
 		<controllerPackage>controller</controllerPackage>
 		<!-- hibernate不需要，可以设置空 -->
 		<mapperPackage></mapperPackage>
-		<viewPackage tpl="Jsp_list" type="html">jsp</viewPackage>
+		<viewPackage tpl="Jsp_list" suffix="html">jsp</viewPackage>
 		<!-- 自定义配置，模板自定，比如js文件等等 -->
-		<customPackage tpl="Jsp_add" type="java">custom</customPackage>
+		<customPackage tpl="Jsp_add" suffix="java">custom</customPackage>
 		
-		<!-- 嵌套做关联，注意内部的表，必需设置refType(主对从的关系),refColumns(主表字段=从表字段) -->
+		<!-- 下面两表 双向关联 -->
 		<table name="sys_user" prefix="sys_">
-			<!-- 排除生成view及自定义 -->
-			<table name="wxcms_login_info" prefix="wxcms_" refType="OneToMany" refColumns="id=user_id" 
-				exclude="view,custom" />
+			<ref name="wxcms_login_info" type="OneToMany">id=user_id</ref>
+		</table>
+		<!-- 排除生成view及自定义 -->
+		<table name="wxcms_login_info" prefix="wxcms_" exclude="view,custom" >
+			<ref name="sys_user" type="ManyToOne">user_id=id</ref>	
 		</table>
 	</module>
 	<module>

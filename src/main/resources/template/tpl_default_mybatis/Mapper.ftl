@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="${basePackage}.${daoPackage}.${entityName}Mapper" >
+<mapper namespace="${basePackage}.${daoPackage}.${entityName}Dao" >
     <#--设置关联表的resultMap-->
-    <#if subTables?? && (subTables?size>0)>
+    <#if refTables?? && (refTables?size>0)>
     
     <resultMap type="${basePackage}.${entityPackage}.${entityName}" id="${fstLowEntityName}Map">
       <#list columns as col>
       <result property="${col.propertyName}" column="${col.columnName}"/>
       </#list>
-      <#list subTables as subtab>
+      <#list refTables as subtab>
       <#--判断一对一，or一对多-->
       <#if subtab.refType=="OneToOne">
           <association property="${subtab.fstLowEntityName}" javaType="${basePackage}.${entityPackage}.${subtab.entityName}">
@@ -89,8 +89,8 @@
     </delete>
 	</#list>
     </#if>
-    <#if subTables?? && (subTables?size>0)>
-    <#list subTables as subtb>
+    <#if refTables?? && (refTables?size>0)>
+    <#list refTables as subtb>
     <#if subtb.refColumnMap?? && (subtb.refColumnMap?size>0)>
     <select id="find${entityName}ByCons" parameterType="map" 
     	resultType="map">

@@ -5,7 +5,7 @@ import ${basePackage}.${entityPackage}.${entityName};
 /**
  * ${remark!}操作相关
  */
-public interface ${entityName}Mapper {
+public interface ${entityName}Dao {
 	
 	/**
 	 * 新增

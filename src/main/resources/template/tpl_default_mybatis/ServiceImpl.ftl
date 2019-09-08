@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class ${entityName}ServiceImpl implements ${entityName}Service {
 
 	@Autowired
-	private ${entityName}Mapper ${fstLowEntityName}Mapper;
+	private ${entityName}Dao ${fstLowEntityName}Dao;
 	
 	/**
 	 * 分页查询
@@ -50,8 +50,8 @@ public class ${entityName}ServiceImpl implements ${entityName}Service {
 	 }
 	</#list>
     </#if>
-    <#if subTables?? && (subTables?size>0)>
-    <#list subTables as subtb>
+    <#if refTables?? && (refTables?size>0)>
+    <#list refTables as subtb>
     <#if subtb.refColumnMap?? && (subtb.refColumnMap?size>0)>
     /**
 	 * 根据输入条件 关联查询

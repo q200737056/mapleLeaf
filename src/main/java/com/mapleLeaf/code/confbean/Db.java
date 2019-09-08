@@ -1,4 +1,4 @@
-package com.mapleLeaf.code.model;
+package com.mapleLeaf.code.confbean;
 
 /**
  * 数据库连接信息

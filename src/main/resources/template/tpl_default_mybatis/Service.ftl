@@ -31,8 +31,8 @@ public interface ${entityName}Service {
 	 public int delete${entityName}By${key?lower_case?cap_first}(${entityName} ${fstLowEntityName});
 	</#list>
     </#if>
-    <#if subTables?? && (subTables?size>0)>
-    <#list subTables as subtb>
+    <#if refTables?? && (refTables?size>0)>
+    <#list refTables as subtb>
     <#if subtb.refColumnMap?? && (subtb.refColumnMap?size>0)>
     /**
 	 * 根据输入条件 关联查询

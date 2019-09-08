@@ -8,10 +8,12 @@
           <h3 class="nepadmin-c-red nepadmin-bold">注意事项</h3>
           <hr>
           <p>
-          1.本项目运行不依赖数据库，重新打包部署时，请务必先保存好原来项目上新建的模板和配置文件。<br>
-          2.数据库建表时，最好写上COMMENT注释；最好每张表至少建立一个主键（不推荐组合主键）或唯一索引（复合索引），建议索引名、字段名、表名取的好一点。<br>
-          3.模板文件与配置文件请保持一致，否则出错，生成代码失败。<br>
-          4.同模块中表不要重复配置，后面的会覆盖前面的，从而会破坏表之间的关联关系。不同模块请配置不同包名。<br>
+          1.本项目运行不依赖数据库，推荐使用maven打成jar包部署运行，在jar所在目录下加入项目中的配置文件config.xml跟模板文件夹template。<br>
+          2.数据库建表时，最好写上COMMENT注释；并且按约定的格式注释（格式：字段文本;val1:text1,val2:text2;）比如有个flag状态字段,
+          	 COMMENT 状态;0:可用,1:不可用<br>
+          3.推荐每张表至少建立一个主键（不推荐组合主键）或唯一索引（复合索引），建议索引名取的好一点。<br>
+          4.模板文件与配置文件请保持一致，否则出错，生成代码失败。<br>
+          5.同模块中表不要重复配置，不然生成的代码数据会混乱，不正确。不同模块请配置不同包名。<br>
           </p>
         </div>
       </div>
@@ -158,41 +160,70 @@
                 	可循环取出Column属性</td>
               </tr>
               <tr>
-                <td>subTables</td>
-                <td>List&lt;Table&gt;</td>
-                <td>从表的信息（详见Table属性）</td>
-                <td>利用list标签, 循环取出Table属性</td>
+                <td>refTables</td>
+                <td>List&lt;RefTable&gt;</td>
+                <td>关联表的信息（详见RefTable属性）</td>
+                <td>利用list标签, 循环取出RefTable属性</td>
               </tr>
-              <tr>
-                <td>refType</td>
-                <td>String</td>
-                <td>主表对从表的关系(OneToMany,OneToOne,ManyToOne,ManyToMany)</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>refColumnMap</td>
-                <td>Map&lt;String,String&gt;</td>
-                <td>主从表关联字段，key主表字段，value从表字段</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>refPropertyMap</td>
-                <td>Map&lt;String,String&gt;</td>
-                <td>主从表实体类关联属性，key主表实体类属性，value从表实体类属性</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>parentTable</td>
-                <td>Table</td>
-                <td>获取从表的主表</td>
-                <td>${parentTable??}可以先判断是否有主表，从而可以获取到${parentTable.entityName}主表的实体类</td>
-              </tr>
+             
               <tr>
                 <td>uniIdxMap</td>
                 <td>Map&lt;String,List&lt;Column&gt;&gt;</td>
                 <td>主键，唯一索引map集合；key：主键名或索引名，value:Column集合</td>
                 <td>利用list标签, 循环取出key和主键或唯一索引的Column集合</td>
               </tr>
+              <tr>
+            	<th colspan="4" class="nepadmin-c-red nepadmin-bold nepadmin-font-14">RefTable属性</th>
+              </tr>
+              <tr>
+                <td>tableFullName</td>
+                <td>String</td>
+                <td>表名（同Table）</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>tableName</td>
+                <td>String</td>
+                <td>去掉prefix的表名（同Table）</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>fstLowEntityName</td>
+                <td>String</td>
+                <td>首字母小写的实体类名，下划线表名会自动转成驼峰命名（同Table）</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>entityName</td>
+                <td>String</td>
+                <td>对应表的实体类，下划线表名会自动转成驼峰命名（同Table）</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>columns</td>
+                <td>List&lt;Column&gt;</td>
+                <td>表字段，属性等（详见Column属性）（同Table）</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>refType</td>
+                <td>String</td>
+                <td>关联属性(OneToMany,OneToOne,ManyToOne,ManyToMany)</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>refColumnMap</td>
+                <td>Map&lt;String,String&gt;</td>
+                <td>关联字段，key主表字段，value从表字段</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>refPropertyMap</td>
+                <td>Map&lt;String,String&gt;</td>
+                <td>关联字段对应的属性，key主表实体类属性，value从表实体类属性</td>
+                <td></td>
+              </tr>
+              
               <tr>
             	<th colspan="4" class="nepadmin-c-red nepadmin-bold nepadmin-font-14">Column属性</th>
               </tr>
@@ -234,13 +265,13 @@
               </tr>
               <tr>
                 <td>nullable</td>
-                <td>boolean</td>
+                <td>Boolean</td>
                 <td>表字段是否为空</td>
                 <td></td>
               </tr>
               <tr>
                 <td>pk</td>
-                <td>boolean</td>
+                <td>Boolean</td>
                 <td>表字段是否为主键</td>
                 <td></td>
               </tr>
@@ -256,6 +287,30 @@
                 <td>表字段默认值</td>
                 <td></td>
               </tr>
+              <tr>
+                <td>labelName</td>
+                <td>String</td>
+                <td>表字段文本</td>
+                <td>可用在页面模板上</td>
+              </tr>
+              <tr>
+                <td>tagType</td>
+                <td>String</td>
+                <td>表单标签类型</td>
+                <td>可在配置文件中设置，用在页面模板上做判断</td>
+              </tr>
+              <tr>
+                <td>colValueMap</td>
+                <td>Map&lt;String,String&gt;</td>
+                <td>表字段值</td>
+                <td>比如表中有个flag状态字段，0为空用，1为不可用;
+                	可通过配置文件设置或者按约定格式的COMMENT注释
+                	（格式：字段文本;val1:text1,val2:text2;）
+                	val表示字段值，text值的描述;
+                	主要用在页面中下拉框，单选框，多选框等
+                </td>
+              </tr>
+              
             </tbody>
           </table>
           

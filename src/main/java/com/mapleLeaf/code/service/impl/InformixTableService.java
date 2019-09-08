@@ -5,15 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.mapleLeaf.code.confbean.Module;
+import com.mapleLeaf.code.confbean.TableConf;
 import com.mapleLeaf.code.model.Column;
-import com.mapleLeaf.code.model.Module;
 import com.mapleLeaf.code.model.Table;
-import com.mapleLeaf.code.model.TableConf;
 import com.mapleLeaf.code.service.AbstractTableService;
 import com.mapleLeaf.code.utils.CodeUtil;
 
@@ -65,7 +63,8 @@ public class InformixTableService extends AbstractTableService {
      * @param tbConf 
      * @param module
      * @param con 
-     */  
+     */ 
+	@Override
     public Table getTable(TableConf tbConf,Module module, Connection con) throws SQLException {
     	return super.getTable(tbConf, module, con);
     } 
@@ -76,7 +75,7 @@ public class InformixTableService extends AbstractTableService {
      * @param conn
      * @throws SQLException
      */
-    public void getTableColumns(Table table,Module module,Connection conn,Map<String,String> map) throws SQLException {
+    /*public void getTableColumns(Table table,Module module,Connection conn,Map<String,String> map) throws SQLException {
 	    	String pks = getTablePrimaryKey(table.getTableFullName(),conn);
 	    	List<String> pkCols = Arrays.asList(pks.split(","));
 	    	
@@ -142,8 +141,52 @@ public class InformixTableService extends AbstractTableService {
 			rs.close();
 			ps.close();
 		
-    }
+    }*/
     
+    /**
+     * 获取数据表的所有字段
+     * @param table
+     * @param conn
+     * @throws SQLException
+     */
+	@Override
+    public List<Column> getTableColumns(String tableName,Module module,Connection conn) throws SQLException {
+	    	
+    		boolean isCamel = module.isColumnIsCamel();
+    		
+    		List<Column> cols = new ArrayList<>();
+    		
+    		String sql="SELECT c.* FROM syscolumns c, systables t WHERE c.tabid=t.tabid AND t.tabname=?";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1,tableName);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				Column col = new Column();
+				String colName = rs.getString("colname");//字段名
+	        	col.setColumnName(colName);
+	        	int type = rs.getInt("coltype");//字段类型
+	        	String type_str=Informixconvert(type);
+	        	col.setColumnType(CodeUtil.convertJdbcType(type_str, module.getPersistance()));
+	        	col.setRemark(null);//没有
+	        	col.setPropertyName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)
+	        			:colName);//属性 就是 字段名
+	        	col.setPropertyType(CodeUtil.convertType(type_str));//属性 类型
+	        	col.setFstUpperProName(isCamel?CodeUtil.convertToCamelCase(colName)
+	        			:CodeUtil.converFirstUpper(colName));//首字母大写
+	        	col.setNullable(true);//默认 true
+	        	col.setLength((long)rs.getInt("collength"));//字段长度
+	        	col.setDefaultValue("");
+	        	
+	        	cols.add(col);
+	        	
+			}
+			rs.close();
+			ps.close();
+		
+		return cols;
+    }
+	
+	@Override
     public String getTablePrimaryKey(String tableName, Connection con) throws SQLException{
     	return super.getTablePrimaryKey(tableName, con);
 	}
@@ -154,6 +197,7 @@ public class InformixTableService extends AbstractTableService {
      * @return
      * @throws SQLException
      */
+	@Override
     public Map<String,String> getTableUniqueIdx(String tableName, Connection con) throws SQLException{
     	return super.getTableUniqueIdx(tableName, con);
 	}
@@ -164,19 +208,11 @@ public class InformixTableService extends AbstractTableService {
 	 * @return
 	 * @throws SQLException
 	 */
-	/*public String getTableRemark(String tableName, Connection con) throws SQLException {
-		String remark="";
-		String sql="show table status where name=?";
-		PreparedStatement ps = con.prepareStatement(sql);
-		ps.setString(1, tableName);
-		ResultSet rs = ps.executeQuery();
-		if (rs.next()) {
-			remark=rs.getString("comment");
-		}
-		rs.close();
-		ps.close();
-		return remark;
-	}*/
+	@Override
+	public String getTableRemark(String tableName, Connection con) throws SQLException {
+		// TODO Auto-generated method stub
+		return "";
+	}
 	/**
 	 * 字段类型转换
 	 * @param type
@@ -230,10 +266,6 @@ public class InformixTableService extends AbstractTableService {
     
 	}*/
 
-	@Override
-	public String getTableRemark(String tableName, Connection con) throws SQLException {
-		// TODO Auto-generated method stub
-		return "";
-	}
+	
 
 }

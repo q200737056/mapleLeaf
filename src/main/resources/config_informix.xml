@@ -9,7 +9,7 @@
 	<columnIsCamel>true</columnIsCamel>
 	<persistance>hibernate</persistance>
 	<!-- 一些公共类，工具类,父类等原样输出，仅仅用来辅助下面的代码生成,不必需(包名=模板文件名(也是类名)，多个英文逗号隔开) -->
-	<common>common=Page</common>
+	<!-- <common>common=Page</common> -->
 	<!-- <db>
 		<dbType>oracle</dbType>
 		<dbName>oracle</dbName>
@@ -21,10 +21,10 @@
 	<db>
 		<dbType>informix</dbType>
 		<dbName>rmbp</dbName>
-		<user>zjtsyw</user>
-		<pwd>zjtsyw</pwd>
+		<user>XXX</user>
+		<pwd>XXXX</pwd>
 		<driver>com.informix.jdbc.IfxDriver</driver>
-		<url>jdbc:informix-sqli://128.1.84.127:9977/rmbp:informixserver=zjtsywtsdb;DB_LOCALE=en_us.819;CLIENT_LOCALE=en_us.57372;NEWCODESET=GBK,8859-1,819</url>
+		<url>jdbc:informix-sqli://XXXXX/rmbp:informixserver=zjtsywtsdb;DB_LOCALE=en_us.819;CLIENT_LOCALE=en_us.57372;NEWCODESET=GBK,8859-1,819</url>
 	</db>
 	
 	<module>
@@ -35,11 +35,10 @@
 		<controllerPackage>controller</controllerPackage>
 		<!-- hibernate不需要，可以设置空 -->
 		<mapperPackage></mapperPackage>
-		<viewPackage tpl="Jsp_list" type="html">jsp</viewPackage>
+		<viewPackage tpl="Jsp_list" suffix="html">jsp</viewPackage>
 		<!-- 自定义配置，模板自定，比如js文件等等 -->
-		<customPackage tpl="Jsp_add" type="java">custom</customPackage>
+		<customPackage tpl="Jsp_add" suffix="java">custom</customPackage>
 		
-		<!-- 嵌套做关联，注意内部的表，必需设置refType(主对从的关系),refColumns(主表字段=从表字段) -->
 		<table name="authorize_param" prefix="">
 		</table>
 		

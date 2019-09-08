@@ -5,15 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.mapleLeaf.code.confbean.Module;
+import com.mapleLeaf.code.confbean.TableConf;
 import com.mapleLeaf.code.model.Column;
-import com.mapleLeaf.code.model.Module;
 import com.mapleLeaf.code.model.Table;
-import com.mapleLeaf.code.model.TableConf;
 import com.mapleLeaf.code.service.AbstractTableService;
 import com.mapleLeaf.code.utils.CodeUtil;
 
@@ -65,7 +63,8 @@ public class MysqlTableService extends AbstractTableService {
      * @param tbConf 
      * @param module
      * @param con 
-     */  
+     */ 
+	@Override
     public Table getTable(TableConf tbConf,Module module, Connection con) throws SQLException {
     	return super.getTable(tbConf, module, con);
     } 
@@ -76,7 +75,7 @@ public class MysqlTableService extends AbstractTableService {
      * @param conn
      * @throws SQLException
      */
-    public void getTableColumns(Table table,Module module,Connection conn,Map<String,String> map) throws SQLException {
+    /*public void getTableColumns(Table table,Module module,Connection conn,Map<String,String> map) throws SQLException {
 	    	String pks = getTablePrimaryKey(table.getTableFullName(),conn);
 	    	List<String> pkCols = Arrays.asList(pks.split(","));
 	    	
@@ -107,13 +106,7 @@ public class MysqlTableService extends AbstractTableService {
 	        	col.setLength(rs.getLong("character_maximum_length"));//字段长度
 	        	col.setDefaultValue(rs.getString("column_default"));//字段默认值
 	        	
-	        	/*String colKey = rs.getString("column_key");
-	        	if (!CodeUtil.isEmpty(colKey) && colKey.toLowerCase().equals("pri")) {
-	        		col.setPrimaryKey(true);//字段是否 主键
-	        	}*/
-	        	/*if (col.getPropertyType().indexOf(".")!=-1 && !CodeUtil.existsType(table.getImportClassList(),col.getPropertyType())) {
-	        		table.getImportClassList().add(col.getPropertyType());//需要导入的类 的集合
-	        	}*/
+	        	
 	        	if ("Date,BigDecimal".contains(col.getPropertyType())
 	        			&& !CodeUtil.existsType(table.getImportClassList(),col.getPropertyType())) {
 	        		table.getImportClassList().add(CodeUtil.convertClassType(col.getPropertyType()));//需要导入的类 的集合
@@ -152,8 +145,54 @@ public class MysqlTableService extends AbstractTableService {
 			rs.close();
 			ps.close();
 		
+    }*/
+    
+    /**
+     * 获取数据表的所有字段
+     * @param table
+     * @param conn
+     * @throws SQLException
+     */
+	@Override
+    public List<Column> getTableColumns(String tableName,Module module,Connection conn) throws SQLException {
+	    	
+    		boolean isCamel = module.isColumnIsCamel();
+    		
+    		List<Column> cols = new ArrayList<>();
+    		
+			String sql="select * from information_schema.COLUMNS where TABLE_SCHEMA=? and TABLE_NAME=?";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1,db.getDbName());
+			ps.setString(2,tableName);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				Column col = new Column();
+	        	String colName = rs.getString("column_name");
+	        	col.setColumnName(colName);//字段名
+	        	String type = rs.getString("data_type");
+	        	
+	        	col.setColumnType(CodeUtil.convertJdbcType(type,module.getPersistance()));//字段类型
+	        	col.setRemark(rs.getString("column_comment"));//字段注释
+	        	
+	        	col.setPropertyName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)
+	        			:colName);// 类属性名
+	        	col.setPropertyType(CodeUtil.convertType(type));//属性类型
+	        	col.setFstUpperProName(isCamel?CodeUtil.convertToCamelCase(colName)
+	        			:CodeUtil.converFirstUpper(colName));//类 属性名首字母大写
+	        	col.setNullable(rs.getString("is_nullable").equals("YES"));//字段是否为空
+	        	col.setLength(rs.getLong("character_maximum_length"));//字段长度
+	        	col.setDefaultValue(rs.getString("column_default"));//字段默认值
+	        	
+	        	cols.add(col);
+	        	
+			}
+			rs.close();
+			ps.close();
+		
+		return cols;
     }
-   
+    
+	@Override
     public String getTablePrimaryKey(String tableName, Connection con) throws SQLException{
 		return super.getTablePrimaryKey(tableName, con);
 	}
@@ -164,6 +203,7 @@ public class MysqlTableService extends AbstractTableService {
      * @return
      * @throws SQLException
      */
+	@Override
     public Map<String,String> getTableUniqueIdx(String tableName, Connection con) throws SQLException{
     	return super.getTableUniqueIdx(tableName, con);
 	}
@@ -174,6 +214,7 @@ public class MysqlTableService extends AbstractTableService {
 	 * @return
 	 * @throws SQLException
 	 */
+	@Override
 	public String getTableRemark(String tableName, Connection con) throws SQLException {
 		String remark="";
 		String sql="show table status where name=?";
@@ -187,5 +228,7 @@ public class MysqlTableService extends AbstractTableService {
 		ps.close();
 		return remark;
 	}
+
+	
 
 }

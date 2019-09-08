@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class ${entityName}ServiceImpl implements ${entityName}Service {
 
 	@Autowired
-	private ${entityName}Mapper ${fstLowEntityName}Mapper;
+	private ${entityName}Dao ${fstLowEntityName}Dao;
 	
 	/**
 	 * 新增

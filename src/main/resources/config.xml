@@ -6,7 +6,7 @@
 	<!--基础包名-->
 	<basePackage>com.test</basePackage>
 	<!-- 是否去表名前缀 ,默认false-->
-	<isDeleteTablePrefix>true</isDeleteTablePrefix>
+	<isDeleteTablePrefix>false</isDeleteTablePrefix>
 	<!-- 全局表名前缀，可以多个，英文逗号分隔 ,默认""-->
 	<baseTabPrefix>sys_,wxcms_</baseTabPrefix>
 	<!-- 表字段下划线是否转成驼峰命名 ,默认false-->
@@ -37,14 +37,28 @@
 		<servicePackage>service</servicePackage>
 		<controllerPackage>controller</controllerPackage>
 		<mapperPackage>mapper</mapperPackage>
-		<!-- 视图，tpl 模板名，type 视图后缀;标签文本 包名-->
-		<viewPackage tpl="Jsp_list" type="jsp">jsp</viewPackage>
-		<customPackage tpl="Jsp_add" type="java">custom</customPackage>
+		<!-- 视图，tpl 模板名，suffix 视图后缀;标签文本 包名-->
+		<viewPackage tpl="Jsp_list" suffix="jsp">jsp</viewPackage>
+		<customPackage tpl="Jsp_add" suffix="java">custom</customPackage>
 		
-		<!-- 嵌套做关联，注意内部的表，必需设置refType(主对从的关系),refColumns(主表字段=从表字段) -->
+		<!-- ref标签（单向）  关联表，如果需要双向关联  两个table都需配置对应对方的ref -->
 		<table name="sys_user" prefix="">
-			<table name="wxcms_login_info" prefix="" refType="OneToMany" refColumns="id=user_id" />
+			<ref name="wxcms_login_info" type="OneToMany">id=user_id</ref>
+			<ref name="wxcms_user_tag" type="OneToMany">account=account</ref>
 		</table>
-		<table name="wxcms_account" exclude="view,custom"/>
+		<table name="wxcms_login_info" prefix="">
+			<ref name="sys_user" type="ManyToOne">user_id=id</ref>
+		</table>
+		<table name="wxcms_user_tag" exclude="view,custom"/>
+		
+		<table name="wxcms_article" exclude="view,custom">
+			<!-- exclude排除掉title字段， 如果 exclude与include属性同时存在，只会生效exclude-->
+			<columnGroup exclude="title"> 
+			   <!--表字段 自定义了 字段文本  -->
+			   <column colName="author" labelName="作者"></column>
+			   <!--表字段 自定义了 字段文本及字段值标识  -->
+			   <column colName="show_cover_pic" labelName="是否显示图片">0=显示,1=不显示</column>
+			</columnGroup>
+		</table>
 	</module>
 </configure>

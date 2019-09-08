@@ -5,12 +5,14 @@ package com.mapleLeaf.code.service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
-import com.mapleLeaf.code.model.Db;
-import com.mapleLeaf.code.model.Module;
+import com.mapleLeaf.code.confbean.Db;
+import com.mapleLeaf.code.confbean.Module;
+import com.mapleLeaf.code.confbean.TableConf;
+import com.mapleLeaf.code.model.Column;
 import com.mapleLeaf.code.model.Table;
-import com.mapleLeaf.code.model.TableConf;
 
 
 /**
@@ -69,6 +71,7 @@ public interface ITableService {
      * @param conn
      * @throws SQLException
      */
-    void getTableColumns(Table table,Module module,Connection conn,Map<String,String> map) throws SQLException;
+
+     List<Column> getTableColumns(String tableName,Module module,Connection conn) throws SQLException;
     
 }

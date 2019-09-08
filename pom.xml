@@ -61,11 +61,11 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	      <scope>compile</scope>
 	    </dependency>
     	<!-- oracle数据库驱动 -->
-	    <!--<dependency>
-	    <groupId>com.oracle</groupId>
-	    <artifactId>ojdbc6</artifactId>
-	    <version>11.2.0.3</version>
-	    </dependency>-->
+	    <!-- <dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.3</version>
+		</dependency> -->
 	    <dependency>
 		    <groupId>org.postgresql</groupId>
 		    <artifactId>postgresql</artifactId>
@@ -107,7 +107,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<fork>true</fork> <!-- 如果没有该配置，devtools不会生效 -->
+					<fork>true</fork>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -11,17 +11,20 @@ import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
-import com.mapleLeaf.code.model.Config;
-import com.mapleLeaf.code.model.Db;
-import com.mapleLeaf.code.model.Module;
-import com.mapleLeaf.code.model.TableConf;
+import com.mapleLeaf.code.confbean.ColumnConf;
+import com.mapleLeaf.code.confbean.ColumnGroupConf;
+import com.mapleLeaf.code.confbean.Config;
+import com.mapleLeaf.code.confbean.Db;
+import com.mapleLeaf.code.confbean.Module;
+import com.mapleLeaf.code.confbean.RefConf;
+import com.mapleLeaf.code.confbean.TableConf;
 import com.mapleLeaf.code.utils.XmlUtil;
 import com.mapleLeaf.common.util.FileTool;
 
 import freemarker.template.Configuration;
 
 public class ConfigFactory {
-	public static Config createConfig(String configFile,String tplPath){
+	public static Config createConfig(String configFile,String tplPath) throws Exception{
 		Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);  
 	    configuration.setDefaultEncoding("utf-8");
 	   
@@ -43,8 +46,6 @@ public class ConfigFactory {
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		}
-		
-		//Document doc = XmlUtil.getDocument(Config.class.getClassLoader().getResourceAsStream(configFile));
 		
 		Element root = XmlUtil.getRootNode(doc);
 		
@@ -124,7 +125,7 @@ public class ConfigFactory {
 			}else{
 				m.setViewPackage(elePkg.getTextTrim());
 				m.getAttrsMap().put("viewPackage_tpl", XmlUtil.attrValue(elePkg, "tpl"));
-				m.getAttrsMap().put("viewPackage_type", XmlUtil.attrValue(elePkg, "type"));
+				m.getAttrsMap().put("viewPackage_suffix", XmlUtil.attrValue(elePkg, "suffix"));
 			}
 			elePkg = XmlUtil.getChild(e, "customPackage");
 			if(elePkg==null){
@@ -133,7 +134,7 @@ public class ConfigFactory {
 			}else{
 				m.setCustomPackage(elePkg.getTextTrim());
 				m.getAttrsMap().put("customPackage_tpl", XmlUtil.attrValue(elePkg, "tpl"));
-				m.getAttrsMap().put("customPackage_type", XmlUtil.attrValue(elePkg, "type"));
+				m.getAttrsMap().put("customPackage_suffix", XmlUtil.attrValue(elePkg, "suffix"));
 			}
 			//加载自定义参数
 			List<Element> paramEle = XmlUtil.getChildElements(e, "param");
@@ -151,57 +152,96 @@ public class ConfigFactory {
 				
 			}
 			//加载table
-			m.setTables(readTableConfList(e));
+			
+			List<TableConf> tableConfs = readTableConfList(e);
+			for(int i=0;i<tableConfs.size();i++){
+				TableConf item = tableConfs.get(i);
+				if(item.getRefConfs().size()>0){
+					for(RefConf ref : item.getRefConfs()){
+						boolean errboo = true;
+						for(TableConf tab :tableConfs){
+							if(ref.getRefName().equalsIgnoreCase(tab.getName())){
+								ref.setEntityName(tab.getEntityName());
+								ref.setPrefix(tab.getPrefix());
+								ref.setColGroup(tab.getColGroup());
+								errboo = false;
+								break;
+							}
+						}
+						//不存在 ref 对应的 table的配置
+						if(errboo){
+							System.out.println("出错...................");
+							throw new Exception("ref标签name属性，对应的table没配置");
+						}
+					}
+				}
+			}
+			m.setTables(tableConfs);
+			
 			moduleList.add(m);
 		}
 		config.setModules(moduleList);
 		
 		return config;
 	}
-	
 	/**
-	 * 以递归方式读取主从表关系
+	 * 读取table标签 及 子标签
 	 * @param module
 	 * @return
 	 */
 	private static List<TableConf> readTableConfList(Element module){
 		List<TableConf> tableList = new ArrayList<TableConf>();
-		List<Element> tables = XmlUtil.getChildElements(module, "table");//module可以包含多个table,table中可包含多个table
+		List<Element> tables = XmlUtil.getChildElements(module, "table");//module可以包含多个table
 		for (Element e : tables) {
 			TableConf m = initTableConf(e);//读取 table 标签属性
-			List<TableConf> subTables = readTableConfList(e);//读取table标签 的table子标签
-			if (subTables!=null && !subTables.isEmpty()) {
-				m.getSubTables().addAll(subTables);
-			}
+			
+			
 			tableList.add(m);
 		}
 		return tableList;
 	}
+	
+	
 	/**
-	 * 初始化配置表信息
+	 * table标签
 	 * @param e
 	 * @return
 	 */
 	private static  TableConf initTableConf(Element e){
 		TableConf m = new TableConf();
-		Attribute attr = XmlUtil.getAttribute(e, "entityName");//实体类型
-		if (attr!=null) {
-			m.setEntityName(attr.getValue().trim());
+		
+		m.setEntityName(XmlUtil.getAttrValue(e, "entityName", null));//实体类型
+		m.setName(XmlUtil.getAttrValue(e, "name", null));//表名
+		m.setPrefix(XmlUtil.getAttrValue(e, "prefix", null));//前缀
+		m.setExclude(XmlUtil.getAttrValue(e, "exclude", null));//实排除指定模板的文件生成
+		
+		//读取 ref 标签
+		List<Element> refs = XmlUtil.getChildElements(e, "ref");
+		if(refs!=null && refs.size()>0){
+			for(Element ref : refs){
+				RefConf refConf = initRefConf(ref);
+				m.getRefConfs().add(refConf);
+			}
 		}
-		Attribute name = XmlUtil.getAttribute(e, "name");//表名
-		if (name!=null) {
-			m.setName(name.getValue().trim());
-		}
-		Attribute prefix = XmlUtil.getAttribute(e, "prefix");//前缀
-		if (prefix!=null) {
-			m.setPrefix(prefix.getValue().trim());
-		}
-		Attribute refColumns = XmlUtil.getAttribute(e, "refColumns");//关联的字段，主表字段=从表字段 多个逗号分隔
-		if (refColumns!=null) {
-			m.setRefColumns(refColumns.getValue().trim());
+		//读取 columnGroup 标签
+		Element colGroup = XmlUtil.getChild(e, "columnGroup");
+		if(colGroup!=null){
+			m.setColGroup(initColumnGroupConf(colGroup));
 		}
 		
-		Attribute refType =XmlUtil.getAttribute(e, "refType");//关联 关系
+		return m;
+	}
+	/**
+	 * ref 标签
+	 * @param e
+	 * @return
+	 */
+	private static  RefConf initRefConf(Element e){
+		RefConf m = new RefConf();
+		
+		m.setRefName(XmlUtil.getAttrValue(e, "name", null));//关联表的表名
+		
+		Attribute refType =XmlUtil.getAttribute(e, "type");//关联 关系
 		if (refType!=null) {
 			String type = refType.getValue().trim();
 			
@@ -214,11 +254,48 @@ public class ConfigFactory {
 		} else {
 			m.setRefType("OneToMany"); //从表必需配置,否则默认OneToMany
 		}
-		Attribute exclude =XmlUtil.getAttribute(e, "exclude");//排除指定模板的文件生成
-		if(exclude!=null){
-			m.setExclude(exclude.getValue().trim());
-		}
+		String  refColumns = e.getTextTrim();
+		//关联的字段，主表字段=从表字段 多个逗号分隔
+		m.setRefColumns(refColumns);
+		
 		return m;
+	}
+	/**
+	 * columnGroup标签
+	 */
+	private static ColumnGroupConf initColumnGroupConf(Element e){
+		ColumnGroupConf cnf = new ColumnGroupConf();
+		//如果  配置exclude了，就exclude生效
+		String exclude = XmlUtil.getAttrValue(e, "exclude", null);
+		if(exclude!=null){
+			cnf.setExclude(exclude);
+		}else{
+			cnf.setInclude(XmlUtil.getAttrValue(e, "include", null));
+		}
+		//读取 column 标签
+		List<Element> columns = XmlUtil.getChildElements(e, "column");
+		if(columns!=null&&columns.size()>0){
+			for(Element ele : columns){
+				ColumnConf tmp = initColumnConf(ele);
+				cnf.getColConfMap().put(tmp.getColName(), tmp);
+			}
+		}
+		
+		return cnf;
+	}
+	/**
+	 * column 标签
+	 */
+	private static ColumnConf initColumnConf(Element e){
+		ColumnConf cnf = new ColumnConf();
+		cnf.setColName(XmlUtil.getAttrValue(e, "colName", null));
+		cnf.setLabelName(XmlUtil.getAttrValue(e, "labelName", null));
+		cnf.setTagType(XmlUtil.getAttrValue(e, "tagType", null));
+		
+		//形式 k1=v1,k2=v2  k为字段值，v为值的描述
+		cnf.setColValue(e.getTextTrim());
+		
+		return cnf;
 	}
 	
 }

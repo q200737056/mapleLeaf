@@ -550,4 +550,18 @@ public class XmlUtil{
     	}
     	return e.getTextTrim();
     }
+    /**
+     * 获取  指定节点属性的值,如果为空，则返回默认值
+     * @param e 节点
+     * @param attrName 属性名
+     * @param defaultVal 属性默认值
+     * @return
+     */
+    public static String getAttrValue(Element e,String attrName,String defaultVal){
+    	String val = attrValue(e, attrName);
+    	if(val==null||"".equals(val.trim())){
+    		return defaultVal;
+    	}
+    	return val.trim();
+    }
 }  

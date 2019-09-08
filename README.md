@@ -10,9 +10,9 @@
 4. 扒取工具现有扒取网页，支持有用户登录的页面扒取，通过设置cookie（可用浏览器工具查看cookie）。可用作自己项目的模板，也可以静态演示。
 
 #### 二、项目部署：
-1. 项目如果打成jar包运行时，需要在jar包所在目录下加入config.xml配置文件与template模板文件。
+1. 如果用maven打成jar包运行时，需要在jar包所在目录下加入config.xml配置文件与template模板文件。
 ![](http://i1.fuimg.com/686411/444adfe9d444d9af.png "")
-2. 项目如果打成war包运行，则不需要这些，直接启动服务就行。
+2. 用maven打成war包运行，则不需要这些，直接启动服务就行。
 
 #### 三、模板代码片段：
 
@@ -29,13 +29,13 @@
 </#if>
 
 ```
-##### 获取从表信息（主表从表关系请看 配置文件说明）
+##### 获取关联表信息
 ```
-<#if subTables?? && (subTables?size>0)>
-  <#list subTables as subtb>
-    ${subtb.entityName}  //从表实体类名
-    ${subtb.refType}  //主从表关联关系 如OneToOne，OneToMany等
-    ${subtb.fstLowEntityName} //从表实体类名首字母小写，可用作变量名
+<#if refTables?? && (refTables?size>0)>
+  <#list refTables as reftb>
+    ${reftb.entityName}  //实体类名
+    ${reftb.refType}  //关联关系 如OneToOne，OneToMany等
+    ${reftb.fstLowEntityName} //实体类名首字母小写，可用作变量名
     ...	    
   </#list>
 </#if>

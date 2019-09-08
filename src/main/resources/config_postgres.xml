@@ -16,14 +16,14 @@
 	</db>
 	
 	<module>
-		<name>模块名</name>
+		<name>test</name>
 		<entityPackage>entity</entityPackage>
 		<daoPackage>dao</daoPackage>
 		<servicePackage>service</servicePackage>
 		<controllerPackage>controller</controllerPackage>
 		<mapperPackage>mapper.xml</mapperPackage>
-		<viewPackage tpl="Jsp_list" type="html"></viewPackage>
-		<customPackage tpl="Jsp_add" type="java"></customPackage>
+		<viewPackage tpl="Jsp_list" suffix="html"></viewPackage>
+		<customPackage tpl="Jsp_add" suffix="java"></customPackage>
 		
 		<table name="sys_user" prefix=""></table>
 	</module>

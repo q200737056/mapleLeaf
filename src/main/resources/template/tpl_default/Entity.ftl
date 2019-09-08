@@ -45,9 +45,9 @@ public class ${entityName!} {
 	</#if>
 	private ${type!} ${col.propertyName}${(defaultValue?length>0)?string("="+defaultValue,"")};
 	</#list>
-	<#-- 生成子表属性 -->
-	<#if subTables??>
-		<#list subTables as sub>
+	<#-- 生成关联表属性 -->
+	<#if refTables??>
+		<#list refTables as sub>
 		<#if sub.refType=="OneToOne">
 			<#if "DATETIME"==type ||"TIMESTAMP"==type ||"Date"==type>
             @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8" )
@@ -81,9 +81,9 @@ public class ${entityName!} {
 	}
 	
 	</#list>
-	<#-- 生成子表属性 -->
-	<#if subTables??>
-		<#list subTables as sub>
+	<#-- 生成关联表属性 -->
+	<#if refTables??>
+		<#list refTables as sub>
 		<#if sub.refType=="OneToOne"><#-- 一对一 -->
 	public void set${sub.entityName}(${sub.entityName} ${sub.fstLowEntityName?uncap_first}){
 		this.${sub.fstLowEntityName?uncap_first}=${sub.fstLowEntityName?uncap_first};

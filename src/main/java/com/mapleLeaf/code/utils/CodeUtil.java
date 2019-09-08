@@ -1,10 +1,8 @@
 package com.mapleLeaf.code.utils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CodeUtil {
 	
@@ -180,23 +178,24 @@ public class CodeUtil {
     	return false;
     }
     /**
-     * 读取文件内容到一个字符串中
-     * @param file
+     * 对 k1 separ v1,k2 separ v2形式的字符串进行 切割
+     * @param data 比如k1=v1,k2=v2
+     * @param separ 分隔符
      * @return
      */
-	private static String readFile(File file) {
-		StringBuffer result = new StringBuffer();
-		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));// 构造一个BufferedReader类来读取文件
-			String s = null;
-			while ((s = br.readLine()) != null) {// 使用readLine方法，一次读一行
-				result.append(s);
-				result.append("\n");
-			}
-			br.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result.toString();
-	}
+    public static Map<String,String> splitKeyVal(String data,String separ){
+    	if(isEmpty(data)){
+    		return null;
+    	}
+    	Map<String,String> dataMap = new HashMap<>();
+    	String[] dataArr = data.replace("，", ",").split(",");
+    	for(String item : dataArr){
+    		String[] itemArr = item.split(separ);
+    		if(itemArr.length!=2){
+    			return null;
+    		}
+    		dataMap.put(itemArr[0], itemArr[1]);
+    	}
+    	return null;
+    }
 }

@@ -1,4 +1,4 @@
-package com.mapleLeaf.code.model;
+package com.mapleLeaf.code.confbean;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,15 +1,5 @@
 <#--双向关联-->
-<#--与主表（只一个）的关联设置,如果是单个字段关联的，则取出,refSize为关联字段的个数;这里只做了单列关联-->
-<#assign refSize=0>
-<#if refColumnMap?? && (refColumnMap?size>0)>
-<#assign refSize=refColumnMap?size>
-<#if refSize==1>
-<#list refColumnMap?keys as key>
-<#assign refKey=key>
-<#assign refVal=refColumnMap[key]>
-</#list>
-</#if>
-</#if>
+
 package ${basePackage}.${entityPackage};
 import java.io.Serializable;
 import javax.persistence.Entity;
@@ -45,33 +35,10 @@ public class ${entityName} extends Page implements Serializable {
 	private ${type} ${col.propertyName};
 	
 	</#list>
-	<#--关联表属性,主表-->
-	<#if refSize==1>
-	<#if refType=="OneToOne" || refType=="OneToMany">
-	<#if refType=="OneToOne">
-	@OneToOne
-	<#elseif refType=="OneToMany">
-	@ManyToOne
-	</#if>
-	@JoinColumn(name="${refVal}",referencedColumnName="${refKey}")
-	private ${parentTable.entityName} ${parentTable.fstLowEntityName};
-	<#elseif refType=="ManyToOne" || refType=="ManyToMany">
 	
-	<#if refType=="ManyToMany">
-	@ManyToMany
-	@JoinTable(name="",
-	joinColumns=@JoinColumn(name="${refVal}",referencedColumnName="${refVal}"),
-    inverseJoinColumns=@JoinColumn(name="${refKey}",referencedColumnName="${refKey}"))
-	<#elseif refType=="ManyToOne">
-	@OneToMany(mappedBy="${fstLowEntityName}")
-	</#if>
-	private Set<${parentTable.entityName}> ${parentTable.fstLowEntityName}Set;
-	
-	</#if>
-	</#if>
 	<#--关联表属性,从表-->
-	<#if subTables?? && (subTables?size>0)>
-	<#list subTables as subtb>
+	<#if refTables?? && (refTables?size>0)>
+	<#list refTables as subtb>
 	<#--与从表的关联设置（循环）,如果是单个字段关联的，则取出,subrefSize为关联字段的个数;这里只做了单列关联-->
 	<#assign subrefSize=0>
 	<#if subtb.refColumnMap?? && (subtb.refColumnMap?size>0)>
@@ -86,8 +53,8 @@ public class ${entityName} extends Page implements Serializable {
 	
 	<#if subrefSize==1>
 	<#if subtb.refType=="OneToOne" || subtb.refType=="ManyToOne">
-	@subtb.refType
-	@JoinColumn(name="${refKey}",referencedColumnName="${refVal}")
+	@${subtb.refType}
+	@JoinColumn(name="${subrefKey}",referencedColumnName="${subrefVal}")
 	private ${subtb.entityName} ${subtb.fstLowEntityName};
 	<#elseif subtb.refType=="OneToMany" || subtb.refType=="ManyToMany">
 	
@@ -115,29 +82,10 @@ public class ${entityName} extends Page implements Serializable {
 		return this.${col.propertyName};
 	}
 	</#list>
-	<#--关联表get,set,主表-->
-	<#if refSize==1>
-	<#if refType=="OneToOne" || refType=="OneToMany">
 	
-	public void set${parentTable.entityName}(${parentTable.entityName} ${parentTable.fstLowEntityName}){
-		this.${parentTable.fstLowEntityName}=${parentTable.fstLowEntityName};
-	}
-	public ${parentTable.entityName} get${parentTable.entityName}(){
-		return this.${parentTable.fstLowEntityName};
-	}
-	
-	<#elseif refType=="ManyToOne" || refType=="ManyToMany">
-	public void set${parentTable.entityName}Set(Set<${parentTable.entityName}> ${parentTable.fstLowEntityName}Set){
-		this.${parentTable.fstLowEntityName}Set=${parentTable.fstLowEntityName}Set;
-	}
-	public Set<${parentTable.entityName}> get${parentTable.entityName}Set(){
-		return this.${parentTable.fstLowEntityName}Set;
-	}
-	</#if>
-	</#if>
-	<#--关联表get,set,从表-->
-	<#if subTables?? && (subTables?size>0)>
-	<#list subTables as subtb>
+	<#--关联表get,set,-->
+	<#if refTables?? && (refTables?size>0)>
+	<#list refTables as subtb>
 	
 	<#if subtb.refColumnMap?? && (subtb.refColumnMap?size==1)>
 	<#if subtb.refType=="OneToOne" || subtb.refType=="ManyToOne">
