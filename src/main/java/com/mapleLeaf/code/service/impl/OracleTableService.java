@@ -1,10 +1,12 @@
 package com.mapleLeaf.code.service.impl;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -187,16 +189,16 @@ public class OracleTableService extends AbstractTableService {
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				Column col = new Column();
-	        	String colName = rs.getString("column_name");
-	        	col.setColumnName(colName);
+	        	String colName = rs.getString("column_name").toLowerCase();
+	        	col.setColName(colName);
 	        	String type = rs.getString("data_type");
 	         
-	        	col.setColumnType(CodeUtil.convertJdbcType(type,module.getPersistance()));
-	        	col.setPropertyName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)
+	        	col.setColType(CodeUtil.convertJdbcType(type,module.getPersistance()));
+	        	col.setPropName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)
 	        			:colName);
 	        	
-	        	col.setPropertyType(CodeUtil.convertType(type));
-	        	col.setFstUpperProName(isCamel?CodeUtil.convertToCamelCase(colName):
+	        	col.setPropType(CodeUtil.convertType(type));
+	        	col.setUpperPropName(isCamel?CodeUtil.convertToCamelCase(colName):
 	        		CodeUtil.converFirstUpper(colName));
 	        	col.setLength(rs.getLong("data_length"));
 	        	col.setNullable(rs.getString("nullable").equals("YES") || rs.getString("nullable").equals("Y"));
@@ -222,7 +224,7 @@ public class OracleTableService extends AbstractTableService {
 		ResultSet rs = stmt.executeQuery();
 		String columnName="";
 		while (rs.next()){
-			columnName +=(rs.getString("COLUMN_NAME"))+",";
+			columnName +=rs.getString("column_name")+",";
 		}
 		rs.close();
 		return columnName;
@@ -236,7 +238,31 @@ public class OracleTableService extends AbstractTableService {
      */
     @Override
     public Map<String,String> getTableUniqueIdx(String tableName, Connection con) throws SQLException{
-    	return super.getTableUniqueIdx(tableName, con);
+    	//oracle表名 必须要大写 ，才能获取索引
+    	tableName = tableName.toUpperCase();
+		Map<String,String> map = new HashMap<>();
+		DatabaseMetaData dbMeta = con.getMetaData(); 
+		ResultSet rs = dbMeta.getIndexInfo(null, null, tableName, true, false);
+		while (rs.next()){
+			String idxName = rs.getString("index_name");
+			if(idxName==null){
+				continue;
+			}else{
+				idxName = idxName.toLowerCase();
+			}
+			String colName = rs.getString("column_name");
+			if(colName!=null){
+				colName = colName.toLowerCase();
+			}
+			String v = map.get(idxName);
+			if(v==null){
+				map.put(idxName, colName+",");
+			}else{
+				map.put(idxName, v+colName+",");
+			}
+		}
+		rs.close();
+		return map;
 	}
 	
 	/**

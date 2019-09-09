@@ -140,16 +140,16 @@ public class PostgresqlTableService extends AbstractTableService {
 			while (rs.next()) {
 				Column col = new Column();
 				String colName = rs.getString("column_name");
-	        	col.setColumnName(colName);//字段名
+	        	col.setColName(colName);//字段名
 	        	String type = rs.getString("data_type");
 	        
-	        	col.setColumnType(CodeUtil.convertJdbcType(type,module.getPersistance()));//字段类型
+	        	col.setColType(CodeUtil.convertJdbcType(type,module.getPersistance()));//字段类型
 	        	col.setRemark(rs.getString("column_comment"));//字段注释
 	        	
-	        	col.setPropertyName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)
+	        	col.setPropName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)
 	        			:colName);// 类属性名
-	        	col.setPropertyType(CodeUtil.convertType(type));//属性类型
-	        	col.setFstUpperProName(isCamel?CodeUtil.convertToCamelCase(colName)
+	        	col.setPropType(CodeUtil.convertType(type));//属性类型
+	        	col.setUpperPropName(isCamel?CodeUtil.convertToCamelCase(colName)
 	        			:CodeUtil.converFirstUpper(colName));//类 属性名首字母大写
 	        	col.setNullable(rs.getString("is_nullable").equals("YES"));//字段是否为空
 	        	col.setLength(rs.getLong("character_maximum_length"));//字段长度

@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="${basePackage}.${daoPackage}.${entityName}Dao" >
+<mapper namespace="${basePackage}.${daoPackage}.${entName}Dao" >
     <#--设置关联表的resultMap-->
     <#if refTables?? && (refTables?size>0)>
     
-    <resultMap type="${basePackage}.${entityPackage}.${entityName}" id="${fstLowEntityName}Map">
+    <resultMap type="${basePackage}.${entityPackage}.${entName}" id="${lowEntName}Map">
       <#list columns as col>
-      <result property="${col.propertyName}" column="${col.columnName}"/>
+      <result property="${col.propName}" column="${col.colName}"/>
       </#list>
       <#list refTables as subtab>
       <#--判断一对一，or一对多-->
       <#if subtab.refType=="OneToOne">
-          <association property="${subtab.fstLowEntityName}" javaType="${basePackage}.${entityPackage}.${subtab.entityName}">
+          <association property="${subtab.lowEntName}" javaType="${basePackage}.${entityPackage}.${subtab.entName}">
 	      <#list subtab.columns as col>
-	      <result property="${col.propertyName}" column="${col.columnName}"/>
+	      <result property="${col.propName}" column="${col.colName}"/>
 	      </#list>
       	  </association>
       <#elseif subtab.refType=="OneToMany">
-	      <collection property="${subtab.fstLowEntityName}List" ofType="${basePackage}.${entityPackage}.${subtab.entityName}"
+	      <collection property="${subtab.lowEntName}List" ofType="${basePackage}.${entityPackage}.${subtab.entName}"
 	      	javaType="ArrayList">
 	      <#list subtab.columns as col>
-	      <result property="${col.propertyName}" column="${col.columnName}"/>
+	      <result property="${col.propName}" column="${col.colName}"/>
 	      </#list>
 	      </collection>
       </#if>
       </#list>
     </resultMap>
     <#--分页查询-->
-    <select id="find${entityName}Page" parameterType="${basePackage}.${entityPackage}.${entityName}" resultMap="${fstLowEntityName}Map">
-    	select a.* from ${tableFullName} a
+    <select id="find${entName}Page" parameterType="${basePackage}.${entityPackage}.${entName}" resultMap="${lowEntName}Map">
+    	select a.* from ${tabName} a
     	<where>
     	<#list columns as col>
-    	<if test="${col.propertyName}!=null and ${col.propertyName}!='' ">
-			and a.${col.columnName} = ${r"#{"}${col.propertyName}}
+    	<if test="${col.propName}!=null and ${col.propName}!='' ">
+			and a.${col.colName} = ${r"#{"}${col.propName}}
 		</if>
     	</#list>
     	</where>
@@ -40,12 +40,12 @@
     
     <#else>
     <#--没配置map,分页查询-->
-    <select id="find${entityName}Page" parameterType="${basePackage}.${entityPackage}.${entityName}" resultType="${basePackage}.${entityPackage}.${entityName}">
-    	select a.* from ${tableFullName} a
+    <select id="find${entName}Page" parameterType="${basePackage}.${entityPackage}.${entName}" resultType="${basePackage}.${entityPackage}.${entName}">
+    	select a.* from ${tabName} a
     	<where>
     	<#list columns as col>
-    	<if test="${col.propertyName}!=null and ${col.propertyName}!='' ">
-			a.${col.columnName} = ${r"#{"}${col.propertyName}}
+    	<if test="${col.propName}!=null and ${col.propName}!='' ">
+			a.${col.colName} = ${r"#{"}${col.propName}}
 		</if>
     	</#list>
     	</where>
@@ -53,49 +53,49 @@
     </#if>
     
     <#--新增-->
-    <insert id="insert${entityName}" parameterType="${basePackage}.${entityPackage}.${entityName}">
-        insert into ${tableFullName} (
-			<#list columns as col>${col.columnName}<#if col_has_next>,</#if></#list>
+    <insert id="insert${entName}" parameterType="${basePackage}.${entityPackage}.${entName}">
+        insert into ${tabName} (
+			<#list columns as col>${col.colName}<#if col_has_next>,</#if></#list>
         )values(
- 			<#list columns as col>${r'#{'}${col.propertyName}${r'}'}<#if col_has_next>,</#if></#list>
+ 			<#list columns as col>${r'#{'}${col.propName}${r'}'}<#if col_has_next>,</#if></#list>
 		)
     </insert>
     <#if uniIdxMap?? && (uniIdxMap?size>0)>
     <#assign keys=uniIdxMap?keys />
     <#list keys as key>
     <#--查询-->
-    <select id="find${entityName}By${key?lower_case?cap_first}" parameterType="${basePackage}.${entityPackage}.${entityName}" 
-    	resultType="${basePackage}.${entityPackage}.${entityName}">
-        select * from ${tableFullName} where 1=1 
+    <select id="find${entName}By${key?lower_case?cap_first}" parameterType="${basePackage}.${entityPackage}.${entName}" 
+    	resultType="${basePackage}.${entityPackage}.${entName}">
+        select * from ${tabName} where 1=1 
          <#list uniIdxMap[key] as idxCol>
-         and ${idxCol.columnName}=${r'#{'}${idxCol.propertyName}${r'}'}
+         and ${idxCol.colName}=${r'#{'}${idxCol.propName}${r'}'}
          </#list>  		
     </select>
     <#--修改-->
-    <update id="update${entityName}By${key?lower_case?cap_first}" parameterType="${basePackage}.${entityPackage}.${entityName}">
-        update ${tableFullName} set 
-        <#list columns as col>${col.columnName}=${r'#{'}${col.propertyName}${r'}'}<#if col_has_next>,</#if></#list>
+    <update id="update${entName}By${key?lower_case?cap_first}" parameterType="${basePackage}.${entityPackage}.${entName}">
+        update ${tabName} set 
+        <#list columns as col>${col.colName}=${r'#{'}${col.propName}${r'}'}<#if col_has_next>,</#if></#list>
          where 1=1 
          <#list uniIdxMap[key] as idxCol>
-         and ${idxCol.columnName}=${r'#{'}${idxCol.propertyName}${r'}'}
+         and ${idxCol.colName}=${r'#{'}${idxCol.propName}${r'}'}
          </#list>  		
     </update>
     <#--删除-->
-    <delete id="delete${entityName}By${key?lower_case?cap_first}" parameterType="${basePackage}.${entityPackage}.${entityName}">
-         delete from ${tableFullName} where 1=1 
+    <delete id="delete${entName}By${key?lower_case?cap_first}" parameterType="${basePackage}.${entityPackage}.${entName}">
+         delete from ${tabName} where 1=1 
          <#list uniIdxMap[key] as idxCol>
-         and ${idxCol.columnName}=${r'#{'}${idxCol.propertyName}${r'}'}
+         and ${idxCol.colName}=${r'#{'}${idxCol.propName}${r'}'}
          </#list>  		
     </delete>
 	</#list>
     </#if>
     <#if refTables?? && (refTables?size>0)>
     <#list refTables as subtb>
-    <#if subtb.refColumnMap?? && (subtb.refColumnMap?size>0)>
-    <select id="find${entityName}ByCons" parameterType="map" 
+    <#if subtb.refColMap?? && (subtb.refColMap?size>0)>
+    <select id="find${entName}ByCons" parameterType="map" 
     	resultType="map">
-        select * from ${tableFullName} a left join ${subtb.tableFullName} b on 
-        <#list subtb.refColumnMap?keys as key>a.${key}=b.${subtb.refColumnMap["${key}"]}</#list> 		
+        select * from ${tabName} a left join ${subtb.tabName} b on 
+        <#list subtb.refColMap?keys as key>a.${key}=b.${subtb.refColMap["${key}"]}</#list> 		
     </select>
     </#if>
     </#list>

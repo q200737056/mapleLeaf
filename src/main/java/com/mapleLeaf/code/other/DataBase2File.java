@@ -175,7 +175,7 @@ public class DataBase2File {
     	
     	File saveDir=getSaveFilePath(module.getEntityPackage(),config);
     	
-    	File saveFile = new File(saveDir,table.getEntityName()+".java");
+    	File saveFile = new File(saveDir,table.getEntName()+".java");
     	
     	String savePath =saveFile.getAbsolutePath();
     	FreemarkerUtil.createDoc(config.getFmkConf(),obj, "Entity", savePath);
@@ -223,7 +223,7 @@ public class DataBase2File {
     
     	File saveDir=getSaveFilePath(module.getDaoPackage(),config);
     	
-    	String fileName = table.getEntityName()+"Dao.java";
+    	String fileName = table.getEntName()+"Dao.java";
     	
     	File saveFile = new File(saveDir,fileName);
     	String savePath =saveFile.getAbsolutePath();
@@ -235,7 +235,7 @@ public class DataBase2File {
     			.equals("hibernate")){
         	File implDir=getSaveFilePath(module.getDaoPackage()+File.separator+module.getDaoImplPackage(),config);
 	    	
-	    	File implFile = new File(implDir,table.getEntityName()+"DaoImpl.java");
+	    	File implFile = new File(implDir,table.getEntName()+"DaoImpl.java");
 	    	String implPath =implFile.getAbsolutePath();
 	    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, "DaoImpl", implPath);
 	    	log.info("生成文件："+implPath);
@@ -245,7 +245,7 @@ public class DataBase2File {
         	 * 如果是mybatis，则生成mytabis的xml配置文件
         	 */
     		saveDir=getSaveFilePath(module.getMapperPackage(),config);
-    		File implFile = new File(saveDir,table.getEntityName()+"Mapper.xml");
+    		File implFile = new File(saveDir,table.getEntName()+"Mapper.xml");
 	    	String implPath =implFile.getAbsolutePath();
 	    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, "Mapper", implPath);
 	    	log.info("生成文件："+implPath);
@@ -253,7 +253,7 @@ public class DataBase2File {
     		//log.info("该ORM框架不支持或不存在！");
     		File implDir=getSaveFilePath(module.getDaoPackage()+File.separator+module.getDaoImplPackage(),config);
 	    	
-	    	File implFile = new File(implDir,table.getEntityName()+"DaoImpl.java");
+	    	File implFile = new File(implDir,table.getEntName()+"DaoImpl.java");
 	    	String implPath =implFile.getAbsolutePath();
 	    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, "DaoImpl", implPath);
 	    	log.info("生成文件："+implPath);
@@ -267,13 +267,13 @@ public class DataBase2File {
     private void generateServiceFile(JSONObject obj,Table table,Config config,Module module) throws Exception {
     	
     	File saveDir=getSaveFilePath(module.getServicePackage(),config);
-    	File saveFile = new File(saveDir,table.getEntityName()+"Service.java");
+    	File saveFile = new File(saveDir,table.getEntName()+"Service.java");
     	String savePath =saveFile.getAbsolutePath();
     	log.info("生成文件："+savePath);
     	FreemarkerUtil.createDoc(config.getFmkConf(),obj, "Service", savePath);
     	//实现类
     	File implDir=getSaveFilePath(module.getServicePackage()+File.separator+module.getServiceImplPackage(),config);
-    	File implFile = new File(implDir,table.getEntityName()+"ServiceImpl.java");
+    	File implFile = new File(implDir,table.getEntName()+"ServiceImpl.java");
     	String implPath =implFile.getAbsolutePath();
     	
     	FreemarkerUtil.createDoc(config.getFmkConf(),obj, "ServiceImpl", implPath);
@@ -288,7 +288,7 @@ public class DataBase2File {
     private void generateActionFile(JSONObject obj,Table table,Config config,Module module) throws Exception {
     	
     	File saveDir=getSaveFilePath(module.getControllerPackage(),config);
-    	File saveFile = new File(saveDir,table.getEntityName()+"Controller.java");
+    	File saveFile = new File(saveDir,table.getEntName()+"Controller.java");
 
     	String savePath =saveFile.getAbsolutePath();
     	FreemarkerUtil.createDoc(config.getFmkConf(),obj, "Controller", savePath);
@@ -308,9 +308,9 @@ public class DataBase2File {
     	if(!StringUtils.isBlank(type)){
     		suffix = type.toLowerCase();
     	}
-    	File saveDir=getSaveFilePath(module.getViewPackage()+File.separator+table.getFstLowEntityName(),config);
+    	File saveDir=getSaveFilePath(module.getViewPackage()+File.separator+table.getLowEntName(),config);
     	for (String action : actions) {
-	    	File saveFile = new File(saveDir,action+"_"+table.getEntityName()+"."+suffix);
+	    	File saveFile = new File(saveDir,action+"_"+table.getEntName()+"."+suffix);
 	    	
 	    	String savePath =saveFile.getAbsolutePath();
 	    	log.info("生成文件："+savePath);
@@ -330,10 +330,10 @@ public class DataBase2File {
     	if(!StringUtils.isBlank(type)){
     		suffix = type.toLowerCase();
     	}
-		File saveDir=getSaveFilePath(module.getCustomPackage()+File.separator+table.getFstLowEntityName(),config);
+		File saveDir=getSaveFilePath(module.getCustomPackage()+File.separator+table.getLowEntName(),config);
 		for (String action : actions) {
 			
-			File saveFile = new File(saveDir,action+"_"+table.getEntityName()+"."+suffix);
+			File saveFile = new File(saveDir,action+"_"+table.getEntName()+"."+suffix);
 			
 			String savePath =saveFile.getAbsolutePath();
 			log.info("生成文件："+savePath);

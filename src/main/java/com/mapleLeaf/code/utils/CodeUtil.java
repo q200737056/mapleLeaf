@@ -196,6 +196,6 @@ public class CodeUtil {
     		}
     		dataMap.put(itemArr[0], itemArr[1]);
     	}
-    	return null;
+    	return dataMap;
     }
 }

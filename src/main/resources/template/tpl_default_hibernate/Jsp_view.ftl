@@ -21,7 +21,7 @@
                 <#list columns as col>
                 <#if !col.pk >
                     <td class="td_colo">${col.remark!}</td>
-                    <td>${'$'}{item.${col.propertyName}}</td>
+                    <td>${'$'}{item.${col.propName}}</td>
                     <#if col_index % 2 == 0>
                 </tr>
                 <tr>

@@ -14,15 +14,15 @@
 ![](http://i1.fuimg.com/686411/444adfe9d444d9af.png "")
 2. 用maven打成war包运行，则不需要这些，直接启动服务就行。
 
-#### 三、模板代码片段：
+#### 三、模板代码片段（之后版本会定义一套freemarker宏，封装这些标签，使用更加简便）：
 
 ##### 获取字段信息
 ```
 <#if columns?? && (columns?size>0)>
   <#list columns as col>
-     ${col.propertyName}  //实体类属性名
-     ${col.propertyType}  //实体类属性类型
-     ${col.columnName}  //表字段名
+     ${col.propName}  //实体类属性名
+     ${col.propType}  //实体类属性java类型
+     ${col.colName}  //表字段名
      ${col.pk}  //是否主键
      ...
   </#list>
@@ -33,9 +33,9 @@
 ```
 <#if refTables?? && (refTables?size>0)>
   <#list refTables as reftb>
-    ${reftb.entityName}  //实体类名
+    ${reftb.entName}  //实体类
     ${reftb.refType}  //关联关系 如OneToOne，OneToMany等
-    ${reftb.fstLowEntityName} //实体类名首字母小写，可用作变量名
+    ${reftb.lowEntName} //实体类名首字母小写，可用作变量名
     ...	    
   </#list>
 </#if>
@@ -48,7 +48,7 @@
   <#list keys as key>
      //循环获取索引字段信息,key为索引或主键名，value为字段信息
      <#list uniIdxMap[key] as idxCol> 
-       ${idxCol.columnName}  //表字段名
+       ${idxCol.colName}  //表字段名
        ${idxCol.pk}  //是否主键
        ...
      </#list>

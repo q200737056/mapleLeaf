@@ -56,8 +56,8 @@
 			<columnGroup exclude="title"> 
 			   <!--表字段 自定义了 字段文本  -->
 			   <column colName="author" labelName="作者"></column>
-			   <!--表字段 自定义了 字段文本及字段值标识  -->
-			   <column colName="show_cover_pic" labelName="是否显示图片">0=显示,1=不显示</column>
+			   <!--表字段 自定义了 字段文本,表单类型及字段值标识  -->
+			   <column colName="show_cover_pic" labelName="是否显示图片" tagType="checkbox">0=显示,1=不显示</column>
 			</columnGroup>
 		</table>
 	</module>

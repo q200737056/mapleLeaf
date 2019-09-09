@@ -1,19 +1,19 @@
 package ${basePackage}.${daoPackage};
 
-import ${basePackage}.${entityPackage}.${entityName};
+import ${basePackage}.${entityPackage}.${entName};
 
 /**
  * ${remark!}操作相关
  */
-public interface ${entityName}Dao {
+public interface ${entName}Dao {
 	/**
 	 * 分页查询
 	 */
-	 public List<${entityName}> find${entityName}Page(${entityName} ${fstLowEntityName});
+	 public List<${entName}> find${entName}Page(${entName} ${lowEntName});
 	/**
 	 * 新增
 	 */
-	 public int insert${entityName}(${entityName} ${fstLowEntityName});
+	 public int insert${entName}(${entName} ${lowEntName});
 	<#if uniIdxMap?? && (uniIdxMap?size>0)>
     <#assign keys=uniIdxMap?keys />
     <#list keys as key>
@@ -26,15 +26,15 @@ public interface ${entityName}Dao {
 	 * 根据唯一索引${key}查找
 	 */
 	 </#if>
-	 public ${entityName} find${entityName}By${key?lower_case?cap_first}(${entityName} ${fstLowEntityName});
+	 public ${entName} find${entName}By${key?lower_case?cap_first}(${entName} ${lowEntName});
 	/**
 	 * 根据唯一索引${key}修改
 	 */
-	 public int update${entityName}By${key?lower_case?cap_first}(${entityName} ${fstLowEntityName});
+	 public int update${entName}By${key?lower_case?cap_first}(${entName} ${lowEntName});
 	/**
 	 * 根据唯一索引${key}删除
 	 */
-	 public int delete${entityName}By${key?lower_case?cap_first}(${entityName} ${fstLowEntityName});
+	 public int delete${entName}By${key?lower_case?cap_first}(${entName} ${lowEntName});
 	</#list>
     </#if>
     <#if refTables?? && (refTables?size>0)>
@@ -43,7 +43,7 @@ public interface ${entityName}Dao {
     /**
 	 * 根据输入条件 关联查询
 	 */
-	 public List<Map> find${entityName}ByCons(Map map);	
+	 public List<Map> find${entName}ByCons(Map map);	
     </#if>
     </#list>
     </#if>

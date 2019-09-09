@@ -5,37 +5,59 @@ import java.util.Map;
 
 public class Column {
     
-    private String columnName;//字段名
-    private String columnType; //字段的类型
+    private String colName;//字段名
+    private String colType; //字段的类型
     private String remark;//字段 注释
-    private String propertyName; //属性名
-    private String propertyType; //属性的java type
-    private String fstUpperProName; //首字大写的属性名 
+    private String propName; //属性名
+    private String propType; //属性的java type
+    private String upperPropName; //首字大写的属性名 
     private boolean isPk=false;//是否主键
     private boolean isNullable=true;//是否允许为空
     private Long length; //字段长度
     private Object defaultValue; //字段默认值
     
-    //字段文本 默认 COMMENT中取   COMMENT形式(字段文本;val1:text1,val2:text2;)
+    //字段 文本,表单类型,字段标识 默认 COMMENT中取  
+	//COMMENT约定形式(字段文本;表单类型;val1:text1,val2:text2;)
+    //例如 flag字段   状态;select;0:初始,1:已审核,2:已退回;
     private String labelName=""; 
-    //k-v型 字段值，key为 字段值 val1，val为描述text1
-    //默认 COMMENT中取   COMMENT形式(字段文本;val1:text1,val2:text2;)
+    //k-v型 字段值，key为 字段值 val，value为标识描述text
+    //默认 COMMENT中取 （如果有）
     private Map<String,String> colValueMap = new HashMap<>();
     //表单 标签类型，默认text;该属性比较开放，自己定义一套类型，在页面需要时，做判断 
     //比如 select 表示 下拉框，checkbox表示多选，radio 表示单选
+    //默认 COMMENT中取 （如果有）
     private String tagType="text"; 
     
-	public String getColumnName() {
-		return columnName;
+	
+	public String getColName() {
+		return colName;
 	}
-	public void setColumnName(String columnName) {
-		this.columnName = columnName;
+	public void setColName(String colName) {
+		this.colName = colName;
 	}
-	public String getColumnType() {
-		return columnType;
+	public String getColType() {
+		return colType;
 	}
-	public void setColumnType(String columnType) {
-		this.columnType = columnType;
+	public void setColType(String colType) {
+		this.colType = colType;
+	}
+	public String getPropName() {
+		return propName;
+	}
+	public void setPropName(String propName) {
+		this.propName = propName;
+	}
+	public String getPropType() {
+		return propType;
+	}
+	public void setPropType(String propType) {
+		this.propType = propType;
+	}
+	public String getUpperPropName() {
+		return upperPropName;
+	}
+	public void setUpperPropName(String upperPropName) {
+		this.upperPropName = upperPropName;
 	}
 	public String getRemark() {
 		return remark;
@@ -43,12 +65,7 @@ public class Column {
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-	public String getPropertyName() {
-		return propertyName;
-	}
-	public void setPropertyName(String propertyName) {
-		this.propertyName = propertyName;
-	}
+	
 	
 	public boolean isPk() {
 		return isPk;
@@ -56,19 +73,8 @@ public class Column {
 	public void setPk(boolean isPk) {
 		this.isPk = isPk;
 	}
-	public String getPropertyType() {
-		return propertyType;
-	}
-	public void setPropertyType(String propertyType) {
-		this.propertyType = propertyType;
-	}
 	
-	public String getFstUpperProName() {
-		return fstUpperProName;
-	}
-	public void setFstUpperProName(String fstUpperProName) {
-		this.fstUpperProName = fstUpperProName;
-	}
+	
 	public boolean isNullable() {
 		return isNullable;
 	}

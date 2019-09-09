@@ -1,8 +1,8 @@
 package ${basePackage}.${servicePackage}.${serviceImplPackage};
 
-import ${basePackage}.${entityPackage}.${entityName};
-import ${basePackage}.${servicePackage}.${entityName}Service;
-import ${basePackage}.${daoPackage}.${entityName}Mapper;
+import ${basePackage}.${entityPackage}.${entName};
+import ${basePackage}.${servicePackage}.${entName}Service;
+import ${basePackage}.${daoPackage}.${entName}Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,22 +10,22 @@ import org.springframework.stereotype.Service;
  * ${remark!}操作相关
  */
 @Service
-public class ${entityName}ServiceImpl implements ${entityName}Service {
+public class ${entName}ServiceImpl implements ${entName}Service {
 
 	@Autowired
-	private ${entityName}Dao ${fstLowEntityName}Dao;
+	private ${entName}Dao ${lowEntName}Dao;
 	
 	/**
 	 * 分页查询
 	 */
-	 public List<${entityName}> find${entityName}Page(${entityName} ${fstLowEntityName}){
-	 	return ${fstLowEntityName}Dao.find${entityName}Page(${entityName} ${fstLowEntityName});
+	 public List<${entName}> find${entName}Page(${entName} ${lowEntName}){
+	 	return ${lowEntName}Dao.find${entName}Page(${entName} ${lowEntName});
 	 }
 	/**
 	 * 新增
 	 */
-	 public int insert${entityName}(${entityName} ${fstLowEntityName}){
-	 	return ${fstLowEntityName}Dao.insert${entityName}(${fstLowEntityName});
+	 public int insert${entName}(${entName} ${lowEntName}){
+	 	return ${lowEntName}Dao.insert${entName}(${lowEntName});
 	 }
 	<#if uniIdxMap?? && (uniIdxMap?size>0)>
     <#assign keys=uniIdxMap?keys />
@@ -34,20 +34,20 @@ public class ${entityName}ServiceImpl implements ${entityName}Service {
     /**
 	 * 根据主键查找
 	 */
-	  public ${entityName} get${entityName}ById(Long id){
-	  	return ${fstLowEntityName}Dao.get${entityName}ById(id);
+	  public ${entName} get${entName}ById(Long id){
+	  	return ${lowEntName}Dao.get${entName}ById(id);
 	  }
 	 /**
 	 * 修改
 	 */
-	 public int update${entityName}(${entityName} ${fstLowEntityName}){
-	 	return ${fstLowEntityName}Dao.update${entityName}(${fstLowEntityName});
+	 public int update${entName}(${entName} ${lowEntName}){
+	 	return ${lowEntName}Dao.update${entName}(${lowEntName});
 	 }
 	/**
 	 * 根据主键删除
 	 */
-	 public int delete${entityName}ById(Long id){
-	 	return ${fstLowEntityName}Dao.delete${entityName}ById(id);
+	 public int delete${entName}ById(Long id){
+	 	return ${lowEntName}Dao.delete${entName}ById(id);
 	 }
 	 <#else>
     

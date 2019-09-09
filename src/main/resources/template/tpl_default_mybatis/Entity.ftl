@@ -1,8 +1,8 @@
 package ${basePackage}.${entityPackage};
 import java.io.Serializable;
 <#--导入包-->
-<#if importClassList?? && (importClassList?size>0)>
-<#list importClassList as clz>
+<#if impClasses?? && (impClasses?size>0)>
+<#list impClasses as clz>
 ${clz};
 </#list>
 </#if>
@@ -10,36 +10,36 @@ ${clz};
 * ${remark!}
 */
 
-public class ${entityName} extends Page implements Serializable {
+public class ${entName} extends Page implements Serializable {
 	private static final long serialVersionUID = 1L;
 	<#if columns?? && (columns?size>0)>
 	<#list columns as col>
 	/**
 	 * ${col.labelName}
 	 */
-	<#assign type=col.propertyType>
+	<#assign type=col.propType>
 	
-	private ${type} ${col.propertyName};
+	private ${type} ${col.propName};
 	</#list>
 	
 	<#--关联表属性-->
 	<#if refTables?? && (refTables?size>0)>
 	<#list refTables as subtb>
 	<#if subtb.refType=="OneToOne" || subtb.refType=="ManyToOne">
-	private ${subtb.entityName} ${subtb.fstLowEntityName};
+	private ${subtb.entName} ${subtb.lowEntName};
 	<#elseif subtb.refType=="OneToMany" || subtb.refType=="ManyToMany">
-	private List<${subtb.entityName}> ${subtb.fstLowEntityName}List;
+	private List<${subtb.entName}> ${subtb.lowEntName}List;
 	</#if>	
 	</#list>
 	</#if>
 	
 	<#list columns as col>
-	<#assign type=col.propertyType>
-	public void set${col.fstUpperProName}(${type} ${col.propertyName}){
-		this.${col.propertyName}=${col.propertyName};
+	<#assign type=col.propType>
+	public void set${col.upperPropName}(${type} ${col.propName}){
+		this.${col.propName}=${col.propName};
 	}
-	public ${type} get${col.fstUpperProName}(){
-		return this.${col.propertyName};
+	public ${type} get${col.upperPropName}(){
+		return this.${col.propName};
 	}
 	</#list>
 	
@@ -47,18 +47,18 @@ public class ${entityName} extends Page implements Serializable {
 	<#if refTables?? && (refTables?size>0)>
 	<#list refTables as subtb>
 	<#if subtb.refType=="OneToOne" || subtb.refType=="ManyToOne">
-	public void set${subtb.entityName}(${subtb.entityName} ${subtb.fstLowEntityName}){
-		this.${subtb.fstLowEntityName}=${subtb.fstLowEntityName};
+	public void set${subtb.entName}(${subtb.entName} ${subtb.lowEntName}){
+		this.${subtb.lowEntName}=${subtb.lowEntName};
 	}
-	public ${subtb.entityName} get${subtb.entityName}(){
-		return this.${subtb.fstLowEntityName};
+	public ${subtb.entName} get${subtb.entName}(){
+		return this.${subtb.lowEntName};
 	}
 	<#elseif subtb.refType=="OneToMany" || subtb.refType=="ManyToMany">
-	public void set${subtb.entityName}List(List<${subtb.entityName}> ${subtb.fstLowEntityName}List){
-		this.${subtb.fstLowEntityName}List=${subtb.fstLowEntityName}List;
+	public void set${subtb.entName}List(List<${subtb.entName}> ${subtb.lowEntName}List){
+		this.${subtb.lowEntName}List=${subtb.lowEntName}List;
 	}
-	public List<${subtb.entityName}> get${subtb.entityName}List(){
-		return this.${subtb.fstLowEntityName}List;
+	public List<${subtb.entName}> get${subtb.entName}List(){
+		return this.${subtb.lowEntName}List;
 	}
 	</#if>	
 	</#list>
@@ -66,10 +66,10 @@ public class ${entityName} extends Page implements Serializable {
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
-		sb.append("${entityName}[");
+		sb.append("${entName}[");
 		<#list columns as col>
-		sb.append("${(col_index gt 0)?string(",","")}${col.propertyName}=");
-		sb.append(${col.propertyName});
+		sb.append("${(col_index gt 0)?string(",","")}${col.propName}=");
+		sb.append(${col.propName});
 		</#list>
 		sb.append("]");
 		return sb.toString();

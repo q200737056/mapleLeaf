@@ -23,7 +23,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">${col.remark!}</label>
                     <div class="layui-input-block">
-                        <input type="text" name="${col.propertyName}" value="${'$'}{item.${col.propertyName}}" lay-verify="" class="layui-input" />
+                        <input type="text" name="${col.propName}" value="${'$'}{item.${col.propName}}" lay-verify="" class="layui-input" />
                     </div>
                 </div>
                 <#if col_index % 3 == 0>
@@ -42,7 +42,6 @@
             </div>
         </form>
         <%@include file="../common/footer.jsp"%>
-        <script type="text/javascript" src="<%=path%>/static/js/ftd/${fstLowEntityName}/${fstLowEntityName}.js" ></script>
-        <script type="text/javascript" src="<%=path%>/static/js/ftd/${fstLowEntityName}/${fstLowEntityName}Layui.js" ></script>
+       
     </body>
 </html>

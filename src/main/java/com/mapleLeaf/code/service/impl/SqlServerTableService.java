@@ -215,16 +215,16 @@ public class SqlServerTableService extends AbstractTableService {
 			while (rs.next()) {
 				Column col = new Column();
 				String colName = rs.getString("column_name");
-	        	col.setColumnName(colName);
+	        	col.setColName(colName);
 	        	String type = rs.getString("data_type");
 	        	
-	        	col.setColumnType(CodeUtil.convertJdbcType(type,module.getPersistance()));
+	        	col.setColType(CodeUtil.convertJdbcType(type,module.getPersistance()));
 	        	col.setRemark(rs.getString("comments"));
 	        	
-	        	col.setPropertyName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)
+	        	col.setPropName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)
 	        			:colName);
-	        	col.setPropertyType(CodeUtil.convertType(type));
-	        	col.setFstUpperProName(isCamel?CodeUtil.convertToCamelCase(colName)
+	        	col.setPropType(CodeUtil.convertType(type));
+	        	col.setUpperPropName(isCamel?CodeUtil.convertToCamelCase(colName)
 	        			:CodeUtil.converFirstUpper(colName));
 	        	col.setNullable(rs.getString("nullable").equals("Y"));
 	        	col.setLength(rs.getLong("data_length"));

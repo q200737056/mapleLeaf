@@ -1,6 +1,6 @@
 package ${basePackage}.${daoPackage};
 
-import ${basePackage}.${entityPackage}.${entityName};
+import ${basePackage}.${entityPackage}.${entName};
 import org.hibernate.SessionFactory;  
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;   
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
  * ${remark!}操作相关
  */
 @Repository 
-public class ${entityName}DaoImpl implements ${entityName}Dao {
+public class ${entName}DaoImpl implements ${entName}Dao {
 	
 	@Autowired    
    	private SessionFactory sessionFactory;
@@ -18,12 +18,12 @@ public class ${entityName}DaoImpl implements ${entityName}Dao {
 	/**
 	 * 分页查询
 	 */
-	 public List<${entityName}> find${entityName}Page(${entityName} ${fstLowEntityName});
+	 public List<${entName}> find${entName}Page(${entName} ${lowEntName});
 	/**
 	 * 新增
 	 */
-	 public int insert${entityName}(${entityName} ${fstLowEntityName}){
-	 	 int res = this.getCurrSession().save(${fstLowEntityName});
+	 public int insert${entName}(${entName} ${lowEntName}){
+	 	 int res = this.getCurrSession().save(${lowEntName});
 	 	 return res;
 	 }
 	<#if uniIdxMap?? && (uniIdxMap?size>0)>
@@ -33,23 +33,23 @@ public class ${entityName}DaoImpl implements ${entityName}Dao {
     /**
 	 * 根据主键查找
 	 */
-	  public ${entityName} get${entityName}ById(Long id){
-	  	  ${entityName} ${fstLowEntityName} = (${entityName})this.getCurrSession().get(${entityName}.class,id);
-	  	  return ${fstLowEntityName};
+	  public ${entName} get${entName}ById(Long id){
+	  	  ${entName} ${lowEntName} = (${entName})this.getCurrSession().get(${entName}.class,id);
+	  	  return ${lowEntName};
 	  }
 	 /**
 	 * 修改
 	 */
-	 public int update${entityName}(${entityName} ${fstLowEntityName}){
-	 	  int res = this.getCurrSession().saveOrUpdate(${fstLowEntityName});
+	 public int update${entName}(${entName} ${lowEntName}){
+	 	  int res = this.getCurrSession().saveOrUpdate(${lowEntName});
 	 }
 	/**
 	 * 根据主键删除
 	 */
-	 public int delete${entityName}ById(Long id){
- 		  ${entityName} ${fstLowEntityName}=get${entityName}ById(id);
- 		  if(${fstLowEntityName}!=null){
- 			  return this.getCurrSession().delete(${fstLowEntityName});
+	 public int delete${entName}ById(Long id){
+ 		  ${entName} ${lowEntName}=get${entName}ById(id);
+ 		  if(${lowEntName}!=null){
+ 			  return this.getCurrSession().delete(${lowEntName});
  		  }
  		  return 0;
 	 }

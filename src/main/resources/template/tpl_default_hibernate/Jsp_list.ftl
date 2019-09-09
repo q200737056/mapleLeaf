@@ -22,7 +22,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">${col.remark!}</label>
                     <div class="layui-input-inline">
-                        <input type="" name="${col.propertyName}" lay-verify="" autocomplete="off" class="layui-input">
+                        <input type="" name="${col.propName}" lay-verify="" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 </#if>
@@ -62,9 +62,6 @@
             <div id="demo7"></div>
         </div>
         <%@include file="../common/footer.jsp"%>
-        <script type="text/javascript" src="<%=path%>/static/js/ftd/${fstLowEntityName}/${fstLowEntityName}Layui.js" ></script>
-        <script type="text/javascript" src="<%=path%>/static/plugins/jquery/jquery.page.js" ></script>
-        <script type="text/javascript" src="<%=path%>/static/js/common/layui.date.js" ></script>
-        <script type="text/javascript" src="<%=path%>/static/js/ftd/${fstLowEntityName}/${fstLowEntityName}Page.js" ></script>
+       
     </body>
 </html>

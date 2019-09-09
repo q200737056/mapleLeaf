@@ -57,7 +57,7 @@
               </tr>
               <tr>
                 <td>baseTabPrefix</td>
-                <td>全局表名前缀，可以多个英文逗号分隔，如：sys_,log_。默认""</td>
+                <td>全局表名前缀，多个用逗号分隔，如：sys_,log_。默认""</td>
                 <td>否</td>
                 <td>没有</td>
                 <td></td>
@@ -78,7 +78,7 @@
               </tr>
               <tr>
                 <td>common</td>
-                <td>公共类，形式：“包名=模板”多个英文逗号分隔，模板不需要后缀。主要是一些工具类，父类等,直接输出生成java文件，一般不需要。如：util=Page,commom.Dao=BaseDao</td>
+                <td>公共类，形式：“包名=模板”多个逗号分隔，模板不需要后缀。主要是一些工具类，父类等,直接输出生成java文件，一般不需要。如：util=Page,commom.Dao=BaseDao</td>
                 <td>否</td>
                 <td>没有</td>
                 <td></td>
@@ -199,7 +199,7 @@
                 prefix,exclude</td>
                 <td>entityName属性：配置自定义实体类名，非必需；
                 name属性：表名，必需；prefix属性：表名前缀，非必需；
-                exclude属性：排除指定模板代码生成（entity,dao,service,controller,view,custom选择多个时，英文逗号分隔），非必需；
+                exclude属性：排除指定模板代码生成（entity,dao,service,controller,view,custom选择多个时，逗号分隔），非必需；
                 </td>
               </tr>
              <tr>
@@ -242,7 +242,7 @@
                 <td>自定义视图层包名。如：ai.jsp。</td>
                 <td>否</td>
                 <td>tpl，suffix</td>
-                <td>tpl属性：配置模板，只需模板名，不需要后缀，多个可以用英文逗号分隔，如view,list。必需属性;
+                <td>tpl属性：配置模板，只需模板名，不需要后缀，多个可以用逗号分隔，如view,list。必需属性;
                 	suffix属性：配置生成文件类型，即文件后缀，如jsp。非必需属性，默认‘jsp’</td>
               </tr>
                <tr class="nepadmin-c-red nepadmin-bold">
@@ -250,7 +250,7 @@
                 <td>自定义(自定义生成文件)包名。如：ai.custom。</td>
                 <td>否</td>
                 <td>tpl，suffix</td>
-                <td>tpl属性：配置模板，只需模板名，不需要后缀，多个可以用英文逗号分隔，如indexJs。必需属性;
+                <td>tpl属性：配置模板，只需模板名，不需要后缀，多个可以用逗号分隔，如indexJs。必需属性;
                 	suffix属性：配置生成文件类型，即文件后缀，如js。非必需属性，默认‘ctm’</td>
               </tr>
             </tbody>
@@ -294,8 +294,9 @@
                	</td>
                 <td>否</td>
                 <td>include，exclude</td>
-                <td>include属性：需要包含的表字段，非必需；
-                	exclude属性：需要排除的表字段，非必需；如果两者都存在，只会生效exclude排除属性
+                <td>include属性：需要包含的表字段，非必需；如id,name
+                	exclude属性：需要排除的表字段，非必需；
+                	如果两者都存在，只会生效exclude排除属性
                 </td>
               </tr>
               
@@ -326,16 +327,18 @@
                 <td>column</td>
                 <td>
                  	表字段标签，可自定义字段属性；配置的字段名必须未被过滤掉，而且表中存在；
-                 	标签内容为字段值设定，比如 flag字段表示状态，表中存的是标识。
-                 	 如：0=可用,1=不可用；默认是从COMMENT中取   COMMENT约定形式(字段文本;val1:text1,val2:text2;)
+                 	标签内容为字段值设定，比如 flag字段表示状态。可自定义字段值  
+                 	如：0=可用,1=不可用；对应COMMENT约定格式的第3个；
+                 	默认会从COMMENT中取（如果有） COMMENT约定格式(字段文本;表单类型;val1:text1,val2:text2;)
                	</td>
                 <td>否</td>
                 <td>colName，labelName，tagType</td>
                 <td>colName属性：字段名，必需；
                 	labelName属性：自定义字段文本，可用来在页面中显示文本，非必需，
-                	默认是从COMMENT中取  COMMENT约定形式(字段文本;val1:text1,val2:text2;)
+                	默认会从COMMENT中取 
                 	tagType属性：自定义表单标签类型，页面中可使用，可以自己定义一套，
-                	比如 select表示下拉框，checkbox表示多选，radio表示单选等，非必需
+                	比如 select表示下拉框，checkbox表示多选，radio表示单选等，非必需，
+                	默认也会从COMMENT中取
                 </td>
               </tr>
              
@@ -346,9 +349,6 @@
         </div>
       </div>
      
-     
-    
-    
     </div>
   </div>
 </div>

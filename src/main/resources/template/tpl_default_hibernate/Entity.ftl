@@ -9,8 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.Column;
 import javax.persistence.Table;
 <#--导入包-->
-<#if importClassList?? && (importClassList?size>0)>
-<#list importClassList as clz>
+<#if impClasses?? && (impClasses?size>0)>
+<#list impClasses as clz>
 ${clz};
 </#list>
 </#if>
@@ -18,21 +18,21 @@ ${clz};
 * ${remark!}
 */
 @Entity
-@Table(name = "${tableFullName}")
-public class ${entityName} extends Page implements Serializable {
+@Table(name = "${tabName}")
+public class ${entName} extends Page implements Serializable {
 	private static final long serialVersionUID = 1L;
 	<#if columns?? && (columns?size>0)>
 	<#list columns as col>
 	/**
 	 * ${col.remark!}
 	 */
-	<#assign type=col.propertyType>
+	<#assign type=col.propType>
 	<#if col.pk>
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	</#if>
-	@Column(name="${col.columnName}")
-	private ${type} ${col.propertyName};
+	@Column(name="${col.colName}")
+	private ${type} ${col.propName};
 	
 	</#list>
 	
@@ -41,12 +41,12 @@ public class ${entityName} extends Page implements Serializable {
 	<#list refTables as subtb>
 	<#--与从表的关联设置（循环）,如果是单个字段关联的，则取出,subrefSize为关联字段的个数;这里只做了单列关联-->
 	<#assign subrefSize=0>
-	<#if subtb.refColumnMap?? && (subtb.refColumnMap?size>0)>
-	<#assign subrefSize=subtb.refColumnMap?size>
+	<#if subtb.refColMap?? && (subtb.refColMap?size>0)>
+	<#assign subrefSize=subtb.refColMap?size>
 	<#if subrefSize==1>
-	<#list subtb.refColumnMap?keys as key>
+	<#list subtb.refColMap?keys as key>
 	<#assign subrefKey=key>
-	<#assign subrefVal=subtb.refColumnMap[key]>
+	<#assign subrefVal=subtb.refColMap[key]>
 	</#list>
 	</#if>
 	</#if>
@@ -55,7 +55,7 @@ public class ${entityName} extends Page implements Serializable {
 	<#if subtb.refType=="OneToOne" || subtb.refType=="ManyToOne">
 	@${subtb.refType}
 	@JoinColumn(name="${subrefKey}",referencedColumnName="${subrefVal}")
-	private ${subtb.entityName} ${subtb.fstLowEntityName};
+	private ${subtb.entName} ${subtb.lowEntName};
 	<#elseif subtb.refType=="OneToMany" || subtb.refType=="ManyToMany">
 	
 	<#if subtb.refType=="ManyToMany">
@@ -64,9 +64,9 @@ public class ${entityName} extends Page implements Serializable {
 	joinColumns=@JoinColumn(name="${subrefKey}",referencedColumnName="${subrefKey}"),
     inverseJoinColumns=@JoinColumn(name="${subrefVal}",referencedColumnName="${subrefVal}"))
 	<#elseif subtb.refType=="OneToMany">
-	@OneToMany(mappedBy="${fstLowEntityName}")
+	@OneToMany(mappedBy="${lowEntName}")
 	</#if>
-	private Set<${subtb.entityName}> ${subtb.fstLowEntityName}Set;
+	private Set<${subtb.entName}> ${subtb.lowEntName}Set;
 	</#if>
 	</#if>
 		
@@ -75,11 +75,11 @@ public class ${entityName} extends Page implements Serializable {
 	
 	<#list columns as col>
 	
-	public void set${col.fstUpperProName}(${col.propertyType} ${col.propertyName}){
-		this.${col.propertyName}=${col.propertyName};
+	public void set${col.upperPropName}(${col.propType} ${col.propName}){
+		this.${col.propName}=${col.propName};
 	}
-	public ${col.propertyType} get${col.fstUpperProName}(){
-		return this.${col.propertyName};
+	public ${col.propType} get${col.upperPropName}(){
+		return this.${col.propName};
 	}
 	</#list>
 	
@@ -87,23 +87,23 @@ public class ${entityName} extends Page implements Serializable {
 	<#if refTables?? && (refTables?size>0)>
 	<#list refTables as subtb>
 	
-	<#if subtb.refColumnMap?? && (subtb.refColumnMap?size==1)>
+	<#if subtb.refColMap?? && (subtb.refColMap?size==1)>
 	<#if subtb.refType=="OneToOne" || subtb.refType=="ManyToOne">
 	
-	public void set${subtb.entityName}(${subtb.entityName} ${subtb.fstLowEntityName}){
-		this.${subtb.fstLowEntityName}=${subtb.fstLowEntityName};
+	public void set${subtb.entName}(${subtb.entName} ${subtb.lowEntName}){
+		this.${subtb.lowEntName}=${subtb.lowEntName};
 	}
 	
-	public ${subtb.entityName} get${subtb.entityName}(){
-		return this.${subtb.fstLowEntityName};
+	public ${subtb.entName} get${subtb.entName}(){
+		return this.${subtb.lowEntName};
 	}
 	<#elseif subtb.refType=="OneToMany" || subtb.refType=="ManyToMany">
 	
-	public void set${subtb.entityName}Set(List<${subtb.entityName}> ${subtb.fstLowEntityName}Set){
-		this.${subtb.fstLowEntityName}Set=${subtb.fstLowEntityName}Set;
+	public void set${subtb.entName}Set(List<${subtb.entName}> ${subtb.lowEntName}Set){
+		this.${subtb.lowEntName}Set=${subtb.lowEntName}Set;
 	}
-	public Set<${subtb.entityName}> get${subtb.entityName}Set(){
-		return this.${subtb.fstLowEntityName}Set;
+	public Set<${subtb.entName}> get${subtb.entName}Set(){
+		return this.${subtb.lowEntName}Set;
 	}
 	</#if>
 	</#if>

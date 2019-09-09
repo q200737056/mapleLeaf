@@ -1,8 +1,8 @@
 package ${basePackage}.${servicePackage}.${serviceImplPackage};
 
-import ${basePackage}.${entityPackage}.${entityName};
-import ${basePackage}.${servicePackage}.${entityName}Service;
-import ${basePackage}.${daoPackage}.${entityName}Mapper;
+import ${basePackage}.${entityPackage}.${entName};
+import ${basePackage}.${servicePackage}.${entName}Service;
+import ${basePackage}.${daoPackage}.${entName}Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,22 +10,22 @@ import org.springframework.stereotype.Service;
  * ${remark!}操作相关
  */
 @Service
-public class ${entityName}ServiceImpl implements ${entityName}Service {
+public class ${entName}ServiceImpl implements ${entName}Service {
 
 	@Autowired
-	private ${entityName}Dao ${fstLowEntityName}Dao;
+	private ${entName}Dao ${lowEntName}Dao;
 	
 	/**
 	 * 分页查询
 	 */
-	 public List<${entityName}> find${entityName}Page(${entityName} ${fstLowEntityName}){
-	 	return ${fstLowEntityName}Mapper.find${entityName}Page(${entityName} ${fstLowEntityName});
+	 public List<${entName}> find${entName}Page(${entName} ${lowEntName}){
+	 	return ${lowEntName}Mapper.find${entName}Page(${entName} ${lowEntName});
 	 }
 	/**
 	 * 新增
 	 */
-	 public int insert${entityName}(${entityName} ${fstLowEntityName}){
-	 	return ${fstLowEntityName}Mapper.insert${entityName}(${fstLowEntityName});
+	 public int insert${entName}(${entName} ${lowEntName}){
+	 	return ${lowEntName}Mapper.insert${entName}(${lowEntName});
 	 }
 	<#if uniIdxMap??>
     <#assign keys=uniIdxMap?keys />
@@ -33,20 +33,20 @@ public class ${entityName}ServiceImpl implements ${entityName}Service {
     /**
 	 * 根据唯一索引${key}查找
 	 */
-	 public ${entityName} find${entityName}By${key?lower_case?cap_first}(${entityName} ${fstLowEntityName}){
-	 	return ${fstLowEntityName}Mapper.find${entityName}By${key?lower_case?cap_first}(${fstLowEntityName});
+	 public ${entName} find${entName}By${key?lower_case?cap_first}(${entName} ${lowEntName}){
+	 	return ${lowEntName}Mapper.find${entName}By${key?lower_case?cap_first}(${lowEntName});
 	 }
 	/**
 	 * 根据唯一索引${key}修改
 	 */
-	 public int update${entityName}By${key?lower_case?cap_first}(${entityName} ${fstLowEntityName}){
-	 	return ${fstLowEntityName}Mapper.update${entityName}By${key?lower_case?cap_first}(${fstLowEntityName});
+	 public int update${entName}By${key?lower_case?cap_first}(${entName} ${lowEntName}){
+	 	return ${lowEntName}Mapper.update${entName}By${key?lower_case?cap_first}(${lowEntName});
 	 }
 	/**
 	 * 根据唯一索引${key}删除
 	 */
-	 public int delete${entityName}By${key?lower_case?cap_first}(${entityName} ${fstLowEntityName}){
-	 	return ${fstLowEntityName}Mapper.delete${entityName}By${key?lower_case?cap_first}(${fstLowEntityName});
+	 public int delete${entName}By${key?lower_case?cap_first}(${entName} ${lowEntName}){
+	 	return ${lowEntName}Mapper.delete${entName}By${key?lower_case?cap_first}(${lowEntName});
 	 }
 	</#list>
     </#if>
@@ -56,8 +56,8 @@ public class ${entityName}ServiceImpl implements ${entityName}Service {
     /**
 	 * 根据输入条件 关联查询
 	 */
-	 public List<Map> find${entityName}ByCons(Map map){
-	 	return ${fstLowEntityName}Mapper.find${entityName}ByCons(Map map);
+	 public List<Map> find${entName}ByCons(Map map){
+	 	return ${lowEntName}Mapper.find${entName}ByCons(Map map);
 	 }	
     </#if>
     </#list>

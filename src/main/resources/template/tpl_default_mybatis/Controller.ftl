@@ -1,7 +1,7 @@
 package ${basePackage}.${controllerPackage};
 
-import ${basePackage}.${entityPackage}.${entityName};
-import ${basePackage}.${servicePackage}.${entityName}Service;
+import ${basePackage}.${entityPackage}.${entName};
+import ${basePackage}.${servicePackage}.${entName}Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,22 +17,22 @@ import javax.servlet.http.HttpServletRequest;
  * ${remark!}
  */
 @Controller
-@RequestMapping(value = "/${fstLowEntityName}")
-public class ${entityName}Controller {
+@RequestMapping(value = "/${lowEntName}")
+public class ${entName}Controller {
 
     
     @Autowired
-    private ${entityName}Service ${fstLowEntityName}Service;
+    private ${entName}Service ${lowEntName}Service;
 
     /**
     * 分页查询，显示列表
     */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public String list(Model model,${entityName} ${fstLowEntityName}) {
-        List<${entityName}> list = ${fstLowEntityName}Service.find${entityName}Page(${fstLowEntityName});
+    public String list(Model model,${entName} ${lowEntName}) {
+        List<${entName}> list = ${lowEntName}Service.find${entName}Page(${lowEntName});
         model.addAttribute("list", list);
         
-        return "${fstLowEntityName}/list";
+        return "${lowEntName}/list";
     }
     /**
     * to新增页面
@@ -40,7 +40,7 @@ public class ${entityName}Controller {
     @RequestMapping(value = "/toAdd", method = RequestMethod.POST)
     public String toAdd(Model model){
        	
-        return "${fstLowEntityName}/add";
+        return "${lowEntName}/add";
     }
      /**
     * to修改页面
@@ -48,15 +48,15 @@ public class ${entityName}Controller {
     @RequestMapping(value = "/toUpdate", method = RequestMethod.POST)
     public String toUpdate(Model model){
        	
-        return "${fstLowEntityName}/update";
+        return "${lowEntName}/update";
     }
     /**
     * 新增
     */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String add(RedirectAttributes redirectAttributes, ${entityName} ${fstLowEntityName}){
+    public String add(RedirectAttributes redirectAttributes, ${entName} ${lowEntName}){
        	
-       	int rst = ${fstLowEntityName}Service.insert${entityName}(${fstLowEntityName});
+       	int rst = ${lowEntName}Service.insert${entName}(${lowEntName});
        	if(rst>0){
        		redirectAttributes.addFlashAttribute("msg", "新增成功");
        	}else{
@@ -71,9 +71,9 @@ public class ${entityName}Controller {
     * 修改
     */
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public String update(RedirectAttributes redirectAttributes, ${entityName} ${fstLowEntityName}){
+    public String update(RedirectAttributes redirectAttributes, ${entName} ${lowEntName}){
        	
-       	int rst = ${fstLowEntityName}Service.update${entityName}By${key?lower_case?cap_first}(${fstLowEntityName});
+       	int rst = ${lowEntName}Service.update${entName}By${key?lower_case?cap_first}(${lowEntName});
        	if(rst>0){
        		redirectAttributes.addFlashAttribute("msg", "修改成功");
        	}else{
@@ -85,9 +85,9 @@ public class ${entityName}Controller {
     * 删除
     */
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public String delete(RedirectAttributes redirectAttributes, ${entityName} ${fstLowEntityName}){
+    public String delete(RedirectAttributes redirectAttributes, ${entName} ${lowEntName}){
        	
-       	int rst = ${fstLowEntityName}Service.delete${entityName}By${key?lower_case?cap_first}(${fstLowEntityName});
+       	int rst = ${lowEntName}Service.delete${entName}By${key?lower_case?cap_first}(${lowEntName});
        	if(rst>0){
        		redirectAttributes.addFlashAttribute("msg", "删除成功");
        	}else{

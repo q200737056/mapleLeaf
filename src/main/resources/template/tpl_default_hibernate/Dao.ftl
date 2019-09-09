@@ -1,19 +1,19 @@
 package ${basePackage}.${daoPackage};
 
-import ${basePackage}.${entityPackage}.${entityName};
+import ${basePackage}.${entityPackage}.${entName};
 
 /**
  * ${remark!}操作相关
  */
-public interface ${entityName}Dao {
+public interface ${entName}Dao {
 	/**
 	 * 分页查询
 	 */
-	 public List<${entityName}> find${entityName}Page(${entityName} ${fstLowEntityName});
+	 public List<${entName}> find${entName}Page(${entName} ${lowEntName});
 	/**
 	 * 新增
 	 */
-	 public int insert${entityName}(${entityName} ${fstLowEntityName});
+	 public int insert${entName}(${entName} ${lowEntName});
 	<#if uniIdxMap?? && (uniIdxMap?size>0)>
     <#assign keys=uniIdxMap?keys />
     <#list keys as key>
@@ -21,15 +21,15 @@ public interface ${entityName}Dao {
     /**
 	 * 根据主键查找
 	 */
-	  public ${entityName} get${entityName}ById(Long id);
+	  public ${entName} get${entName}ById(Long id);
 	 /**
 	 * 修改
 	 */
-	 public int update${entityName}(${entityName} ${fstLowEntityName});
+	 public int update${entName}(${entName} ${lowEntName});
 	/**
 	 * 根据主键删除
 	 */
-	 public int delete${entityName}ById(Long id);
+	 public int delete${entName}ById(Long id);
 	 <#else>
     
 	 </#if>

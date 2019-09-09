@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,79 +70,6 @@ public class InformixTableService extends AbstractTableService {
     	return super.getTable(tbConf, module, con);
     } 
     
-    /**
-     * 获取数据表的所有字段
-     * @param table
-     * @param conn
-     * @throws SQLException
-     */
-    /*public void getTableColumns(Table table,Module module,Connection conn,Map<String,String> map) throws SQLException {
-	    	String pks = getTablePrimaryKey(table.getTableFullName(),conn);
-	    	List<String> pkCols = Arrays.asList(pks.split(","));
-	    	
-	    	boolean isCamel = module.isColumnIsCamel();
-	    	
-    		Map<String,List<Column>> index = new HashMap<>();//唯一索引，主键
-    		
-			String sql="SELECT c.* FROM syscolumns c, systables t WHERE c.tabid=t.tabid AND t.tabname=?";
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1,table.getTableFullName());
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				Column col = new Column();
-	        	String colName = rs.getString("colname");//字段名
-	        	col.setColumnName(colName);
-	        	int type = rs.getInt("coltype");//字段类型
-	        	String type_str=Informixconvert(type);
-	        	col.setColumnType(CodeUtil.convertJdbcType(type_str, module.getPersistance()));
-	        	col.setRemark(null);//没有
-	        	col.setPropertyName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)
-	        			:colName);//属性 就是 字段名
-	        	col.setPropertyType(CodeUtil.convertType(type_str));//属性 类型
-	        	col.setFstUpperProName(isCamel?CodeUtil.convertToCamelCase(colName)
-	        			:CodeUtil.converFirstUpper(colName));//首字母大写
-	        	col.setNullable(true);//默认 true
-	        	col.setLength((long)rs.getInt("collength"));//字段长度
-	        	col.setDefaultValue("");
-	        	
-	        	
-	        	if ("Date,BigDecimal".contains(col.getPropertyType())
-	        			&& !CodeUtil.existsType(table.getImportClassList(),col.getPropertyType())) {
-	        		table.getImportClassList().add(CodeUtil.convertClassType(col.getPropertyType()));//需要导入的类 的集合
-	        	}
-	        	
-	        	//判断字段是否主键
-	        	if(CodeUtil.isPrimaryKey(pkCols, colName)){
-	        		col.setPk(true);
-	        	}
-	        	table.getColumns().add(col);
-	        	
-	        	//唯一索引,主键
-	        	if(!map.isEmpty()){
-	        		for(Map.Entry<String, String> entry:map.entrySet()){
-	        			String v = entry.getValue();
-	        			String k = entry.getKey();
-	        			if(v.contains(colName)){
-	        				if(index.get(k)!=null){
-	        					index.get(k).add(col);
-	        				}else{
-	        					List<Column> columns = new ArrayList<>();
-	        					columns.add(col);
-	        					index.put(k, columns);
-	        				}
-	        				
-	        			}
-	        			
-	        		}
-	        	}
-			}
-			if(!index.isEmpty()){
-				table.setUniIdxMap(index);//唯一索引集
-			}
-			rs.close();
-			ps.close();
-		
-    }*/
     
     /**
      * 获取数据表的所有字段
@@ -163,15 +91,15 @@ public class InformixTableService extends AbstractTableService {
 			while (rs.next()) {
 				Column col = new Column();
 				String colName = rs.getString("colname");//字段名
-	        	col.setColumnName(colName);
+	        	col.setColName(colName);
 	        	int type = rs.getInt("coltype");//字段类型
 	        	String type_str=Informixconvert(type);
-	        	col.setColumnType(CodeUtil.convertJdbcType(type_str, module.getPersistance()));
-	        	col.setRemark(null);//没有
-	        	col.setPropertyName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)
+	        	col.setColType(CodeUtil.convertJdbcType(type_str, module.getPersistance()));
+	        	col.setRemark("");//没有
+	        	col.setPropName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)
 	        			:colName);//属性 就是 字段名
-	        	col.setPropertyType(CodeUtil.convertType(type_str));//属性 类型
-	        	col.setFstUpperProName(isCamel?CodeUtil.convertToCamelCase(colName)
+	        	col.setPropType(CodeUtil.convertType(type_str));//属性 类型
+	        	col.setUpperPropName(isCamel?CodeUtil.convertToCamelCase(colName)
 	        			:CodeUtil.converFirstUpper(colName));//首字母大写
 	        	col.setNullable(true);//默认 true
 	        	col.setLength((long)rs.getInt("collength"));//字段长度
@@ -199,7 +127,35 @@ public class InformixTableService extends AbstractTableService {
      */
 	@Override
     public Map<String,String> getTableUniqueIdx(String tableName, Connection con) throws SQLException{
-    	return super.getTableUniqueIdx(tableName, con);
+		Map<String,String> map = new HashMap<>();
+		
+		String sql="select b.idxname, a.colname,a.colno from  syscolumns  a ,"
+				+ "sysindexes b ,systables c where  (a.colno=b.part1 or a.colno=b.part2 or a.colno=b.part3"
+				+ " or a.colno=b.part4 or a.colno=b.part5) and a.tabid =b.tabid and a.tabid = c.tabid"
+				+ " and c.tabname=?";
+		PreparedStatement ps = con.prepareStatement(sql);
+		ps.setString(1,tableName);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()){
+			String idxName = rs.getString("idxname");
+			if(idxName==null){
+				continue;
+			}else{
+				idxName = idxName.toLowerCase();
+			}
+			String colName = rs.getString("colname");
+			if(colName!=null){
+				colName = colName.toLowerCase();
+			}
+			String v = map.get(idxName);
+			if(v==null){
+				map.put(idxName, colName+",");
+			}else{
+				map.put(idxName, v+colName+",");
+			}
+		}
+		rs.close();
+		return map;
 	}
 	
 	/**

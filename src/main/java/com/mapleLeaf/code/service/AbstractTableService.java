@@ -55,7 +55,7 @@ public abstract class AbstractTableService implements ITableService {
     	//封装 table 数据
         Table table = renderTable(tbConf, module,con);
       
-        System.out.println("表名："+table.getTableFullName());
+        System.out.println("表名："+table.getTabName());
         
         //是否有关联表
         if (!tbConf.getRefConfs().isEmpty()) {
@@ -77,24 +77,27 @@ public abstract class AbstractTableService implements ITableService {
      */
     protected Table renderTable(TableConf tbConf,Module module,Connection conn) 
     		throws SQLException{
+    	 //表名
     	 String tableName =tbConf.getName();
+    	 //去掉前缀 的表名
+    	 String mvPrefix=tbConf.getName();
     	 //得到 唯一主键 ，索引
     	 Map<String,String> map = this.getTableUniqueIdx(tableName, conn);
     	 
     	 Table table = new Table(); 
     	 
 		 table.setExclude(tbConf.getExclude());
-		 table.setTableFullName(tableName);//表名
-		 table.setTableName(tableName);//如果去前缀,则去了前缀的 表名
+		 table.setTabName(tableName);//表名
+		
 		 //自定义 表名前缀
 		 if (module.isDeleteTablePrefix() && !CodeUtil.isEmpty(tbConf.getPrefix())){
-		 	table.setTableName(tableName.toLowerCase().replaceFirst(tbConf.getPrefix().toLowerCase(), ""));
+		 	mvPrefix = tableName.toLowerCase().replaceFirst(tbConf.getPrefix().toLowerCase(), "");
 		 //全局 表名前缀
 		 }else if(module.isDeleteTablePrefix() && !CodeUtil.isEmpty(module.getBaseTabPrefix())){
 		 	String[] prefixs = module.getBaseTabPrefix().replace("，", ",").split(",");
 		 	for(int i=0;i<prefixs.length;i++){
 		 		if(tableName.toLowerCase().indexOf(prefixs[i].trim().toLowerCase())==0){
-		 			table.setTableName(tableName.toLowerCase().replaceFirst(prefixs[i].trim().toLowerCase(), ""));
+		 			mvPrefix = tableName.toLowerCase().replaceFirst(prefixs[i].trim().toLowerCase(), "");
 		 			break;
 		 		}
 		 		
@@ -102,28 +105,32 @@ public abstract class AbstractTableService implements ITableService {
 		 }
 		 table.setRemark(getTableRemark(tableName, conn));//表 注释
 	      //实体类名,如果没设置实体类名属性，则,首字母大写的驼峰命名 
-         table.setEntityName(CodeUtil.isEmpty(tbConf.getEntityName())
-        		?CodeUtil.convertToCamelCase(table.getTableName()):tbConf.getEntityName());
+         table.setEntName(CodeUtil.isEmpty(tbConf.getEntityName())
+        		?CodeUtil.convertToCamelCase(mvPrefix):tbConf.getEntityName());
         //首字母小写的驼峰命名
-         table.setFstLowEntityName(CodeUtil.convertToFstLowerCamelCase(table.getTableName()));
+         table.setLowEntName(CodeUtil.convertToFstLowerCamelCase(mvPrefix));
     	
     	Map<String,List<Column>> index = new HashMap<>();//唯一索引，主键
     	//获取字段
     	List<Column> cols = getTableColumns(tableName, module, conn);
     	
     	//主键字段集
-    	String pks = getTablePrimaryKey(table.getTableFullName(),conn);
+    	String pks = getTablePrimaryKey(table.getTabName(),conn);
     	List<String> pkCols = Arrays.asList(pks.split(","));
     	
     	for(Column col : cols){
     		
     		if(!CodeUtil.isEmpty(col.getRemark())){
-				//字段 文本 默认 COMMENT中取   COMMENT形式(字段文本;val1:text1,val2:text2;)
+				//字段 文本,表单类型,字段标识 默认 COMMENT中取  
+    			//COMMENT约定形式(字段文本;表单类型;val1:text1,val2:text2;)
     			String[] arrTemp = col.getRemark().replace("；", ";").split(";");
 				col.setLabelName(arrTemp[0].trim());
+				if(arrTemp.length>1){
+					col.setTagType(arrTemp[1].trim());
+				}
 				if(arrTemp.length>2){
 					Map<String,String> colValMap = CodeUtil.splitKeyVal(
-							arrTemp[1].trim().replace("：", ":"), ":");
+							arrTemp[2].trim().replace("：", ":"), ":");
 					if(colValMap!=null){
 						col.setColValueMap(colValMap);
 					}
@@ -140,12 +147,12 @@ public abstract class AbstractTableService implements ITableService {
     		
     		
     		//需要导入的类 的集合
-    		if ("Date,BigDecimal".contains(col.getPropertyType())
-        			&& !CodeUtil.existsType(table.getImportClassList(),col.getPropertyType())) {
-        		table.getImportClassList().add(CodeUtil.convertClassType(col.getPropertyType()));
+    		if ("Date,BigDecimal".contains(col.getPropType())
+        			&& !CodeUtil.existsType(table.getImpClasses(),col.getPropType())) {
+        		table.getImpClasses().add(CodeUtil.convertClassType(col.getPropType()));
         	}
     		//判断字段是否主键
-        	if(CodeUtil.isPrimaryKey(pkCols, col.getColumnName())){
+        	if(CodeUtil.isPrimaryKey(pkCols, col.getColName())){
         		col.setPk(true);
         	}
         	
@@ -157,7 +164,7 @@ public abstract class AbstractTableService implements ITableService {
         		for(Map.Entry<String, String> entry:map.entrySet()){
         			String v = entry.getValue();
         			String k = entry.getKey();
-        			if(v.contains(col.getColumnName())){
+        			if(v.contains(col.getColName())){
         				if(index.get(k)!=null){
         					index.get(k).add(col);
         				}else{
@@ -188,34 +195,37 @@ public abstract class AbstractTableService implements ITableService {
      */
     protected RefTable renderRefTable(RefConf refCof,Module module,Connection conn) throws SQLException{
     	RefTable ref = new RefTable();
+    	//表名
     	String tableName = refCof.getRefName();
+    	//去掉前缀 的表名
+   	 	String mvPrefix=refCof.getRefName();
+   	 	
+    	ref.setTabName(tableName);//表名
     	
-    	ref.setTableFullName(tableName);//表名
-    	ref.setTableName(tableName);//如果去前缀,则去了前缀的 表名
 		 //自定义 表名前缀
 		 if (module.isDeleteTablePrefix() && !CodeUtil.isEmpty(refCof.getPrefix())){
-			 ref.setTableName(tableName.toLowerCase().replaceFirst(refCof.getPrefix().toLowerCase(), ""));
+			 mvPrefix=tableName.toLowerCase().replaceFirst(refCof.getPrefix().toLowerCase(), "");
 		 //全局 表名前缀
 		 }else if(module.isDeleteTablePrefix() && !CodeUtil.isEmpty(module.getBaseTabPrefix())){
 		 	String[] prefixs = module.getBaseTabPrefix().replace("，", ",").split(",");
 		 	for(int i=0;i<prefixs.length;i++){
 		 		if(tableName.toLowerCase().indexOf(prefixs[i].trim().toLowerCase())==0){
-		 			ref.setTableName(tableName.toLowerCase().replaceFirst(prefixs[i].trim().toLowerCase(), ""));
+		 			mvPrefix=tableName.toLowerCase().replaceFirst(prefixs[i].trim().toLowerCase(), "");
 		 			break;
 		 		}
 		 		
 		 	}
 		 }
 		//实体类名,如果没设置实体类名属性，则,首字母大写的驼峰命名 
-         ref.setEntityName(CodeUtil.isEmpty(refCof.getEntityName())
-        		?CodeUtil.convertToCamelCase(ref.getTableName()):refCof.getEntityName());
+         ref.setEntName(CodeUtil.isEmpty(refCof.getEntityName())
+        		?CodeUtil.convertToCamelCase(mvPrefix):refCof.getEntityName());
         //首字母小写的驼峰命名
-         ref.setFstLowEntityName(CodeUtil.convertToFstLowerCamelCase(ref.getTableName()));
+         ref.setLowEntName(CodeUtil.convertToFstLowerCamelCase(mvPrefix));
 		 
         //获取字段  
      	List<Column> cols = getTableColumns(tableName, module, conn);
      	
-     	String pks = getTablePrimaryKey(ref.getTableFullName(),conn);
+     	String pks = getTablePrimaryKey(ref.getTabName(),conn);
     	List<String> pkCols = Arrays.asList(pks.split(","));
     	
      	for(Column col : cols){
@@ -241,7 +251,7 @@ public abstract class AbstractTableService implements ITableService {
     			}
     		}
      		//判断字段是否主键
-        	if(CodeUtil.isPrimaryKey(pkCols, col.getColumnName())){
+        	if(CodeUtil.isPrimaryKey(pkCols, col.getColName())){
         		col.setPk(true);
         	}
         	ref.getColumns().add(col);
@@ -263,8 +273,8 @@ public abstract class AbstractTableService implements ITableService {
 					refPropertyMap.put(itemMap[0].trim(), itemMap[1].trim());
 				}
 			}
-			ref.setRefColumnMap(refColumnMap);//关联的字段
-			ref.setRefPropertyMap(refPropertyMap);//关联字段对应的属性
+			ref.setRefColMap(refColumnMap);//关联的字段
+			ref.setRefPropMap(refPropertyMap);//关联字段对应的属性
 		}
 		ref.setRefType(refCof.getRefType());//关联 方式
      	
@@ -282,19 +292,19 @@ public abstract class AbstractTableService implements ITableService {
 		String exc = colGoup.getExclude();
 		if(exc!=null){
 			if(Arrays.asList(exc.replace("，", ",").split(","))
-					.contains(col.getColumnName())){
+					.contains(col.getColName())){
 				return null;
 			}
 		}else{
 			String inc = colGoup.getInclude();
 			if(inc!=null && !Arrays.asList(inc.replace("，", ",").split(","))
-					.contains(col.getColumnName())){
+					.contains(col.getColName())){
 				return null;
 			}
 		}
 		//字段属性 自定义 
 		Map<String,ColumnConf> colConfMap = colGoup.getColConfMap();
-		ColumnConf colConf = colConfMap.get(col.getColumnName());
+		ColumnConf colConf = colConfMap.get(col.getColName());
 		if(colConf!=null){
 			String labelName = colConf.getLabelName();
 			if(!CodeUtil.isEmpty(labelName)){
@@ -329,7 +339,15 @@ public abstract class AbstractTableService implements ITableService {
 		ResultSet rs = dbMeta.getIndexInfo(null, null, tableName, true, false);
 		while (rs.next()){
 			String idxName = rs.getString("index_name");
+			if(idxName==null){
+				continue;
+			}else{
+				idxName = idxName.toLowerCase();
+			}
 			String colName = rs.getString("column_name");
+			if(colName!=null){
+				colName = colName.toLowerCase();
+			}
 			String v = map.get(idxName);
 			if(v==null){
 				map.put(idxName, colName+",");
