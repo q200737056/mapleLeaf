@@ -178,7 +178,7 @@ public class DataBase2File {
     	File saveFile = new File(saveDir,table.getEntName()+".java");
     	
     	String savePath =saveFile.getAbsolutePath();
-    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, "Entity", savePath);
+    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+"Entity", savePath);
     	log.info("生成文件："+savePath);
     	
     }
@@ -192,7 +192,7 @@ public class DataBase2File {
     	File saveFile = new File(saveDir,tmpl+".java");
 
     	String savePath =saveFile.getAbsolutePath();
-    	FreemarkerUtil.createDoc(config.getFmkConf(),null, tmpl, savePath);
+    	FreemarkerUtil.createDoc(config.getFmkConf(),null, config.getTplName()+"/"+tmpl, savePath);
     	log.info("生成文件："+savePath);
     }
 
@@ -228,7 +228,7 @@ public class DataBase2File {
     	File saveFile = new File(saveDir,fileName);
     	String savePath =saveFile.getAbsolutePath();
     	
-    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, "Dao", savePath);
+    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+"Dao", savePath);
     	log.info("生成文件："+savePath);
     	//dao实现类
     	if (module.getPersistance().toLowerCase()
@@ -237,7 +237,7 @@ public class DataBase2File {
 	    	
 	    	File implFile = new File(implDir,table.getEntName()+"DaoImpl.java");
 	    	String implPath =implFile.getAbsolutePath();
-	    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, "DaoImpl", implPath);
+	    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+"DaoImpl", implPath);
 	    	log.info("生成文件："+implPath);
     	}else if (module.getPersistance().toLowerCase()
     			.equals("mybatis")) {
@@ -247,7 +247,7 @@ public class DataBase2File {
     		saveDir=getSaveFilePath(module.getMapperPackage(),config);
     		File implFile = new File(saveDir,table.getEntName()+"Mapper.xml");
 	    	String implPath =implFile.getAbsolutePath();
-	    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, "Mapper", implPath);
+	    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+"Mapper", implPath);
 	    	log.info("生成文件："+implPath);
     	}else{
     		//log.info("该ORM框架不支持或不存在！");
@@ -255,7 +255,7 @@ public class DataBase2File {
 	    	
 	    	File implFile = new File(implDir,table.getEntName()+"DaoImpl.java");
 	    	String implPath =implFile.getAbsolutePath();
-	    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, "DaoImpl", implPath);
+	    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+"DaoImpl", implPath);
 	    	log.info("生成文件："+implPath);
     	}
     }
@@ -270,13 +270,13 @@ public class DataBase2File {
     	File saveFile = new File(saveDir,table.getEntName()+"Service.java");
     	String savePath =saveFile.getAbsolutePath();
     	log.info("生成文件："+savePath);
-    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, "Service", savePath);
+    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+"Service", savePath);
     	//实现类
     	File implDir=getSaveFilePath(module.getServicePackage()+File.separator+module.getServiceImplPackage(),config);
     	File implFile = new File(implDir,table.getEntName()+"ServiceImpl.java");
     	String implPath =implFile.getAbsolutePath();
     	
-    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, "ServiceImpl", implPath);
+    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+"ServiceImpl", implPath);
     	log.info("生成文件："+implPath);
     }
 
@@ -291,7 +291,7 @@ public class DataBase2File {
     	File saveFile = new File(saveDir,table.getEntName()+"Controller.java");
 
     	String savePath =saveFile.getAbsolutePath();
-    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, "Controller", savePath);
+    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+"Controller", savePath);
     	log.info("生成文件："+savePath);
     }
 
@@ -314,7 +314,7 @@ public class DataBase2File {
 	    	
 	    	String savePath =saveFile.getAbsolutePath();
 	    	log.info("生成文件："+savePath);
-	    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, action.trim(), savePath);
+	    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+action.trim(), savePath);
     	}
     }
 
@@ -337,7 +337,7 @@ public class DataBase2File {
 			
 			String savePath =saveFile.getAbsolutePath();
 			log.info("生成文件："+savePath);
-			FreemarkerUtil.createDoc(config.getFmkConf(),obj, action.trim(), savePath);
+			FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+action.trim(), savePath);
 		}
 	}
    

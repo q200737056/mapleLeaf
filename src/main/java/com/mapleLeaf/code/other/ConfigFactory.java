@@ -18,6 +18,7 @@ import com.mapleLeaf.code.confbean.Db;
 import com.mapleLeaf.code.confbean.Module;
 import com.mapleLeaf.code.confbean.RefConf;
 import com.mapleLeaf.code.confbean.TableConf;
+import com.mapleLeaf.code.utils.CodeUtil;
 import com.mapleLeaf.code.utils.XmlUtil;
 import com.mapleLeaf.common.util.FileTool;
 
@@ -29,14 +30,19 @@ public class ConfigFactory {
 	    configuration.setDefaultEncoding("utf-8");
 	   
 	    tplPath = FileTool.getRealPath(tplPath);
+	    if(tplPath.replace("\\", "/").endsWith("/")){
+	    	tplPath = tplPath.substring(0,tplPath.length()-1);
+	    }
+	    String basePath = tplPath.substring(0,tplPath.lastIndexOf("/")+1);
 	    //configuration.setClassForTemplateLoading(ConfigFactory.class,tplPath);
 	    try {
-			configuration.setDirectoryForTemplateLoading(new File(tplPath));
+			configuration.setDirectoryForTemplateLoading(new File(basePath));
 		} catch (IOException e2) {
 			e2.printStackTrace();
 		}
 		Config config = new Config();
 		
+		config.setTplName(tplPath.substring(tplPath.lastIndexOf("/")+1,tplPath.length()));
 		config.setFmkConf(configuration);
 		
 		String realPath = FileTool.getRealPath(configFile);
@@ -194,7 +200,10 @@ public class ConfigFactory {
 		List<Element> tables = XmlUtil.getChildElements(module, "table");//module可以包含多个table
 		for (Element e : tables) {
 			TableConf m = initTableConf(e);//读取 table 标签属性
-			
+			//排除表名空的
+			if(CodeUtil.isEmpty(m.getName())){
+				continue;
+			}
 			
 			tableList.add(m);
 		}
@@ -211,7 +220,7 @@ public class ConfigFactory {
 		TableConf m = new TableConf();
 		
 		m.setEntityName(XmlUtil.getAttrValue(e, "entityName", null));//实体类型
-		m.setName(XmlUtil.getAttrValue(e, "name", null));//表名
+		m.setName(XmlUtil.getAttrValue(e, "name", "").toLowerCase());//表名 转小写
 		m.setPrefix(XmlUtil.getAttrValue(e, "prefix", null));//前缀
 		m.setExclude(XmlUtil.getAttrValue(e, "exclude", null));//实排除指定模板的文件生成
 		
@@ -220,6 +229,10 @@ public class ConfigFactory {
 		if(refs!=null && refs.size()>0){
 			for(Element ref : refs){
 				RefConf refConf = initRefConf(ref);
+				//排除 表名空的
+				if(CodeUtil.isEmpty(refConf.getRefName())){
+					continue;
+				}
 				m.getRefConfs().add(refConf);
 			}
 		}
@@ -278,6 +291,10 @@ public class ConfigFactory {
 		if(columns!=null&&columns.size()>0){
 			for(Element ele : columns){
 				ColumnConf tmp = initColumnConf(ele);
+				//排除字段名空的
+				if(CodeUtil.isEmpty(tmp.getColName())){
+					continue;
+				}
 				cnf.getColConfMap().put(tmp.getColName().toLowerCase(), tmp);
 			}
 		}

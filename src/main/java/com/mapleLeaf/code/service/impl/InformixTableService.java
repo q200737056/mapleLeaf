@@ -101,7 +101,7 @@ public class InformixTableService extends AbstractTableService {
 	        	col.setPropType(CodeUtil.convertType(type_str));//属性 类型
 	        	col.setUpperPropName(isCamel?CodeUtil.convertToCamelCase(colName)
 	        			:CodeUtil.converFirstUpper(colName));//首字母大写
-	        	col.setNullable(true);//默认 true
+	        	col.setNullable(true);//默认 允许为空
 	        	col.setLength((long)rs.getInt("collength"));//字段长度
 	        	col.setDefaultValue("");
 	        	
@@ -132,7 +132,7 @@ public class InformixTableService extends AbstractTableService {
 		String sql="select b.idxname, a.colname,a.colno from  syscolumns  a ,"
 				+ "sysindexes b ,systables c where  (a.colno=b.part1 or a.colno=b.part2 or a.colno=b.part3"
 				+ " or a.colno=b.part4 or a.colno=b.part5) and a.tabid =b.tabid and a.tabid = c.tabid"
-				+ " and c.tabname=?";
+				+ " and b.idxtype='U' and c.tabname=?";
 		PreparedStatement ps = con.prepareStatement(sql);
 		ps.setString(1,tableName);
 		ResultSet rs = ps.executeQuery();

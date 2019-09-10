@@ -22,6 +22,7 @@ public class Config {
 	private String persistance; //持久层框架
 	private Db db; //连接数据库的配置信息
 	private List<Module> modules; //要生成的代码模块列表
+	private String tplName;//选择生成代码的模板
 	
 	private Map<String,List<String>> commonMap=new HashMap<>(); //公共类map
 	
@@ -87,6 +88,11 @@ public class Config {
 	public void setBaseTabPrefix(String baseTabPrefix) {
 		this.baseTabPrefix = baseTabPrefix;
 	}
-	
+	public String getTplName() {
+		return tplName;
+	}
+	public void setTplName(String tplName) {
+		this.tplName = tplName;
+	}
 	
 }
