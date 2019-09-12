@@ -1,36 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 使用前，请好好查看配置文件说明及使用说明-->
 <configure>
-	<!--生成代码路径  -->
-	<basedir>f:\\code</basedir>
-	<!--基础包名-->
-	<basePackage>com.test</basePackage>
-	<!-- 是否去表名前缀 ,默认false-->
-	<isDeleteTablePrefix>false</isDeleteTablePrefix>
-	<!-- 全局表名前缀，可以多个，英文逗号分隔 ,默认""-->
-	<baseTabPrefix>sys_,wxcms_</baseTabPrefix>
-	<!-- 表字段下划线是否转成驼峰命名 ,默认false-->
-	<columnIsCamel>false</columnIsCamel>
-	<!-- 持久层框架 -->
-	<persistance>mybatis</persistance>
-	<!-- 一些公共类，工具类,父类等原样输出，仅仅用来辅助下面的代码生成,不必需(包名=模板文件名(也是类名)，多个英文逗号隔开) -->
-	<!-- 这里配置了分页类，mybatis分页拦截器, mybatis通用配置-->
-	<!--  
-	<common>common=Page,common=PageInterceptor,resource=Xml_mybatis</common>
-	-->
+	<global>
+		<!--生成代码路径 ,默认项目所在目录-->
+		<property name="baseDir" value="f:\\code" />
+		<!--基础包名，默认mapleLeaf.code-->
+		<property name="basePackage" value="com.test" />
+		<!-- 是否去表名前缀 ,默认false-->
+		<property name="deleteTabPrefix" value="false" />
+		<!-- 全局表名前缀，多个逗号分隔 ,默认""-->
+		<property name="baseTabPrefix" value="sys_,wxcms_" />
+		<!-- 表字段是否下划线转驼峰命名 ，默认false-->
+		<property name="columnCamel" value="false" />
+		<!-- 持久层框架(mybatis,hibernate)，默认"mybatis" -->
+		<property name="persistance" value="mybatis" />
+		<!-- 一些公共类，工具类,父类等原样输出，仅仅用来辅助下面的代码生成,不必需(包名=模板文件名(也是类名)，多个逗号隔开) -->
+		<!-- 这里配置了分页类，mybatis分页拦截器, mybatis通用配置-->
+		<!--  
+		<common>common=Page,common=PageInterceptor,resource=Xml_mybatis</common>
+		-->
+	</global>
+
 	<!-- 数据库配置 -->
 	<db>
-		<dbType>mysql</dbType>
-		<dbName>wxmp</dbName>
-		<user>root</user>
-		<pwd>q123</pwd>
-		<driver>com.mysql.jdbc.Driver</driver>
-		<url>jdbc:mysql://localhost:3306/wxmp?useUnicode=true&amp;characterEncoding=UTF-8</url>
+		<!-- 数据库类型 -->
+		<property name="dbType" value="mysql"/>
+		<!-- 数据库名 -->
+		<property name="dbName" value="wxmp"/>
+		<property name="user" value="root"/>
+		<property name="pwd" value="q123"/>
+		<property name="driver" value="com.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://localhost:3306/wxmp?useUnicode=true&amp;characterEncoding=UTF-8"/>
 	</db>
-	<!-- 模块配置，可以有多个 -->
-	<module>
-		<!-- 模块名，默认"" -->
-		<name>test</name>
+	<!-- 模块配置，可以有多个,name为模块名 -->
+	<module name="test">
 		<!-- 以下各个类的包名 -->
 		<entityPackage>entity</entityPackage>
 		<daoPackage>dao</daoPackage>

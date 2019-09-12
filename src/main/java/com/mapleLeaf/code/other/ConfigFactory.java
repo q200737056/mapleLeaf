@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -55,46 +57,66 @@ public class ConfigFactory {
 		
 		Element root = XmlUtil.getRootNode(doc);
 		
-		config.setBaseDir(XmlUtil.getChild(root, "baseDir").getTextTrim());//生成文件路径
-		config.setBasePackage(XmlUtil.getChild(root, "basePackage").getTextTrim());//基础包名
-		//表字段是否驼峰命名  默认false
-		config.setColumnIsCamel(Boolean.valueOf(XmlUtil.getChildValue(root, "columnIsCamel","false")));
-		//是否去掉表前缀  默认false
-		config.setDeleteTablePrefix(Boolean.valueOf(XmlUtil.getChildValue(root, "isDeleteTablePrefix","false")));
-		//表名前缀 默认""
-		config.setBaseTabPrefix(XmlUtil.getChildValue(root, "baseTabPrefix",""));
-		//持久层 框架
-		config.setPersistance(XmlUtil.getChild(root, "persistance").getTextTrim());
-		//公共类(包名+模板)非必需
-		Element commonElm = XmlUtil.getChild(root, "common");
-		if(commonElm!=null){
-			String common = commonElm.getTextTrim();
-			if(!common.equals("")){
-				String[] commons = common.replace("，", ",").split(",");
-				for(int i=0;i<commons.length;i++){
-					String[] items = commons[i].split("=");
-					List<String> v=config.getCommonMap().get(items[0].trim());
-					if(v==null||v.isEmpty()){
-						v = new ArrayList<>();
-						v.add(items[1].trim());
-						config.getCommonMap().put(items[0].trim(), v);
-					}else{
-						v.add(items[1].trim());
+		//加载  global标签
+		Element global = XmlUtil.getChild(root, "global");
+		
+		if(global!=null){
+			// property标签
+			List<Element> props = XmlUtil.getChildElements(global,"property");
+			Map<String,String> propMap = new HashMap<>();
+			for(Element prop : props){
+				String name = XmlUtil.getAttrValue(prop, "name", "");
+				if(CodeUtil.isEmpty(name)){
+					continue;
+				}
+				String value = XmlUtil.getAttrValue(prop, "value", "");
+				propMap.put(name, value);
+			}
+			//生成文件路径 ,默认项目所在 目录
+			String baseDir = CodeUtil.isEmpty(propMap.get("baseDir"))?
+					System.getProperty("user.dir"):propMap.get("baseDir");
+			config.setBaseDir(baseDir);
+			//基础包名，默认 com.code
+			String basePackage = CodeUtil.isEmpty(propMap.get("basePackage"))?
+					"mapleLeaf.code":propMap.get("basePackage");
+			config.setBasePackage(basePackage);
+			//表字段是否下划线转驼峰命名  默认false
+		    config.setColumnIsCamel(Boolean.valueOf(propMap.get("columnCamel")));
+		    //是否去掉表前缀  默认false
+		  	config.setDeleteTablePrefix(Boolean.valueOf(propMap.get("deleteTabPrefix")));
+		    //表名前缀 默认""
+		    config.setBaseTabPrefix(propMap.get("baseTabPrefix"));
+		    //持久层框架 默认"mybatis"
+		    if(CodeUtil.checkPersistance(propMap.get("persistance"))){
+		    	config.setPersistance(propMap.get("persistance").toLowerCase());	
+		    }else{
+		    	config.setPersistance("mybatis");
+		    }
+		  	
+		  	
+			//公共类(包名+模板)非必需
+			Element commonElm = XmlUtil.getChild(global, "common");
+			if(commonElm!=null){
+				String common = commonElm.getTextTrim();
+				if(!common.equals("")){
+					String[] commons = common.replace("，", ",").split(",");
+					for(int i=0;i<commons.length;i++){
+						String[] items = commons[i].split("=");
+						List<String> v=config.getCommonMap().get(items[0].trim());
+						if(v==null||v.isEmpty()){
+							v = new ArrayList<>();
+							v.add(items[1].trim());
+							config.getCommonMap().put(items[0].trim(), v);
+						}else{
+							v.add(items[1].trim());
+						}
 					}
 				}
 			}
 		}
-		//加载数据库配置
-		Element dbNode = XmlUtil.getChild(root, "db");
-		Db db = new Db();
-		//db类型:mysql,oracle
-		db.setDbType(XmlUtil.getChild(dbNode, "dbType").getTextTrim());
-		db.setDriver(XmlUtil.getChild(dbNode, "driver").getTextTrim());
-		db.setPwd(XmlUtil.getChild(dbNode, "pwd").getTextTrim());
-		db.setUrl(XmlUtil.getChild(dbNode, "url").getTextTrim());
-		db.setUser(XmlUtil.getChild(dbNode, "user").getTextTrim());
-		db.setDbName(XmlUtil.getChild(dbNode, "dbName").getTextTrim());
-		config.setDb(db);
+		
+		//加载db配置
+		initDb(config, root);
 		
 		//加载module
 		List<Module> moduleList = new ArrayList<Module>();
@@ -108,7 +130,7 @@ public class ConfigFactory {
 			m.setBaseTabPrefix(config.getBaseTabPrefix());
 			
 			//模块名 ,默认 空字符
-			m.setName(XmlUtil.getChildValue(e, "name", ""));
+			m.setName(XmlUtil.getAttrValue(e, "name", ""));
 			
 			//加载模板中的 包名
 			m.setControllerPackage(XmlUtil.getChildValue(e, "controllerPackage",null));
@@ -189,6 +211,42 @@ public class ConfigFactory {
 		config.setModules(moduleList);
 		
 		return config;
+	}
+	/**
+	 * 加载 db配置
+	 * @throws Exception 
+	 */
+	private static void initDb(Config config,Element root) throws Exception{
+		Element dbNode = XmlUtil.getChild(root, "db");
+		if(dbNode==null){
+			throw new Exception("未配置db");
+		}
+		// property标签
+		List<Element> props = XmlUtil.getChildElements(dbNode,"property");
+		Map<String,String> propMap = new HashMap<>();
+		for(Element prop : props){
+			String name = XmlUtil.getAttrValue(prop, "name", "");
+			if(CodeUtil.isEmpty(name)){
+				continue;
+			}
+			String value = XmlUtil.getAttrValue(prop, "value", "");
+			propMap.put(name, value);
+		}
+		if(CodeUtil.isEmpty(propMap.get("dbType"))||CodeUtil.isEmpty(propMap.get("driver"))
+				||CodeUtil.isEmpty(propMap.get("user"))||CodeUtil.isEmpty(propMap.get("pwd"))
+				||CodeUtil.isEmpty(propMap.get("url"))||CodeUtil.isEmpty(propMap.get("dbName"))){
+			throw new Exception("未配置db所有项");
+		}
+		Db db = new Db();
+		//db类型:mysql,oracle等
+		db.setDbType(propMap.get("dbType"));
+		db.setDriver(propMap.get("driver"));
+		db.setDbName(propMap.get("dbName"));
+		db.setUser(propMap.get("user"));
+		db.setPwd(propMap.get("pwd"));
+		db.setUrl(propMap.get("url"));
+		
+		config.setDb(db);
 	}
 	/**
 	 * 读取table标签 及 子标签
@@ -278,14 +336,9 @@ public class ConfigFactory {
 	 */
 	private static ColumnGroupConf initColumnGroupConf(Element e){
 		ColumnGroupConf cnf = new ColumnGroupConf();
-		//如果  配置exclude了，就exclude生效
-		String exclude = XmlUtil.getAttrValue(e, "exclude", null);
-		if(exclude!=null){
-			cnf.setExclude(exclude.toLowerCase());
-		}else{
-			String include = XmlUtil.getAttrValue(e, "include", null);
-			cnf.setInclude(include==null?null:include.toLowerCase());
-		}
+		
+		cnf.setExclude(XmlUtil.getAttrValue(e, "exclude", null));
+		
 		//读取 column 标签
 		List<Element> columns = XmlUtil.getChildElements(e, "column");
 		if(columns!=null&&columns.size()>0){

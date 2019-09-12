@@ -35,70 +35,69 @@
             </thead>
             <tbody>
               <tr>
-                <td>basedir</td>
-                <td>生成代码文件的路径。如：d:\\code</td>
-                <td>是</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>basePackage</td>
-                <td>生成代码的基础包名。如：com.test</td>
-                <td>是</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>isDeleteTablePrefix</td>
-                <td>是否删除表名前缀。（true或false)默认false</td>
+                <td>global</td>
+                <td>全局配置</td>
                 <td>否</td>
                 <td>没有</td>
                 <td></td>
               </tr>
-              <tr>
-                <td>baseTabPrefix</td>
-                <td>全局表名前缀，多个用逗号分隔，如：sys_,log_。默认""</td>
-                <td>否</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>columnIsCamel</td>
-                <td>是否表字段中下划线转成驼峰命名。（true或false)默认false</td>
-                <td>否</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>persistance</td>
-                <td>持久层框架。（mybatis,hibernate,other)</td>
-                <td>是</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>common</td>
-                <td>公共类，形式：“包名=模板”多个逗号分隔，模板不需要后缀。主要是一些工具类，父类等,直接输出生成java文件，一般不需要。如：util=Page,commom.Dao=BaseDao</td>
-                <td>否</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
+            
               <tr>
                 <td>db</td>
-                <td>连接数据库的配置，含有子标签，详情看db标签说明</td>
+                <td>连接数据库的配置，详情请看db标签说明</td>
                 <td>是</td>
                 <td>没有</td>
                 <td></td>
               </tr>
               <tr>
                 <td>module</td>
-                <td>模块设置，可以配置多个module，详情看module标签说明</td>
+                <td>模块设置，可以配置多个module，详情请看module标签说明</td>
                 <td>是</td>
-                <td>没有</td>
-                <td></td>
+                <td>name</td>
+                <td>属性name为模块名，默认""，非必需</td>
               </tr>
             </tbody>
           </table>
+          
+          <p class="nepadmin-c-red nepadmin-bold">global标签</p>
+          <table class="layui-table">
+            <colgroup>
+              <col width="100">
+              <col>
+              <col width="80">
+              <col width="100">
+              <col>
+            </colgroup>
+            <thead>
+              <tr>
+                <th>子标签</th>
+                <th>子标签说明</th>
+                <th>是否必需</th>
+                <th>子标签属性</th>
+                <th>子标签属性说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>property</td>
+                <td>全局属性配置，可配置多个</td>
+                <td>否</td>
+                <td>name,value</td>
+                <td>配置name-value，现有属性：baseDir(路径,默认项目所在目录),basePackage(基础包名，默认mapleLeaf.code)
+                ,deleteTabPrefix(是否删除表名前缀，默认false),baseTabPrefix(全局表名前缀，默认"")
+                ,columnCamel(表字段下划线转驼峰命名，默认false),persistance(持久层框架，默认mybatis)</td>
+              </tr>
+              <tr>
+                <td>common</td>
+                <td>公共类配置，形式：“包名=模板”多个逗号分隔，模板不需要后缀。如：util=Page,commom.Dao=BaseDao</td>
+                <td>否</td>
+                <td>没有</td>
+                <td></td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
           
           <p class="nepadmin-c-red nepadmin-bold">db标签</p>
           <table class="layui-table">
@@ -120,47 +119,16 @@
             </thead>
             <tbody>
               <tr>
-                <td>dbType</td>
-                <td>数据库。（mysql,oracle,sqlserver,informix,postgresql）</td>
+                <td>property</td>
+                <td>数据库配置，可以配置多个</td>
                 <td>是</td>
-                <td>没有</td>
-                <td></td>
+                <td>name，value</td>
+                <td>配置name-value：
+                	dbType（数据库），dbName（数据库名），user（用户名），pwd（密码），
+                	driver（数据库驱动），url（数据库url）；这些项都必需
+                </td>
               </tr>
-              <tr>
-                <td>dbName</td>
-                <td>数据库名</td>
-                <td>是</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>user</td>
-                <td>数据库登陆用户</td>
-                <td>是</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>pwd</td>
-                <td>数据库登陆密码</td>
-                <td>是</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>driver</td>
-                <td>数据库驱动</td>
-                <td>是</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>url</td>
-                <td>数据库url</td>
-                <td>是</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
+              
             </tbody>
           </table>
           
@@ -184,13 +152,6 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>name</td>
-                <td>模块名。默认 ""</td>
-                <td>否</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
               <tr class="nepadmin-c-red nepadmin-bold">
                 <td>table</td>
                 <td>配置数据库表，一个模块下可以配置多个table</td>
@@ -290,13 +251,12 @@
               <tr>
                 <td>columnGroup</td>
                 <td>
-                  	表字段过滤，默认加载全部表字段
+                  	表字段集合
                	</td>
                 <td>否</td>
-                <td>include，exclude</td>
-                <td>include属性：需要包含的表字段，非必需；如id,name
-                	exclude属性：需要排除的表字段，非必需；
-                	如果两者都存在，只会生效exclude排除属性
+                <td>exclude</td>
+                <td>
+                exclude属性：需要排除的表字段，非必需；
                 </td>
               </tr>
               
@@ -342,7 +302,6 @@
                 </td>
               </tr>
              
-              
             </tbody>
           </table>
           

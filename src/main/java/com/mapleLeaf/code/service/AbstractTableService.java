@@ -288,16 +288,10 @@ public abstract class AbstractTableService implements ITableService {
      * @return 返回null 说明被过滤
      */
     protected Column renderColumn(ColumnGroupConf colGoup,Column col){
-    	//判断字段 是否 包含或排除
+    	//判断字段 是否被排除
 		String exc = colGoup.getExclude();
 		if(exc!=null){
 			if(Arrays.asList(exc.replace("，", ",").split(","))
-					.contains(col.getColName())){
-				return null;
-			}
-		}else{
-			String inc = colGoup.getInclude();
-			if(inc!=null && !Arrays.asList(inc.replace("，", ",").split(","))
 					.contains(col.getColName())){
 				return null;
 			}

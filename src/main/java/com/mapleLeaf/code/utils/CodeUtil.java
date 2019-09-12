@@ -198,4 +198,18 @@ public class CodeUtil {
     	}
     	return dataMap;
     }
+    /**
+     * 判断 持久层框架配置正确
+     * @param per
+     * @return
+     */
+    public static boolean checkPersistance(String per){
+    	String[] pers = {"mybatis","hibernate","other"};
+    	for(String s: pers){
+    		if(s.equalsIgnoreCase(per)){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
 }
