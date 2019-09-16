@@ -22,7 +22,7 @@ public class Module {
 	private String serviceImplPackage;
 	private String entityPackage;
 	private String controllerPackage;
-	private String viewPackage;
+	//private String viewPackage;
 	//private String customPackage;
 	private String mapperPackage;
 	private String myBatisPackage;
@@ -80,13 +80,7 @@ public class Module {
 	public void setControllerPackage(String controllerPackage) {
 		this.controllerPackage = controllerPackage;
 	}
-	public String getViewPackage() {
-		return viewPackage;
-	}
-	public void setViewPackage(String viewPackage) {
-		this.viewPackage = viewPackage;
-	}
-
+	
 	public String getMapperPackage() {
 		return mapperPackage;
 	}

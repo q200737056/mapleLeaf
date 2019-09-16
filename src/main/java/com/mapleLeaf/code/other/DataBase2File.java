@@ -25,6 +25,7 @@ import com.mapleLeaf.code.confbean.Module;
 import com.mapleLeaf.code.confbean.TableConf;
 import com.mapleLeaf.code.model.Table;
 import com.mapleLeaf.code.service.ITableService;
+import com.mapleLeaf.code.utils.CodeUtil;
 import com.mapleLeaf.code.utils.FreemarkerUtil;
 import com.mapleLeaf.common.util.GlobalConst;
 
@@ -87,7 +88,7 @@ public class DataBase2File {
              
              Long end = System.currentTimeMillis();
              log.info("Generate Success! total time = "+(end-start));
-             log.info("Please check: " + config.getBaseDir());
+             log.info("Code Path: " + config.getBaseDir());
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception();
@@ -96,7 +97,7 @@ public class DataBase2File {
     } 
     
     /**
-     * 递归生成所有文件代码
+     * 生成所有文件代码
      * @param tb
      * @param module
      * @return
@@ -151,7 +152,6 @@ public class DataBase2File {
     	obj.put("daoPackage", module.getDaoPackage());
     	obj.put("daoImplPackage", module.getDaoImplPackage());
     	obj.put("controllerPackage", module.getControllerPackage());
-    	obj.put("viewPackage", module.getViewPackage());
     	obj.put("mapperPackage", module.getMapperPackage());
     	
     	obj.put("persistance", module.getPersistance());//持久层框架
@@ -236,13 +236,15 @@ public class DataBase2File {
     		/**
         	 * 如果是mybatis，则生成mytabis的xml配置文件
         	 */
-    		saveDir=getSaveFilePath(module.getMapperPackage(),config);
-    		File implFile = new File(saveDir,table.getEntName()+"Mapper.xml");
-	    	String implPath =implFile.getAbsolutePath();
-	    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+"Mapper", implPath);
-	    	log.info("生成文件："+implPath);
+    		if(CodeUtil.isEmpty(module.getMapperPackage())){
+    			saveDir=getSaveFilePath(module.getMapperPackage(),config);
+        		File implFile = new File(saveDir,table.getEntName()+"Mapper.xml");
+    	    	String implPath =implFile.getAbsolutePath();
+    	    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+"Mapper", implPath);
+    	    	log.info("生成文件："+implPath);
+    		}
+    		
     	}else{
-    		//log.info("该ORM框架不支持或不存在！");
     		File implDir=getSaveFilePath(module.getDaoPackage()+File.separator+module.getDaoImplPackage(),config);
 	    	
 	    	File implFile = new File(implDir,table.getEntName()+"DaoImpl.java");
@@ -287,31 +289,9 @@ public class DataBase2File {
     	log.info("生成文件："+savePath);
     }
 
-   
-    /**
-     * 生成指定表对象对应的视图文件
-     * @param table
-     */
-    /*private void generateViewFile(JSONObject obj,Table table,Config config,Module module) throws Exception{
-    	String tpls = module.getAttrsMap().get("viewPackage_tpl");
-    	String[] actions = tpls.replace("，", ",").split(",");
-    	String type = module.getAttrsMap().get("viewPackage_suffix");
-    	String suffix = "jsp";
-    	if(!StringUtils.isBlank(type)){
-    		suffix = type.toLowerCase();
-    	}
-    	File saveDir=getSaveFilePath(module.getViewPackage()+File.separator+table.getLowEntName(),config);
-    	for (String action : actions) {
-	    	File saveFile = new File(saveDir,action+"_"+table.getEntName()+"."+suffix);
-	    	
-	    	String savePath =saveFile.getAbsolutePath();
-	    	log.info("生成文件："+savePath);
-	    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+action.trim(), savePath);
-    	}
-    }*/
 
 	/**
-	 * 生成自定义代码文件
+	 * 生成自定义代码文件（比如 页面）
 	 * @param table
 	 */
 	private void generateCustomFile(JSONObject obj,Table table,Config config,Module module) throws Exception {
