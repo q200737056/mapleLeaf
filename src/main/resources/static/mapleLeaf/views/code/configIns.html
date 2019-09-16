@@ -119,13 +119,51 @@
             </thead>
             <tbody>
               <tr>
-                <td>property</td>
-                <td>数据库配置，可以配置多个</td>
+                <td>dbType</td>
+                <td>数据库</td>
                 <td>是</td>
-                <td>name，value</td>
-                <td>配置name-value：
-                	dbType（数据库），dbName（数据库名），user（用户名），pwd（密码），
-                	driver（数据库驱动），url（数据库url）；这些项都必需
+                <td>没有</td>
+                <td>可选：mysql，oracle，postgresql，sqlserver，informix
+                </td>
+              </tr>
+              <tr>
+                <td>dbName</td>
+                <td>数据库名</td>
+                <td>是</td>
+                <td>没有</td>
+                <td>
+                </td>
+              </tr>
+              <tr>
+                <td>user</td>
+                <td>数据库用户名</td>
+                <td>是</td>
+                <td>没有</td>
+                <td>
+                </td>
+              </tr>
+              <tr>
+                <td>pwd</td>
+                <td>数据库密码</td>
+                <td>是</td>
+                <td>没有</td>
+                <td>
+                </td>
+              </tr>
+              <tr>
+                <td>driver</td>
+                <td>数据库驱动</td>
+                <td>是</td>
+                <td>没有</td>
+                <td>
+                </td>
+              </tr>
+              <tr>
+                <td>url</td>
+                <td>数据库url</td>
+                <td>是</td>
+                <td>没有</td>
+                <td>
                 </td>
               </tr>
               
@@ -156,64 +194,97 @@
                 <td>table</td>
                 <td>配置数据库表，一个模块下可以配置多个table</td>
                 <td>是</td>
-                <td>entityName,name,
+                <td>entName,tabName,
                 prefix,exclude</td>
-                <td>entityName属性：配置自定义实体类名，非必需；
-                name属性：表名，必需；prefix属性：表名前缀，非必需；
-                exclude属性：排除指定模板代码生成（entity,dao,service,controller,view,custom选择多个时，逗号分隔），非必需；
+                <td>entName属性：配置自定义实体类名，非必需；
+                tabName属性：表名，必需；prefix属性：表名前缀，非必需；
+                exclude属性：排除指定模板代码生成（entity,dao,service,controller,custom选择多个时，逗号分隔），非必需；
                 </td>
               </tr>
-             <tr>
-                <td>entityPackage</td>
-                <td>自定义实体类包名。如：ai.entity。如未配置或标签内容为空字符，则该模块下不会去生成实体类，如下一样</td>
-                <td>否</td>
+            
+              <tr>
+                <td>package</td>
+                <td>包名配置</td>
+                <td>是</td>
                 <td>没有</td>
                 <td></td>
-              </tr>
-              <tr>
-                <td>daoPackage</td>
-                <td>自定义dao接口包名,实现类默认在该包的impl下。如：ai.dao。</td>
-                <td>否</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>servicePackage</td>
-                <td>自定义service接口包名,实现类默认在该包的impl下。如：ai.service。</td>
-                <td>否</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>controllerPackage</td>
-                <td>自定义controller类包名。如：ai.controller。</td>
-                <td>否</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>mapperPackage</td>
-                <td>自定义mapperXML包名。如：mapper。</td>
-                <td>否</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>viewPackage</td>
-                <td>自定义视图层包名。如：ai.jsp。</td>
-                <td>否</td>
-                <td>tpl，suffix</td>
-                <td>tpl属性：配置模板，只需模板名，不需要后缀，多个可以用逗号分隔，如view,list。必需属性;
-                	suffix属性：配置生成文件类型，即文件后缀，如jsp。非必需属性，默认‘jsp’</td>
               </tr>
                <tr class="nepadmin-c-red nepadmin-bold">
-                <td>customPackage</td>
-                <td>自定义(自定义生成文件)包名。如：ai.custom。</td>
+                <td>customArea</td>
+                <td>自定义区域。详情请查看customArea标签</td>
                 <td>否</td>
-                <td>tpl，suffix</td>
-                <td>tpl属性：配置模板，只需模板名，不需要后缀，多个可以用逗号分隔，如indexJs。必需属性;
-                	suffix属性：配置生成文件类型，即文件后缀，如js。非必需属性，默认‘ctm’</td>
+                <td>没有</td>
+                <td></td>
               </tr>
+            </tbody>
+          </table>
+          
+          <p class="nepadmin-c-red nepadmin-bold">package标签</p>
+          <table class="layui-table">
+            <colgroup>
+              <col width="100">
+              <col>
+              <col width="80">
+              <col width="100">
+              <col>
+            </colgroup>
+            <thead>
+              <tr>
+                <th>子标签</th>
+                <th>子标签说明</th>
+                <th>是否必需</th>
+                <th>子标签属性</th>
+                <th>子标签属性说明</th>
+              </tr>
+            </thead>
+            <tbody>
+             <tr class="nepadmin-c-red nepadmin-bold">
+                <td>property</td>
+                <td>包名属性配置，可配置多个（如果为空或没配置，则该包对应类不会生成代码 ）</td>
+                <td>否</td>
+                <td>name,value</td>
+                <td>配置name-value，entityPkg(实体类包名),daoPkg(dao包名，实现类默认该包的impl下)
+                ,servicePkg(业务层类包名,实现类默认该包的impl下),controllerPkg(控制层类包名)
+                ,mapperPkg(mybatis的mapperXML包名)</td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+          <p class="nepadmin-c-red nepadmin-bold">customArea标签</p>
+          <table class="layui-table">
+            <colgroup>
+              <col width="100">
+              <col>
+              <col width="80">
+              <col width="100">
+              <col>
+            </colgroup>
+            <thead>
+              <tr>
+                <th>子标签</th>
+                <th>子标签说明</th>
+                <th>是否必需</th>
+                <th>子标签属性</th>
+                <th>子标签属性说明</th>
+              </tr>
+            </thead>
+            <tbody>
+             <tr>
+                <td>codeFile</td>
+                <td>自定义配置，可配置多个;标签内容为模板，多个逗号分隔，必需</td>
+                <td>否</td>
+                <td>customPkg,suffix</td>
+                <td>customPkg属性：配置包名，必需；suffix属性：配置生成代码文件的后缀，非必需，默认ctm</td>
+              </tr>
+              <tr>
+                <td>param</td>
+                <td>自定义参数，可配置多个</td>
+                <td>否</td>
+                <td>key,value</td>
+                <td>key属性：参数名，必需；value属性：参数值，必需；模板中可通过${param['key']!}获取参数值</td>
+              </tr>
+              
             </tbody>
           </table>
           
@@ -243,8 +314,8 @@
                  	标签内容为两table关联的字段，table标签的字段在前，可以多个，如：id=id,name=user_name
                	</td>
                 <td>否</td>
-                <td>name，type</td>
-                <td>name属性：关联表的表名，而且该表名已配置table，必需；
+                <td>tabName，type</td>
+                <td>tabName属性：关联表的表名，而且该表名已配置table，必需；
                 type属性：关联关系（OneToOne，ManyToMany，ManyToOne，OneToMany），必需
                 </td>
               </tr>

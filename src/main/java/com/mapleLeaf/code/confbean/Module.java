@@ -23,12 +23,12 @@ public class Module {
 	private String entityPackage;
 	private String controllerPackage;
 	private String viewPackage;
-	private String customPackage;
+	//private String customPackage;
 	private String mapperPackage;
 	private String myBatisPackage;
 	private List<TableConf> tables; //配置的数据表信息 
+	private List<CodeFileConf> codeFiles;//自定义
 	
-	private Map<String,String> attrsMap=new HashMap<>();//标签属性集  key:标签名_属性名  value:属性值
 	private Map<String,String> paramMap=new HashMap<>();//自定义参数
 	
 	public String getName() {
@@ -87,13 +87,6 @@ public class Module {
 		this.viewPackage = viewPackage;
 	}
 
-	
-	public String getCustomPackage() {
-		return customPackage;
-	}
-	public void setCustomPackage(String customPackage) {
-		this.customPackage = customPackage;
-	}
 	public String getMapperPackage() {
 		return mapperPackage;
 	}
@@ -128,12 +121,7 @@ public class Module {
 		this.columnIsCamel = columnIsCamel;
 	}
 	
-	public Map<String, String> getAttrsMap() {
-		return attrsMap;
-	}
-	public void setAttrsMap(Map<String, String> attrsMap) {
-		this.attrsMap = attrsMap;
-	}
+	
 	public Map<String, String> getParamMap() {
 		return paramMap;
 	}
@@ -145,6 +133,12 @@ public class Module {
 	}
 	public void setBaseTabPrefix(String baseTabPrefix) {
 		this.baseTabPrefix = baseTabPrefix;
+	}
+	public List<CodeFileConf> getCodeFiles() {
+		return codeFiles;
+	}
+	public void setCodeFiles(List<CodeFileConf> codeFiles) {
+		this.codeFiles = codeFiles;
 	}
 	
 }

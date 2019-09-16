@@ -16,6 +16,7 @@ import org.dom4j.Element;
 import com.mapleLeaf.code.confbean.ColumnConf;
 import com.mapleLeaf.code.confbean.ColumnGroupConf;
 import com.mapleLeaf.code.confbean.Config;
+import com.mapleLeaf.code.confbean.CodeFileConf;
 import com.mapleLeaf.code.confbean.Db;
 import com.mapleLeaf.code.confbean.Module;
 import com.mapleLeaf.code.confbean.RefConf;
@@ -132,53 +133,34 @@ public class ConfigFactory {
 			//模块名 ,默认 空字符
 			m.setName(XmlUtil.getAttrValue(e, "name", ""));
 			
-			//加载模板中的 包名
-			m.setControllerPackage(XmlUtil.getChildValue(e, "controllerPackage",null));
-		
-			m.setServicePackage(XmlUtil.getChildValue(e, "servicePackage",null));
-			m.setServiceImplPackage("impl");
-		
-			m.setDaoPackage(XmlUtil.getChildValue(e, "daoPackage",null));
-			m.setDaoImplPackage("impl");
+			//加载模板中的包名
+			initPackage(m, e);
 			
-			m.setEntityPackage(XmlUtil.getChildValue(e, "entityPackage",null));
-		
-			m.setMapperPackage(XmlUtil.getChildValue(e, "mapperPackage",null));
-		
+			//加载自定义
+			List<CodeFileConf> codeFileList = readCustomConfList(e);
+			m.setCodeFiles(codeFileList);
 			
-			Element elePkg = XmlUtil.getChild(e, "viewPackage");
-			if(elePkg==null){
-				m.setViewPackage(null);
-				
-			}else{
-				m.setViewPackage(elePkg.getTextTrim());
-				m.getAttrsMap().put("viewPackage_tpl", XmlUtil.attrValue(elePkg, "tpl"));
-				m.getAttrsMap().put("viewPackage_suffix", XmlUtil.attrValue(elePkg, "suffix"));
-			}
-			elePkg = XmlUtil.getChild(e, "customPackage");
-			if(elePkg==null){
-				m.setCustomPackage(null);
-				
-			}else{
-				m.setCustomPackage(elePkg.getTextTrim());
-				m.getAttrsMap().put("customPackage_tpl", XmlUtil.attrValue(elePkg, "tpl"));
-				m.getAttrsMap().put("customPackage_suffix", XmlUtil.attrValue(elePkg, "suffix"));
-			}
 			//加载自定义参数
-			List<Element> paramEle = XmlUtil.getChildElements(e, "param");
-			if(paramEle!=null&&paramEle.size()>0){
-				for(int i=0;i<paramEle.size();i++){
-					Attribute keyAttr = XmlUtil.getAttribute(paramEle.get(i), "key");//键
-					Attribute valAttr = XmlUtil.getAttribute(paramEle.get(i), "value");//值
-					
-					if (keyAttr!=null&&valAttr!=null) {
-					
-						m.getParamMap().put(keyAttr.getValue().trim(), 
-								valAttr.getValue().trim());
-					}
-				}
+			Element cust = XmlUtil.getChild(e, "customArea");
+			if(cust!=null){
 				
+				List<Element> paramEle = XmlUtil.getChildElements(cust, "param");
+				if(paramEle!=null&&paramEle.size()>0){
+					for(int i=0;i<paramEle.size();i++){
+						Attribute keyAttr = XmlUtil.getAttribute(paramEle.get(i), "key");//键
+						Attribute valAttr = XmlUtil.getAttribute(paramEle.get(i), "value");//值
+						
+						if (keyAttr!=null&&valAttr!=null) {
+						
+							m.getParamMap().put(keyAttr.getValue().trim(), 
+									valAttr.getValue().trim());
+						}
+					}
+					
+				}
 			}
+			
+			
 			//加载table
 			
 			List<TableConf> tableConfs = readTableConfList(e);
@@ -221,32 +203,75 @@ public class ConfigFactory {
 		if(dbNode==null){
 			throw new Exception("未配置db");
 		}
-		// property标签
-		List<Element> props = XmlUtil.getChildElements(dbNode,"property");
-		Map<String,String> propMap = new HashMap<>();
-		for(Element prop : props){
-			String name = XmlUtil.getAttrValue(prop, "name", "");
-			if(CodeUtil.isEmpty(name)){
-				continue;
-			}
-			String value = XmlUtil.getAttrValue(prop, "value", "");
-			propMap.put(name, value);
-		}
-		if(CodeUtil.isEmpty(propMap.get("dbType"))||CodeUtil.isEmpty(propMap.get("driver"))
-				||CodeUtil.isEmpty(propMap.get("user"))||CodeUtil.isEmpty(propMap.get("pwd"))
-				||CodeUtil.isEmpty(propMap.get("url"))||CodeUtil.isEmpty(propMap.get("dbName"))){
+	
+		Db db = new Db();
+	
+		db.setDbType(XmlUtil.getChildValue(dbNode, "dbType", null));
+		db.setDriver(XmlUtil.getChildValue(dbNode, "driver", null));
+		db.setDbName(XmlUtil.getChildValue(dbNode, "dbName", null));
+		db.setUser(XmlUtil.getChildValue(dbNode, "user", null));
+		db.setPwd(XmlUtil.getChildValue(dbNode, "pwd", null));
+		db.setUrl(XmlUtil.getChildValue(dbNode, "url", null));
+		
+		if(CodeUtil.isEmpty(db.getDbType())||CodeUtil.isEmpty(db.getDriver())
+				||CodeUtil.isEmpty(db.getDbName())||CodeUtil.isEmpty(db.getUser())
+				||CodeUtil.isEmpty(db.getPwd())||CodeUtil.isEmpty(db.getUrl())){
 			throw new Exception("未配置db所有项");
 		}
-		Db db = new Db();
-		//db类型:mysql,oracle等
-		db.setDbType(propMap.get("dbType"));
-		db.setDriver(propMap.get("driver"));
-		db.setDbName(propMap.get("dbName"));
-		db.setUser(propMap.get("user"));
-		db.setPwd(propMap.get("pwd"));
-		db.setUrl(propMap.get("url"));
 		
 		config.setDb(db);
+	}
+	/**
+	 * 加载 包名配置
+	 * @throws Exception 
+	 */
+	private static void initPackage(Module m,Element e){
+		Element node = XmlUtil.getChild(e, "package");
+		if(node!=null){
+			// property标签
+			List<Element> props = XmlUtil.getChildElements(node,"property");
+			Map<String,String> propMap = new HashMap<>();
+			for(Element prop : props){
+				String name = XmlUtil.getAttrValue(prop, "name", null);
+				if(CodeUtil.isEmpty(name)){
+					continue;
+				}
+				String value = XmlUtil.getAttrValue(prop, "value", null);
+				propMap.put(name, value);
+			}
+			m.setControllerPackage(propMap.get("controllerPkg"));
+			
+			m.setServicePackage(propMap.get("servicePkg"));
+			m.setServiceImplPackage("impl");
+		
+			m.setDaoPackage(propMap.get("daoPkg"));
+			m.setDaoImplPackage("impl");
+			
+			m.setEntityPackage(propMap.get("entityPkg"));
+			m.setMapperPackage(propMap.get("mapperPkg"));
+		}
+			
+		
+	}
+	/**
+	 * 读取customArea
+	 */
+	private static List<CodeFileConf> readCustomConfList(Element module){
+		List<CodeFileConf> codeFiles = new ArrayList<>();
+		Element e = XmlUtil.getChild(module, "customArea");
+		if(e==null){
+			return null;
+		}
+		List<Element> customs = XmlUtil.getChildElements(e, "codeFile");
+		for(Element ele : customs){
+			CodeFileConf codeFile = initCustomConf(ele);
+			if(CodeUtil.isEmpty(codeFile.getCustomPackage())||
+					CodeUtil.isEmpty(codeFile.getTpl())){
+				continue;
+			}
+			codeFiles.add(codeFile);
+		}
+		return codeFiles;
 	}
 	/**
 	 * 读取table标签 及 子标签
@@ -277,8 +302,8 @@ public class ConfigFactory {
 	private static  TableConf initTableConf(Element e){
 		TableConf m = new TableConf();
 		
-		m.setEntityName(XmlUtil.getAttrValue(e, "entityName", null));//实体类型
-		m.setName(XmlUtil.getAttrValue(e, "name", "").toLowerCase());//表名 转小写
+		m.setEntityName(XmlUtil.getAttrValue(e, "entName", null));//实体类型
+		m.setName(XmlUtil.getAttrValue(e, "tabName", "").toLowerCase());//表名 转小写
 		m.setPrefix(XmlUtil.getAttrValue(e, "prefix", null));//前缀
 		m.setExclude(XmlUtil.getAttrValue(e, "exclude", null));//实排除指定模板的文件生成
 		
@@ -310,7 +335,7 @@ public class ConfigFactory {
 	private static  RefConf initRefConf(Element e){
 		RefConf m = new RefConf();
 		
-		m.setRefName(XmlUtil.getAttrValue(e, "name", null));//关联表的表名
+		m.setRefName(XmlUtil.getAttrValue(e, "tabName", null));//关联表的表名
 		
 		Attribute refType =XmlUtil.getAttribute(e, "type");//关联 关系
 		if (refType!=null) {
@@ -365,6 +390,19 @@ public class ConfigFactory {
 		
 		//形式 k1=v1,k2=v2  k为字段值，v为值的描述
 		cnf.setColValue(e.getTextTrim());
+		
+		return cnf;
+	}
+	/**
+	 * codeFile标签
+	 */
+	private static CodeFileConf initCustomConf(Element e){
+		CodeFileConf cnf = new CodeFileConf();
+		cnf.setSuffix(XmlUtil.getAttrValue(e, "suffix", null));
+		cnf.setCustomPackage(XmlUtil.getAttrValue(e, "customPkg", null));
+		
+		//模板 多个逗号分隔
+		cnf.setTpl(e.getTextTrim());
 		
 		return cnf;
 	}

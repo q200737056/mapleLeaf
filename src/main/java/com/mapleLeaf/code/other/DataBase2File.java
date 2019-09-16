@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.mapleLeaf.code.confbean.CodeFileConf;
 import com.mapleLeaf.code.confbean.Config;
 import com.mapleLeaf.code.confbean.Module;
 import com.mapleLeaf.code.confbean.TableConf;
@@ -127,17 +128,9 @@ public class DataBase2File {
     		generateActionFile(obj,tb,config,module);//生成controller
     	}
     	
-        if (!excludeList.contains("view") &&
-        		!StringUtils.isBlank(module.getViewPackage()) &&
-        		!StringUtils.isBlank(module.getAttrsMap().get("viewPackage_tpl"))
-        		) {
-        	generateViewFile(obj,tb,config,module);//生成 view
-			
-        }
+       
         if (!excludeList.contains("custom") &&
-        		!StringUtils.isBlank(module.getCustomPackage()) &&
-        		!StringUtils.isBlank(module.getAttrsMap().get("customPackage_tpl"))
-        		){
+        		module.getCodeFiles()!=null){
         	generateCustomFile(obj,tb,config,module);//生成 自定义 文件
         }
         
@@ -159,7 +152,6 @@ public class DataBase2File {
     	obj.put("daoImplPackage", module.getDaoImplPackage());
     	obj.put("controllerPackage", module.getControllerPackage());
     	obj.put("viewPackage", module.getViewPackage());
-		obj.put("customPackage", module.getCustomPackage());
     	obj.put("mapperPackage", module.getMapperPackage());
     	
     	obj.put("persistance", module.getPersistance());//持久层框架
@@ -300,7 +292,7 @@ public class DataBase2File {
      * 生成指定表对象对应的视图文件
      * @param table
      */
-    private void generateViewFile(JSONObject obj,Table table,Config config,Module module) throws Exception{
+    /*private void generateViewFile(JSONObject obj,Table table,Config config,Module module) throws Exception{
     	String tpls = module.getAttrsMap().get("viewPackage_tpl");
     	String[] actions = tpls.replace("，", ",").split(",");
     	String type = module.getAttrsMap().get("viewPackage_suffix");
@@ -316,29 +308,34 @@ public class DataBase2File {
 	    	log.info("生成文件："+savePath);
 	    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+action.trim(), savePath);
     	}
-    }
+    }*/
 
 	/**
-	 * 生成自定义文件
+	 * 生成自定义代码文件
 	 * @param table
 	 */
 	private void generateCustomFile(JSONObject obj,Table table,Config config,Module module) throws Exception {
-		String tpls = module.getAttrsMap().get("customPackage_tpl");
-    	String[] actions = tpls.replace("，", ",").split(",");
-    	String type = module.getAttrsMap().get("customPackage_suffix");
-    	String suffix = "ctm";
-    	if(!StringUtils.isBlank(type)){
-    		suffix = type.toLowerCase();
-    	}
-		File saveDir=getSaveFilePath(module.getCustomPackage()+File.separator+table.getLowEntName(),config);
-		for (String action : actions) {
-			
-			File saveFile = new File(saveDir,action+"_"+table.getEntName()+"."+suffix);
-			
-			String savePath =saveFile.getAbsolutePath();
-			log.info("生成文件："+savePath);
-			FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+action.trim(), savePath);
+		List<CodeFileConf> codeFileList = module.getCodeFiles();
+		//循环生成 自定义的代码 文件
+		for(CodeFileConf codeFile : codeFileList){
+			String tpls = codeFile.getTpl();
+	    	String[] tplArr = tpls.replace("，", ",").split(",");
+	    	String type = codeFile.getSuffix();
+	    	String suffix = "ctm";
+	    	if(!StringUtils.isBlank(type)){
+	    		suffix = type.toLowerCase();
+	    	}
+			File saveDir=getSaveFilePath(codeFile.getCustomPackage()+File.separator+table.getLowEntName(),config);
+			for (String tpl : tplArr) {
+				
+				File saveFile = new File(saveDir,tpl+"_"+table.getEntName()+"."+suffix);
+				
+				String savePath =saveFile.getAbsolutePath();
+				log.info("生成文件："+savePath);
+				FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+tpl.trim(), savePath);
+			}
 		}
+		
 	}
    
     public static void main(String[] args) {  

@@ -23,41 +23,66 @@
 
 	<!-- 数据库配置 -->
 	<db>
-		<!-- 数据库类型 -->
-		<property name="dbType" value="mysql"/>
+		<!-- 数据库类型(mysql,oracle,sqlserver,postgresql,informix) -->
+		<dbType>mysql</dbType>
 		<!-- 数据库名 -->
-		<property name="dbName" value="wxmp"/>
-		<property name="user" value="root"/>
-		<property name="pwd" value="q123"/>
-		<property name="driver" value="com.mysql.jdbc.Driver"/>
-		<property name="url" value="jdbc:mysql://localhost:3306/wxmp?useUnicode=true&amp;characterEncoding=UTF-8"/>
+		<dbName>wxmp</dbName>
+		<user>root</user>
+		<pwd>q123</pwd>
+		<driver>com.mysql.jdbc.Driver</driver>
+		<url><![CDATA[jdbc:mysql://localhost:3306/wxmp?useUnicode=true&characterEncoding=UTF-8]]></url>
 	</db>
-	<!-- 模块配置，可以有多个,name为模块名 -->
+	<!-- <db>
+		<dbType>informix</dbType>
+		<dbName>rmbp</dbName>
+		<user>xxxx</user>
+		<pwd>xxxx</pwd>
+		<driver>com.informix.jdbc.IfxDriver</driver>
+		<url><![CDATA[jdbc:informix-sqli://XXXXX/rmbp:informixserver=zjtsywtsdb;DB_LOCALE=en_us.819;
+			CLIENT_LOCALE=en_us.57372;NEWCODESET=GBK,8859-1,819]]></url>
+	</db> -->
+	<!-- <db>
+		<dbType>postgresql</dbType>
+		<dbName>test</dbName>
+		<user>postgres</user>
+		<pwd>q123</pwd>
+		<driver>org.postgresql.Driver</driver>
+		<url><![CDATA[jdbc:postgresql://localhost:5432/test]]></url>
+	</db> -->
+	<!-- 模块配置，可以配置多个module,
+			各模块相互独立,name属性为模块名 -->
 	<module name="test">
-		<!-- 以下各个类的包名 -->
-		<entityPackage>entity</entityPackage>
-		<daoPackage>dao</daoPackage>
-		<servicePackage>service</servicePackage>
-		<controllerPackage>controller</controllerPackage>
-		<mapperPackage>mapper</mapperPackage>
-		<!-- 视图，tpl 模板名，suffix 视图后缀;标签文本 包名-->
-		<viewPackage tpl="Jsp_list" suffix="jsp">jsp</viewPackage>
-		<customPackage tpl="Jsp_add" suffix="java">custom</customPackage>
+		<!-- 包名配置，如果为空或没配置，则该包对应类不会生成代码 -->
+		<package>
+			<property name="entityPkg" value="entity"/>
+			<property name="daoPkg" value="dao"/>
+			<property name="servicePkg" value="service"/>
+			<property name="controllerPkg" value="controller"/>
+			<property name="mapperPkg" value="mapper"/>
+		</package>
+		
+		<customArea>
+			<!-- 自定义生成，可以配置多个标签，不限于java语言，属性customPkg包名，属性suffix 文件后缀;标签内容 模板，多个逗号分隔-->
+			<codeFile customPkg="page" suffix="jsp">Jsp_list,Jsp_add</codeFile>
+			<!-- 自定义参数设置 ，模板中可以通过${param['fontSize']!}获取参数值 -->
+			<param key="fontSize" value="12px"></param>
+		</customArea>
+		
 		
 		<!-- ref标签（单向）  关联表，如果需要双向关联  两个table都需配置对应对方的ref -->
-		<table name="sys_user" prefix="">
-			<ref name="wxcms_login_info" type="OneToMany">id=user_id</ref>
-			<ref name="wxcms_user_tag" type="OneToMany">account=account</ref>
+		<table tabName="sys_user" prefix="">
+			<ref tabName="wxcms_login_info" type="OneToMany">id=user_id</ref>
+			<ref tabName="wxcms_user_tag" type="OneToMany">account=account</ref>
 		</table>
-		<table name="wxcms_login_info" prefix="">
-			<ref name="sys_user" type="ManyToOne">user_id=id</ref>
+		<table tabName="wxcms_login_info" prefix="">
+			<ref tabName="sys_user" type="ManyToOne">user_id=id</ref>
 		</table>
-		<table name="wxcms_user_tag" exclude="view,custom"/>
+		<table tabName="wxcms_user_tag" exclude="custom"/>
 		
-		<table name="wxcms_article" exclude="view,custom">
-			<!-- exclude排除掉title字段， 如果 exclude与include属性同时存在，只会生效exclude-->
+		<table tabName="wxcms_article" exclude="custom">
+			<!-- exclude属性 ，需要排除的字段,多个逗号分隔-->
 			<columnGroup exclude="title"> 
-			   <!--表字段 自定义了 字段文本  -->
+			   <!--column可以自定义一些表字段属性 ，这些配置主要是为了更好生成页面代码 -->
 			   <column colName="author" labelName="作者"></column>
 			   <!--表字段 自定义了 字段文本,表单类型及字段值标识  -->
 			   <column colName="show_cover_pic" labelName="是否显示图片" tagType="checkbox">0=显示,1=不显示</column>

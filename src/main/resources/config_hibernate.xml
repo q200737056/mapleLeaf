@@ -18,24 +18,29 @@
 	</global>
 	
 	<db>
-		<property name="dbType" value="mysql"/>
-		<property name="dbName" value="wxmp"/>
-		<property name="user" value="root"/>
-		<property name="pwd" value="q123"/>
-		<property name="driver" value="com.mysql.jdbc.Driver"/>
-		<property name="url" value="jdbc:mysql://localhost:3306/wxmp?useUnicode=true&amp;characterEncoding=UTF-8"/>
+		<!-- 数据库类型(mysql,oracle,sqlserver,postgresql,informix) -->
+		<dbType>mysql</dbType>
+		<!-- 数据库名 -->
+		<dbName>wxmp</dbName>
+		<user>root</user>
+		<pwd>q123</pwd>
+		<driver>com.mysql.jdbc.Driver</driver>
+		<url><![CDATA[jdbc:mysql://localhost:3306/wxmp?useUnicode=true&characterEncoding=UTF-8]]></url>
 	</db>
 	
-	<module>
-		<entityPackage>entity</entityPackage>
-		<daoPackage>dao</daoPackage>
-		<servicePackage>service</servicePackage>
-		<controllerPackage>controller</controllerPackage>
-		<!-- hibernate不需要，可以设置空 -->
-		<mapperPackage></mapperPackage>
-		<viewPackage tpl="Jsp_list" suffix="html">jsp</viewPackage>
-		<!-- 自定义配置，模板自定，比如js文件等等 -->
-		<customPackage tpl="Jsp_add" suffix="java">custom</customPackage>
+	<module name="test1">
+		<!-- 包名配置，如果为空或没配置，则该包对应类不会生成代码 -->
+		<package>
+			<property name="entityPkg" value="entity.test1"/>
+			<property name="daoPkg" value="dao.test1"/>
+			<property name="servicePkg" value="service.test1"/>
+			<property name="controllerPkg" value="controller.test1"/>
+		</package>
+		
+		<customArea>
+			<!-- 自定义生成，可以配置多个标签，不限于java语言，属性customPkg包名，属性suffix 文件后缀;标签内容 模板，多个逗号分隔-->
+			<codeFile customPkg="page" suffix="jsp">Jsp_list,Jsp_add</codeFile>
+		</customArea>
 		
 		<!-- 下面两表 双向关联 -->
 		<table name="sys_user" prefix="sys_">
@@ -46,15 +51,16 @@
 			<ref name="sys_user" type="ManyToOne">user_id=id</ref>	
 		</table>
 	</module>
-	<module>
-		<name>test2</name>
-		<entityPackage>entity.test2</entityPackage>
-		<daoPackage>dao.test2</daoPackage>
-		<servicePackage>service.test2</servicePackage>
-		<controllerPackage>controller.test2</controllerPackage>
-		<!-- 包名配置空字符,该模块中的全部表就不会去生成对应的代码文件 -->
-		<viewPackage></viewPackage>
-		<customPackage></customPackage>
-		<table name="wxcms_article" prefix="wxcms_"/>
+	<module name="test2">
+		<!-- 包名配置，如果为空或没配置，则该包对应类不会生成代码 -->
+		<package>
+			<property name="entityPkg" value="entity.test2"/>
+			<property name="daoPkg" value="dao.test2"/>
+			<property name="servicePkg" value="service.test2"/>
+			<property name="controllerPkg" value="controller.test2"/>
+			<property name="mapperPkg" value="mapper"/>
+		</package>
+		
+		<table tabName="wxcms_article" prefix="wxcms_"/>
 	</module>
 </configure>
