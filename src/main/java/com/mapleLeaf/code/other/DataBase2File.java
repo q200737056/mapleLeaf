@@ -236,7 +236,7 @@ public class DataBase2File {
     		/**
         	 * 如果是mybatis，则生成mytabis的xml配置文件
         	 */
-    		if(CodeUtil.isEmpty(module.getMapperPackage())){
+    		if(!CodeUtil.isEmpty(module.getMapperPackage())){
     			saveDir=getSaveFilePath(module.getMapperPackage(),config);
         		File implFile = new File(saveDir,table.getEntName()+"Mapper.xml");
     	    	String implPath =implFile.getAbsolutePath();

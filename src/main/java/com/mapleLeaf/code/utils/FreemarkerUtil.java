@@ -35,24 +35,15 @@ public class FreemarkerUtil {
     public static void createDoc(Configuration configuration,Map<String,Object> dataMap,
     		String template,String saveFilePath) throws Exception{
     	Template t=configuration.getTemplate(template+".ftl");  
-       
+    	
     	//输出文档路径及名称  
         File outFile = new File(saveFilePath);  
-        Writer out = null;  
-        FileOutputStream fos=null;
-        OutputStreamWriter oWriter =null;
        
-        fos = new FileOutputStream(outFile);  
-        oWriter = new OutputStreamWriter(fos,"UTF-8");  
-        //这个地方对流的编码不可或缺，使用main（）单独调用时，应该可以，但是如果是web请求导出时导出后word文档就会打不开，并且包XML文件错误。主要是编码格式不正确，无法解析。  
-        //out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile)));  
-        out = new BufferedWriter(oWriter);   
-      
-        t.process(dataMap, out);
-        
-        oWriter.close();
-        fos.close();
-        out.close();  
+        try(FileOutputStream fos=new FileOutputStream(outFile);
+        	OutputStreamWriter oWriter = new OutputStreamWriter(fos,"UTF-8");	
+        	Writer out = new BufferedWriter(oWriter); ){
+        	t.process(dataMap, out);
+        }
               
       
     }
