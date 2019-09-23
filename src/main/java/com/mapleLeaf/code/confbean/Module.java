@@ -11,7 +11,7 @@ import java.util.Map;
 public class Module {
 	private String name; //模块名称
 	
-	private String persistance; //持久层框架  全局参数
+	private String persistence; //持久层框架  全局参数
 	private boolean isDeleteTablePrefix; //是否删除表前缀  全局参数
 	private boolean columnIsCamel;//表字段是否驼峰命名  全局参数
 	private String baseTabPrefix;//表名前缀，可以多个 全局参数
@@ -94,13 +94,12 @@ public class Module {
 		this.tables = tables;
 	}
 	
-	public String getPersistance() {
-		return persistance;
+	public String getPersistence() {
+		return persistence;
 	}
-	public void setPersistance(String persistance) {
-		this.persistance = persistance;
+	public void setPersistence(String persistence) {
+		this.persistence = persistence;
 	}
-	
 	public String getMyBatisPackage() {
 		return myBatisPackage;
 	}

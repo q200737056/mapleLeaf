@@ -13,7 +13,7 @@
 		<!-- 表字段是否下划线转驼峰命名 ，默认false-->
 		<property name="columnCamel" value="false" />
 		<!-- 持久层框架(mybatis,hibernate)，默认"mybatis" -->
-		<property name="persistance" value="mybatis" />
+		<property name="persistence" value="mybatis" />
 		<!-- 一些公共类，工具类,父类等原样输出，仅仅用来辅助下面的代码生成,不必需(包名=模板文件名(也是类名)，多个逗号隔开) -->
 		<!-- 这里配置了分页类，mybatis分页拦截器, mybatis通用配置-->
 		<!--  

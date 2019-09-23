@@ -13,7 +13,7 @@
 		<!-- 表字段是否下划线转驼峰命名 ，默认false-->
 		<property name="columnCamel" value="false" />
 	
-		<property name="persistance" value="hibernate" />
+		<property name="persistence" value="hibernate" />
 		
 	</global>
 	

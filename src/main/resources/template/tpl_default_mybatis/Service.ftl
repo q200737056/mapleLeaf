@@ -1,6 +1,7 @@
-package ${basePackage}.${servicePackage};
+<#import "/lib/mf.ftl" as mf/>
+package <@mf.servicePkg/>;
 
-import ${basePackage}.${entityPackage}.${entName};
+import <@mf.entityPkg/>.${entName};
 
 /**
  * ${remark!}操作相关
@@ -14,23 +15,22 @@ public interface ${entName}Service {
 	 * 新增
 	 */
 	 public int insert${entName}(${entName} ${lowEntName});
-	<#if uniIdxMap??>
-    <#assign keys=uniIdxMap?keys />
-    <#list keys as key>
-    /**
-	 * 根据唯一索引${key}查找
-	 */
-	 public ${entName} find${entName}By${key?lower_case?cap_first}(${entName} ${lowEntName});
+	<@mf.map uniIdxMap;idxnm,cols>
 	/**
-	 * 根据唯一索引${key}修改
+	 * 根据唯一索引${idxnm}查找
 	 */
-	 public int update${entName}By${key?lower_case?cap_first}(${entName} ${lowEntName});
+	 public ${entName} find${entName}By${idxnm?cap_first}(${entName} ${lowEntName});
 	/**
-	 * 根据唯一索引${key}删除
+	 * 根据唯一索引${idxnm}修改
 	 */
-	 public int delete${entName}By${key?lower_case?cap_first}(${entName} ${lowEntName});
-	</#list>
-    </#if>
+	 public int update${entName}By${idxnm?cap_first}(${entName} ${lowEntName});
+	/**
+	 * 根据唯一索引${idxnm}删除
+	 */
+	 public int delete${entName}By${idxnm?cap_first}(${entName} ${lowEntName});
+	</@mf.map>
+	
+    
     <#if refTables?? && (refTables?size>0)>
     <#list refTables as subtb>
     <#if subtb.refColumnMap?? && (subtb.refColumnMap?size>0)>

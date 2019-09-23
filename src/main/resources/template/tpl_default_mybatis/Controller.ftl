@@ -1,7 +1,8 @@
-package ${basePackage}.${controllerPackage};
+<#import "/lib/mf.ftl" as mf/>
+package <@mf.controllerPkg/>;
 
-import ${basePackage}.${entityPackage}.${entName};
-import ${basePackage}.${servicePackage}.${entName}Service;
+import <@mf.entityPkg/>.${entName};
+import <@mf.servicePkg/>.${entName}Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,16 +65,14 @@ public class ${entName}Controller {
        	}
         return "redirect:/user/list";
     }
-    <#if uniIdxMap?? && (uniIdxMap?size>0)>
-    <#assign keys=uniIdxMap?keys />
-    <#list keys as key>
+    <@mf.map uniIdxMap;idxnm,cols>
    /**
     * 修改
     */
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public String update(RedirectAttributes redirectAttributes, ${entName} ${lowEntName}){
        	
-       	int rst = ${lowEntName}Service.update${entName}By${key?lower_case?cap_first}(${lowEntName});
+       	int rst = ${lowEntName}Service.update${entName}By${idxnm?cap_first}(${lowEntName});
        	if(rst>0){
        		redirectAttributes.addFlashAttribute("msg", "修改成功");
        	}else{
@@ -87,7 +86,7 @@ public class ${entName}Controller {
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public String delete(RedirectAttributes redirectAttributes, ${entName} ${lowEntName}){
        	
-       	int rst = ${lowEntName}Service.delete${entName}By${key?lower_case?cap_first}(${lowEntName});
+       	int rst = ${lowEntName}Service.delete${entName}By${idxnm?cap_first}(${lowEntName});
        	if(rst>0){
        		redirectAttributes.addFlashAttribute("msg", "删除成功");
        	}else{
@@ -95,7 +94,6 @@ public class ${entName}Controller {
        	}
         return "redirect:/user/list";
     }
-    </#list>
-    </#if>
+    </@mf.map>
 	
 }

@@ -94,7 +94,7 @@ public class InformixTableService extends AbstractTableService {
 	        	col.setColName(colName);
 	        	int type = rs.getInt("coltype");//字段类型
 	        	String type_str=Informixconvert(type);
-	        	col.setColType(CodeUtil.convertJdbcType(type_str, module.getPersistance()));
+	        	col.setColType(CodeUtil.convertJdbcType(type_str, module.getPersistence()));
 	        	col.setRemark("");//没有
 	        	col.setPropName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)
 	        			:colName);//属性 就是 字段名

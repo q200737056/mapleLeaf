@@ -61,7 +61,7 @@ public class PostgresqlTableService extends AbstractTableService {
 	        	col.setColName(colName);//字段名
 	        	String type = rs.getString("data_type");
 	        
-	        	col.setColType(CodeUtil.convertJdbcType(type,module.getPersistance()));//字段类型
+	        	col.setColType(CodeUtil.convertJdbcType(type,module.getPersistence()));//字段类型
 	        	col.setRemark(rs.getString("column_comment"));//字段注释
 	        	
 	        	col.setPropName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)

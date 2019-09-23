@@ -1,8 +1,9 @@
-package ${basePackage}.${servicePackage}.${serviceImplPackage};
+<#import "/lib/mf.ftl" as mf/>
+package <@mf.serviceImplPkg/>;
 
-import ${basePackage}.${entityPackage}.${entName};
-import ${basePackage}.${servicePackage}.${entName}Service;
-import ${basePackage}.${daoPackage}.${entName}Mapper;
+import <@mf.entityPkg/>.${entName};
+import <@mf.servicePkg/>.${entName}Service;
+import <@mf.daoPkg/>.${entName}Dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,29 +28,26 @@ public class ${entName}ServiceImpl implements ${entName}Service {
 	 public int insert${entName}(${entName} ${lowEntName}){
 	 	return ${lowEntName}Mapper.insert${entName}(${lowEntName});
 	 }
-	<#if uniIdxMap??>
-    <#assign keys=uniIdxMap?keys />
-    <#list keys as key>
+	<@mf.map uniIdxMap;idxnm,cols>
     /**
-	 * 根据唯一索引${key}查找
+	 * 根据唯一索引${idxnm}查找
 	 */
-	 public ${entName} find${entName}By${key?lower_case?cap_first}(${entName} ${lowEntName}){
-	 	return ${lowEntName}Mapper.find${entName}By${key?lower_case?cap_first}(${lowEntName});
+	 public ${entName} find${entName}By${idxnm?cap_first}(${entName} ${lowEntName}){
+	 	return ${lowEntName}Mapper.find${entName}By${idxnm?cap_first}(${lowEntName});
 	 }
 	/**
-	 * 根据唯一索引${key}修改
+	 * 根据唯一索引${idxnm}修改
 	 */
-	 public int update${entName}By${key?lower_case?cap_first}(${entName} ${lowEntName}){
-	 	return ${lowEntName}Mapper.update${entName}By${key?lower_case?cap_first}(${lowEntName});
+	 public int update${entName}By${idxnm?cap_first}(${entName} ${lowEntName}){
+	 	return ${lowEntName}Mapper.update${entName}By${idxnm?cap_first}(${lowEntName});
 	 }
 	/**
-	 * 根据唯一索引${key}删除
+	 * 根据唯一索引${idxnm}删除
 	 */
-	 public int delete${entName}By${key?lower_case?cap_first}(${entName} ${lowEntName}){
-	 	return ${lowEntName}Mapper.delete${entName}By${key?lower_case?cap_first}(${lowEntName});
+	 public int delete${entName}By${idxnm?cap_first}(${entName} ${lowEntName}){
+	 	return ${lowEntName}Mapper.delete${entName}By${idxnm?cap_first}(${lowEntName});
 	 }
-	</#list>
-    </#if>
+	</@mf.map>
     <#if refTables?? && (refTables?size>0)>
     <#list refTables as subtb>
     <#if subtb.refColumnMap?? && (subtb.refColumnMap?size>0)>

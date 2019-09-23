@@ -24,6 +24,7 @@ import com.mapleLeaf.code.confbean.TableConf;
 import com.mapleLeaf.code.utils.CodeUtil;
 import com.mapleLeaf.code.utils.XmlUtil;
 import com.mapleLeaf.common.util.FileTool;
+import com.mapleLeaf.common.util.GlobalConst;
 
 import freemarker.template.Configuration;
 
@@ -88,10 +89,10 @@ public class ConfigFactory {
 		    //表名前缀 默认""
 		    config.setBaseTabPrefix(propMap.get("baseTabPrefix"));
 		    //持久层框架 默认"mybatis"
-		    if(CodeUtil.checkPersistance(propMap.get("persistance"))){
-		    	config.setPersistance(propMap.get("persistance").toLowerCase());	
+		    if(CodeUtil.checkStrArray(GlobalConst.PERSISTENCE,propMap.get("persistence"))){
+		    	config.setPersistence(propMap.get("persistence").toLowerCase());	
 		    }else{
-		    	config.setPersistance("mybatis");
+		    	config.setPersistence("mybatis");
 		    }
 		  	
 		  	
@@ -127,7 +128,7 @@ public class ConfigFactory {
 			//全局参数 设置
 			m.setColumnIsCamel(config.isColumnIsCamel());//字段是否驼峰命名，全局参数
 			m.setDeleteTablePrefix(config.isDeleteTablePrefix());//是否删除表名前缀，全局参数
-			m.setPersistance(config.getPersistance());//持久层框架 ，全局参数
+			m.setPersistence(config.getPersistence());//持久层框架 ，全局参数
 			m.setBaseTabPrefix(config.getBaseTabPrefix());
 			
 			//模块名 ,默认 空字符

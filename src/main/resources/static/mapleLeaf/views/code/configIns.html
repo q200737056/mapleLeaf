@@ -85,7 +85,7 @@
                 <td>name,value</td>
                 <td>配置name-value，现有属性：baseDir(路径,默认项目所在目录),basePackage(基础包名，默认mapleLeaf.code)
                 ,deleteTabPrefix(是否删除表名前缀，默认false),baseTabPrefix(全局表名前缀，默认"")
-                ,columnCamel(表字段下划线转驼峰命名，默认false),persistance(持久层框架，默认mybatis)</td>
+                ,columnCamel(表字段下划线转驼峰命名，默认false),persistence(持久层框架，默认mybatis)</td>
               </tr>
               <tr>
                 <td>common</td>
@@ -359,17 +359,16 @@
                 <td>
                  	表字段标签，可自定义字段属性；配置的字段名必须未被过滤掉，而且表中存在；
                  	标签内容为字段值设定，比如 flag字段表示状态。可自定义字段值  
-                 	如：0=可用,1=不可用；对应COMMENT约定格式的第3个；
-                 	默认会从COMMENT中取（如果有） COMMENT约定格式(字段文本;表单类型;val1:text1,val2:text2;)
+                 	如：0=可用,1=不可用；对应COMMENT约定格式(字段文本;表单类型;val1:text1,val2:text2;)中的第3个；
+                 	默认会从COMMENT中取（如果有）。
                	</td>
                 <td>否</td>
                 <td>colName，labelName，tagType</td>
                 <td>colName属性：字段名，必需；
                 	labelName属性：自定义字段文本，可用来在页面中显示文本，非必需，
                 	默认会从COMMENT中取 
-                	tagType属性：自定义表单标签类型，页面中可使用，可以自己定义一套，
-                	比如 select表示下拉框，checkbox表示多选，radio表示单选等，非必需，
-                	默认也会从COMMENT中取
+                	tagType属性：自定义表单标签类型,可选(text,select,date,checkbox,radio,hidden,textarea,file)
+                	，默认 text，非必需，默认会从COMMENT约定格式(字段文本;表单类型;val1:text1,val2:text2;)中取。
                 </td>
               </tr>
              

@@ -22,6 +22,7 @@ import com.mapleLeaf.code.model.Column;
 import com.mapleLeaf.code.model.RefTable;
 import com.mapleLeaf.code.model.Table;
 import com.mapleLeaf.code.utils.CodeUtil;
+import com.mapleLeaf.common.util.GlobalConst;
 
 public abstract class AbstractTableService implements ITableService {
 	
@@ -231,7 +232,7 @@ public abstract class AbstractTableService implements ITableService {
      	for(Column col : cols){
      		
      		if(!CodeUtil.isEmpty(col.getRemark())){
-				//字段 文本 默认 COMMENT中取   COMMENT形式(字段文本;val1:text1,val2:text2;)
+				//字段 文本 默认 COMMENT中取   COMMENT约定格式(字段文本;表单类型;val1:text1,val2:text2;)
      			String[] arrTemp = col.getRemark().replace("；", ";").split(";");
 				col.setLabelName(arrTemp[0].trim());
 				if(arrTemp.length>2){
@@ -305,8 +306,9 @@ public abstract class AbstractTableService implements ITableService {
 				col.setLabelName(labelName);
 			}
 			String tagType = colConf.getTagType();
-			if(!CodeUtil.isEmpty(tagType)){
-				col.setTagType(tagType);
+			if(!CodeUtil.isEmpty(tagType)&&
+					CodeUtil.checkStrArray(GlobalConst.TAG_TYPES, tagType)){
+				col.setTagType(tagType.toLowerCase());//默认 text
 			}
 			String colValue = colConf.getColValue();
 			if(!CodeUtil.isEmpty(colValue)){

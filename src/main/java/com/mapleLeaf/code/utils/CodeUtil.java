@@ -199,14 +199,13 @@ public class CodeUtil {
     	return dataMap;
     }
     /**
-     * 判断 持久层框架配置正确
+     * 判断 字符串数组中 是否存在 指定字符串，不区分大小写
      * @param per
      * @return
      */
-    public static boolean checkPersistance(String per){
-    	String[] pers = {"mybatis","hibernate","other"};
-    	for(String s: pers){
-    		if(s.equalsIgnoreCase(per)){
+    public static boolean checkStrArray(String[] arr,String str){
+    	for(String s: arr){
+    		if(s.equalsIgnoreCase(str)){
     			return true;
     		}
     	}

@@ -45,13 +45,13 @@ public class DataBase2File {
      * @throws ClassNotFoundException 
      * @throws SQLException 
      */  
-    public void generateFiles(String tplPath) throws Exception{
+    public void generateFiles(String configFile,String tplPath) throws Exception{
         log.info("Generating...");
         Long start=System.currentTimeMillis();
         
         try {
         	
-        	 Config config= ConfigFactory.createConfig(GlobalConst.CONFIG,tplPath);
+        	 Config config= ConfigFactory.createConfig(configFile,tplPath);
              
              ITableService tableService = TableServiceFactory.getInstance(config.getDb().getDbType());
              tableService.setDb(config.getDb());
@@ -154,7 +154,7 @@ public class DataBase2File {
     	obj.put("controllerPackage", module.getControllerPackage());
     	obj.put("mapperPackage", module.getMapperPackage());
     	
-    	obj.put("persistance", module.getPersistance());//持久层框架
+    	obj.put("persistence", module.getPersistence());//持久层框架
     	obj.put("param", module.getParamMap());//自定义参数
     	
     }
@@ -223,16 +223,14 @@ public class DataBase2File {
     	FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+"Dao", savePath);
     	log.info("生成文件："+savePath);
     	//dao实现类
-    	if (module.getPersistance().toLowerCase()
-    			.equals("hibernate")){
+    	if (module.getPersistence().equals("hibernate")){
         	File implDir=getSaveFilePath(module.getDaoPackage()+File.separator+module.getDaoImplPackage(),config);
 	    	
 	    	File implFile = new File(implDir,table.getEntName()+"DaoImpl.java");
 	    	String implPath =implFile.getAbsolutePath();
 	    	FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+"DaoImpl", implPath);
 	    	log.info("生成文件："+implPath);
-    	}else if (module.getPersistance().toLowerCase()
-    			.equals("mybatis")) {
+    	}else if (module.getPersistence().equals("mybatis")) {
     		/**
         	 * 如果是mybatis，则生成mytabis的xml配置文件
         	 */
@@ -321,7 +319,8 @@ public class DataBase2File {
     public static void main(String[] args) {  
         DataBase2File reverser = new DataBase2File(); 
         try {
-			reverser.generateFiles(GlobalConst.TEMPLATE_PATH+"/tpl_default_mybatis");
+			reverser.generateFiles(GlobalConst.CONFIG,
+					GlobalConst.TEMPLATE_PATH+"/tpl_default_mybatis");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

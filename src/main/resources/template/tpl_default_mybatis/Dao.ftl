@@ -1,6 +1,7 @@
-package ${basePackage}.${daoPackage};
+<#import "/lib/mf.ftl" as mf/>
+package <@mf.daoPkg/>;
 
-import ${basePackage}.${entityPackage}.${entName};
+import <@mf.entityPkg/>.${entName};
 
 /**
  * ${remark!}操作相关
@@ -14,38 +15,28 @@ public interface ${entName}Dao {
 	 * 新增
 	 */
 	 public int insert${entName}(${entName} ${lowEntName});
-	<#if uniIdxMap?? && (uniIdxMap?size>0)>
-    <#assign keys=uniIdxMap?keys />
-    <#list keys as key>
-    <#if uniIdxMap[key][0].pk>
+	<@mf.map uniIdxMap;idxnm,cols>
     /**
-	 * 根据主键查找
+	 * 根据唯一索引${idxnm}查找
 	 */
-	 <#else>
+	 public ${entName} find${entName}By${idxnm?cap_first}(${entName} ${lowEntName});
+	
     /**
-	 * 根据唯一索引${key}查找
+	 * 根据唯一索引${idxnm}修改
 	 */
-	 </#if>
-	 public ${entName} find${entName}By${key?lower_case?cap_first}(${entName} ${lowEntName});
-	/**
-	 * 根据唯一索引${key}修改
+	 public int update${entName}By${idxnm?cap_first}(${entName} ${lowEntName});
+	
+    /**
+	 * 根据唯一索引${idxnm}删除
 	 */
-	 public int update${entName}By${key?lower_case?cap_first}(${entName} ${lowEntName});
-	/**
-	 * 根据唯一索引${key}删除
-	 */
-	 public int delete${entName}By${key?lower_case?cap_first}(${entName} ${lowEntName});
-	</#list>
-    </#if>
-    <#if refTables?? && (refTables?size>0)>
-    <#list refTables as subtb>
-    <#if subtb.refColumnMap?? && (subtb.refColumnMap?size>0)>
+	 public int delete${entName}By${idxnm?cap_first}(${entName} ${lowEntName});
+	</@mf.map>
+	
+	<@mf.list refTables;refTab>
     /**
 	 * 根据输入条件 关联查询
 	 */
-	 public List<Map> find${entName}ByCons(Map map);	
-    </#if>
-    </#list>
-    </#if>
-    
+	 public List<Map> find${entName}ByCons(Map map);
+	</@mf.list>
+     
 }

@@ -1,68 +1,62 @@
-package ${basePackage}.${entityPackage};
+<#import "/lib/mf.ftl" as mf/>
+package <@mf.entityPkg/>;
 import java.io.Serializable;
 <#--导入包-->
-<#if impClasses?? && (impClasses?size>0)>
-<#list impClasses as clz>
+<@mf.list impClasses;clz>
 ${clz};
-</#list>
-</#if>
+</@mf.list>
 /**
 * ${remark!}
 */
 
-public class ${entName} extends Page implements Serializable {
+public class ${entName} implements Serializable {
 	private static final long serialVersionUID = 1L;
 	<#if columns?? && (columns?size>0)>
-	<#list columns as col>
+	
+	<@mf.list columns;col>
 	/**
 	 * ${col.labelName}
 	 */
-	<#assign type=col.propType>
-	
-	private ${type} ${col.propName};
-	</#list>
+	private ${col.propType} ${col.propName};
+	</@mf.list>
 	
 	<#--关联表属性-->
-	<#if refTables?? && (refTables?size>0)>
-	<#list refTables as subtb>
-	<#if subtb.refType=="OneToOne" || subtb.refType=="ManyToOne">
-	private ${subtb.entName} ${subtb.lowEntName};
-	<#elseif subtb.refType=="OneToMany" || subtb.refType=="ManyToMany">
-	private List<${subtb.entName}> ${subtb.lowEntName}List;
-	</#if>	
-	</#list>
+	<@mf.list refTables;refTab>
+	<#if refTab.refType=="OneToOne" || refTab.refType=="ManyToOne">
+	private ${refTab.entName} ${refTab.lowEntName};
+	<#elseif refTab.refType=="OneToMany" || refTab.refType=="ManyToMany">
+	private List<${refTab.entName}> ${refTab.lowEntName}List;
 	</#if>
+	</@mf.list>
 	
-	<#list columns as col>
-	<#assign type=col.propType>
-	public void set${col.upperPropName}(${type} ${col.propName}){
+	<@mf.list columns;col>
+	public void set${col.upperPropName}(${col.propType} ${col.propName}){
 		this.${col.propName}=${col.propName};
 	}
-	public ${type} get${col.upperPropName}(){
+	public ${col.propType} get${col.upperPropName}(){
 		return this.${col.propName};
-	}
-	</#list>
+	}	
+	</@mf.list>
 	
 	<#--关联表get,set-->
-	<#if refTables?? && (refTables?size>0)>
-	<#list refTables as subtb>
-	<#if subtb.refType=="OneToOne" || subtb.refType=="ManyToOne">
-	public void set${subtb.entName}(${subtb.entName} ${subtb.lowEntName}){
-		this.${subtb.lowEntName}=${subtb.lowEntName};
+	<@mf.list refTables;refTab>
+	<#if refTab.refType=="OneToOne" || refTab.refType=="ManyToOne">
+	public void set${refTab.entName}(${refTab.entName} ${refTab.lowEntName}){
+		this.${refTab.lowEntName}=${refTab.lowEntName};
 	}
-	public ${subtb.entName} get${subtb.entName}(){
-		return this.${subtb.lowEntName};
+	public ${refTab.entName} get${refTab.entName}(){
+		return this.${refTab.lowEntName};
 	}
-	<#elseif subtb.refType=="OneToMany" || subtb.refType=="ManyToMany">
-	public void set${subtb.entName}List(List<${subtb.entName}> ${subtb.lowEntName}List){
-		this.${subtb.lowEntName}List=${subtb.lowEntName}List;
+	<#elseif refTab.refType=="OneToMany" || refTab.refType=="ManyToMany">
+	public void set${refTab.entName}List(List<${refTab.entName}> ${refTab.lowEntName}List){
+		this.${refTab.lowEntName}List=${refTab.lowEntName}List;
 	}
-	public List<${subtb.entName}> get${subtb.entName}List(){
-		return this.${subtb.lowEntName}List;
+	public List<${refTab.entName}> get${refTab.entName}List(){
+		return this.${refTab.lowEntName}List;
 	}
-	</#if>	
-	</#list>
 	</#if>
+	</@mf.list>
+	
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder();

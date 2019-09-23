@@ -297,7 +297,8 @@ public class CodeCtrl {
 		//生成代码
         try {
         	
-        	dataBase2File.generateFiles(GlobalConst.TEMPLATE_PATH+"/"+tplname);
+        	dataBase2File.generateFiles(GlobalConst.CONFIG,
+        			GlobalConst.TEMPLATE_PATH+"/"+tplname);
 		} catch (Exception e) {
 			e.printStackTrace();
 			rst.setCode("500");
