@@ -27,15 +27,12 @@ public class ${entName}ServiceImpl implements ${entName}Service {
 	 public int insert${entName}(${entName} ${lowEntName}){
 	 	return ${lowEntName}Dao.insert${entName}(${lowEntName});
 	 }
-	<#if uniIdxMap?? && (uniIdxMap?size>0)>
-    <#assign keys=uniIdxMap?keys />
-    <#list keys as key>
-    <#if uniIdxMap[key][0].pk>
+	<#if uniIdxCols?? && (uniIdxCols?size>0)>
     /**
 	 * 根据主键查找
 	 */
-	  public ${entName} get${entName}ById(Long id){
-	  	return ${lowEntName}Dao.get${entName}ById(id);
+	  public ${entName} get${entName}(Long id){
+	  	return ${lowEntName}Dao.get${entName}(id);
 	  }
 	 /**
 	 * 修改
@@ -46,12 +43,8 @@ public class ${entName}ServiceImpl implements ${entName}Service {
 	/**
 	 * 根据主键删除
 	 */
-	 public int delete${entName}ById(Long id){
-	 	return ${lowEntName}Dao.delete${entName}ById(id);
+	 public int delete${entName}(Long id){
+	 	return ${lowEntName}Dao.delete${entName}(id);
 	 }
-	 <#else>
-    
-	 </#if>
-	</#list>
     </#if>
 }

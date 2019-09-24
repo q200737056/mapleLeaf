@@ -15,30 +15,19 @@ public interface ${entName}Service {
 	 * 新增
 	 */
 	 public int insert${entName}(${entName} ${lowEntName});
-	<@mf.map uniIdxMap;idxnm,cols>
+	<#if uniIdxCols?? && (uniIdxCols?size>0)>
 	/**
-	 * 根据唯一索引${idxnm}查找
+	 * ${tabName}查找
 	 */
-	 public ${entName} find${entName}By${idxnm?cap_first}(${entName} ${lowEntName});
+	 public ${entName} find${entName}By(${entName} ${lowEntName});
 	/**
-	 * 根据唯一索引${idxnm}修改
+	 * ${tabName}修改
 	 */
-	 public int update${entName}By${idxnm?cap_first}(${entName} ${lowEntName});
+	 public int update${entName}(${entName} ${lowEntName});
 	/**
-	 * 根据唯一索引${idxnm}删除
+	 * ${tabName}删除
 	 */
-	 public int delete${entName}By${idxnm?cap_first}(${entName} ${lowEntName});
-	</@mf.map>
+	 public int delete${entName}(${entName} ${lowEntName});
+	</#if>
 	
-    
-    <#if refTables?? && (refTables?size>0)>
-    <#list refTables as subtb>
-    <#if subtb.refColumnMap?? && (subtb.refColumnMap?size>0)>
-    /**
-	 * 根据输入条件 关联查询
-	 */
-	 public List<Map> find${entName}ByCons(Map map);	
-    </#if>
-    </#list>
-    </#if>
 }

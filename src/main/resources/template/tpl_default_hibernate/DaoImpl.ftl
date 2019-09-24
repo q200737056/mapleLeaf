@@ -26,14 +26,11 @@ public class ${entName}DaoImpl implements ${entName}Dao {
 	 	 int res = this.getCurrSession().save(${lowEntName});
 	 	 return res;
 	 }
-	<#if uniIdxMap?? && (uniIdxMap?size>0)>
-    <#assign keys=uniIdxMap?keys />
-    <#list keys as key>
-    <#if uniIdxMap[key][0].pk>
+	<#if uniIdxCols?? && (uniIdxCols?size>0)>
     /**
-	 * 根据主键查找
+	 * 查找
 	 */
-	  public ${entName} get${entName}ById(Long id){
+	  public ${entName} get${entName}(Long id){
 	  	  ${entName} ${lowEntName} = (${entName})this.getCurrSession().get(${entName}.class,id);
 	  	  return ${lowEntName};
 	  }
@@ -44,20 +41,15 @@ public class ${entName}DaoImpl implements ${entName}Dao {
 	 	  int res = this.getCurrSession().saveOrUpdate(${lowEntName});
 	 }
 	/**
-	 * 根据主键删除
+	 * 删除
 	 */
-	 public int delete${entName}ById(Long id){
+	 public int delete${entName}(Long id){
  		  ${entName} ${lowEntName}=get${entName}ById(id);
  		  if(${lowEntName}!=null){
  			  return this.getCurrSession().delete(${lowEntName});
  		  }
  		  return 0;
 	 }
-	 <#else>
-   
-	 </#if>
-	
-	</#list>
     </#if>
    
     

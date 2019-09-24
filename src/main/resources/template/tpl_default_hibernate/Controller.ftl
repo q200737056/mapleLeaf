@@ -64,16 +64,14 @@ public class ${entName}Controller {
        	}
         return "redirect:/user/list";
     }
-    <#if uniIdxMap?? && (uniIdxMap?size>0)>
-    <#assign keys=uniIdxMap?keys />
-    <#list keys as key>
+    <#if uniIdxCols?? && (uniIdxCols?size>0)>
    /**
     * 修改
     */
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public String update(RedirectAttributes redirectAttributes, ${entName} ${lowEntName}){
        	
-       	int rst = ${lowEntName}Service.update${entName}By${key?lower_case?cap_first}(${lowEntName});
+       	int rst = ${lowEntName}Service.update${entName}(${lowEntName});
        	if(rst>0){
        		redirectAttributes.addFlashAttribute("msg", "修改成功");
        	}else{
@@ -87,7 +85,7 @@ public class ${entName}Controller {
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public String delete(RedirectAttributes redirectAttributes, ${entName} ${lowEntName}){
        	
-       	int rst = ${lowEntName}Service.delete${entName}By${key?lower_case?cap_first}(${lowEntName});
+       	int rst = ${lowEntName}Service.delete${entName}(${lowEntName});
        	if(rst>0){
        		redirectAttributes.addFlashAttribute("msg", "删除成功");
        	}else{
@@ -95,7 +93,6 @@ public class ${entName}Controller {
        	}
         return "redirect:/user/list";
     }
-    </#list>
     </#if>
 	
 }

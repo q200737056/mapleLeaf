@@ -151,10 +151,10 @@
               </tr>
              
               <tr>
-                <td>uniIdxMap</td>
-                <td>Map&lt;String,List&lt;Column&gt;&gt;</td>
-                <td>主键，唯一索引map集合；key：主键名或索引名，value:Column集合</td>
-                <td>利用list标签, 循环取出key和主键或唯一索引的Column集合</td>
+                <td>uniIdxCols</td>
+                <td>List&lt;Column&gt;</td>
+                <td>如果有主键，则主键字段集合；没有主键，则取其中一组唯一索引字段集合；都没有，则空集合</td>
+                <td>利用list标签, 可取出Column</td>
               </tr>
               <tr>
             	<th colspan="4" class="nepadmin-c-red nepadmin-bold nepadmin-font-14">RefTable属性</th>

@@ -14,26 +14,19 @@ public interface ${entName}Dao {
 	 * 新增
 	 */
 	 public int insert${entName}(${entName} ${lowEntName});
-	<#if uniIdxMap?? && (uniIdxMap?size>0)>
-    <#assign keys=uniIdxMap?keys />
-    <#list keys as key>
-    <#if uniIdxMap[key][0].pk>
+	<#if uniIdxCols?? && (uniIdxCols?size>0)>
     /**
-	 * 根据主键查找
+	 * 查找
 	 */
-	  public ${entName} get${entName}ById(Long id);
+	  public ${entName} get${entName}(Long id);
 	 /**
 	 * 修改
 	 */
 	 public int update${entName}(${entName} ${lowEntName});
 	/**
-	 * 根据主键删除
+	 * 删除
 	 */
-	 public int delete${entName}ById(Long id);
-	 <#else>
-    
-	 </#if>
-	</#list>
+	 public int delete${entName}(Long id);
     </#if>
     
 }

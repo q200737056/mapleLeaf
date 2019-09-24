@@ -74,7 +74,7 @@ public abstract class AbstractTableService implements ITableService {
         return table;  
     }
     /**
-     * 封装 表数据
+     * 封装 主表数据
      */
     protected Table renderTable(TableConf tbConf,Module module,Connection conn) 
     		throws SQLException{
@@ -82,8 +82,7 @@ public abstract class AbstractTableService implements ITableService {
     	 String tableName =tbConf.getName();
     	 //去掉前缀 的表名
     	 String mvPrefix=tbConf.getName();
-    	 //得到 唯一主键 ，索引
-    	 Map<String,String> map = this.getTableUniqueIdx(tableName, conn);
+    	 
     	 
     	 Table table = new Table(); 
     	 
@@ -111,13 +110,24 @@ public abstract class AbstractTableService implements ITableService {
         //首字母小写的驼峰命名
          table.setLowEntName(CodeUtil.convertToFstLowerCamelCase(mvPrefix));
     	
-    	Map<String,List<Column>> index = new HashMap<>();//唯一索引，主键
+    	List<Column> indexes = new ArrayList<>();//其中一组 唯一索引或主键的字段集合
     	//获取字段
     	List<Column> cols = getTableColumns(tableName, module, conn);
     	
-    	//主键字段集
+    	//获取主键字段集
     	String pks = getTablePrimaryKey(table.getTabName(),conn);
-    	List<String> pkCols = Arrays.asList(pks.split(","));
+    	String[] pkCols = pks.split(",");
+    	String[] idxCols = pkCols;
+    	if(pkCols.length==0){//如果主键为空，则去查唯一索引
+    		//得到 唯一索引,主键
+	       	 Map<String,String> map = this.getTableUniqueIdx(tableName, conn);
+	       	 //取出 其中一组
+	       	 for(Map.Entry<String, String> entry:map.entrySet()){
+	       		 String v = entry.getValue();
+	       		 idxCols = v.split(",");
+	       		 break;
+	       	 }
+    	}
     	
     	for(Column col : cols){
     		
@@ -153,7 +163,7 @@ public abstract class AbstractTableService implements ITableService {
         		table.getImpClasses().add(CodeUtil.convertClassType(col.getPropType()));
         	}
     		//判断字段是否主键
-        	if(CodeUtil.isPrimaryKey(pkCols, col.getColName())){
+        	if(CodeUtil.checkStrArray(pkCols, col.getColName())){
         		col.setPk(true);
         	}
         	
@@ -161,28 +171,14 @@ public abstract class AbstractTableService implements ITableService {
         	table.getColumns().add(col);
         	
         	//唯一索引,主键
-        	if(!map.isEmpty()){
-        		for(Map.Entry<String, String> entry:map.entrySet()){
-        			String v = entry.getValue();
-        			String k = entry.getKey();
-        			if(v.contains(col.getColName())){
-        				if(index.get(k)!=null){
-        					index.get(k).add(col);
-        				}else{
-        					List<Column> columns = new ArrayList<>();
-        					columns.add(col);
-        					index.put(k, columns);
-        				}
-        				
-        			}
-        				
-        		}
+        	if(CodeUtil.checkStrArray(idxCols, col.getColName())){
+        		indexes.add(col);
         	}
         	
     	}
     	
-    	if(!index.isEmpty()){
-			table.setUniIdxMap(index);//唯一索引集
+    	if(!indexes.isEmpty()){
+			table.setUniIdxCols(indexes);
 		}
     	
     	return table;
@@ -226,8 +222,10 @@ public abstract class AbstractTableService implements ITableService {
         //获取字段  
      	List<Column> cols = getTableColumns(tableName, module, conn);
      	
+     	//获取主键
      	String pks = getTablePrimaryKey(ref.getTabName(),conn);
-    	List<String> pkCols = Arrays.asList(pks.split(","));
+    	String[] pkCols = pks.split(",");
+    	
     	
      	for(Column col : cols){
      		
@@ -235,9 +233,12 @@ public abstract class AbstractTableService implements ITableService {
 				//字段 文本 默认 COMMENT中取   COMMENT约定格式(字段文本;表单类型;val1:text1,val2:text2;)
      			String[] arrTemp = col.getRemark().replace("；", ";").split(";");
 				col.setLabelName(arrTemp[0].trim());
+				if(arrTemp.length>1){
+					col.setTagType(arrTemp[1].trim());
+				}
 				if(arrTemp.length>2){
 					Map<String,String> colValMap = CodeUtil.splitKeyVal(
-							arrTemp[1].trim().replace("：", ":"), ":");
+							arrTemp[2].trim().replace("：", ":"), ":");
 					if(colValMap!=null){
 						col.setColValueMap(colValMap);
 					}
@@ -252,7 +253,7 @@ public abstract class AbstractTableService implements ITableService {
     			}
     		}
      		//判断字段是否主键
-        	if(CodeUtil.isPrimaryKey(pkCols, col.getColName())){
+        	if(CodeUtil.checkStrArray(pkCols, col.getColName())){
         		col.setPk(true);
         	}
         	ref.getColumns().add(col);

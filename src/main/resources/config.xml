@@ -62,14 +62,17 @@
 		</package>
 		
 		<customArea>
-			<!-- 自定义生成，可以配置多个标签，不限于java语言，属性customPkg包名，属性suffix 文件后缀;标签内容 模板，多个逗号分隔-->
+			<!-- 自定义生成，可以配置多组标签，不限于java语言，属性customPkg包名，属性suffix 文件后缀;标签内容 模板，多个逗号分隔-->
 			<codeFile customPkg="page" suffix="jsp">Jsp_list,Jsp_add</codeFile>
 			<!-- 自定义参数设置 ，模板中可以通过${param['fontSize']!}获取参数值 -->
 			<param key="fontSize" value="12px"></param>
 		</customArea>
 		
 		
-		<!-- ref标签（单向）  关联表，如果需要双向关联  两个table都需配置对应对方的ref -->
+		<!-- 
+			ref标签（单向）  关联表，如果需要双向关联  两个table都需配置对应对方的ref 
+			ref标签内容为 主表字段=关联表的字段，默认可以多组，逗号分隔（推荐单组字段）
+		-->
 		<table tabName="sys_user" prefix="">
 			<ref tabName="wxcms_login_info" type="OneToMany">id=user_id</ref>
 			<ref tabName="wxcms_user_tag" type="OneToMany">account=account</ref>

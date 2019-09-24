@@ -7,7 +7,11 @@
     
     <resultMap type="<@mf.entityPkg/>.${entName}" id="${lowEntName}Map">
       <@mf.list columns;col>
+      <#if col.pk>
+      <id property="${col.propName}" column="${col.colName}"/>
+      <#else>
       <result property="${col.propName}" column="${col.colName}"/>
+      </#if>
       </@mf.list>
       <@mf.list refTables;refTab>
       <#--判断有一个 或 有很多个-->
@@ -62,43 +66,32 @@
  			<#list columns as col><@mf.print "#"/>{${col.propName}}<#if col_has_next>,</#if></#list>
 		)
     </insert>
-    <@mf.map uniIdxMap;idxnm,cols>
+    <#if uniIdxCols?? && (uniIdxCols?size>0)>
     <#--查询-->
-    <select id="find${entName}By${idxnm?cap_first}" parameterType="<@mf.entityPkg/>.${entName}" 
+    <select id="find${entName}By" parameterType="<@mf.entityPkg/>.${entName}" 
     	resultType="<@mf.entityPkg/>.${entName}">
         select * from ${tabName} where 1=1 
-         <@mf.list cols;idxCol>
+         <@mf.list uniIdxCols;idxCol>
          and ${idxCol.colName}=<@mf.print "#"/>{${idxCol.propName}}
          </@mf.list>  		
     </select>
     <#--修改-->
-    <update id="update${entName}By${idxnm?cap_first}" parameterType="<@mf.entityPkg/>.${entName}">
+    <update id="update${entName}" parameterType="<@mf.entityPkg/>.${entName}">
         update ${tabName} set 
         <#list columns as col>${col.colName}=<@mf.print "#"/>{${col.propName}}<#if col_has_next>,</#if></#list>
          where 1=1 
-         <@mf.list cols;idxCol>
+         <@mf.list uniIdxCols;idxCol>
          and ${idxCol.colName}=<@mf.print "#"/>{${idxCol.propName}}
          </@mf.list>  		
     </update>
     <#--删除-->
-    <delete id="delete${entName}By${idxnm?cap_first}" parameterType="<@mf.entityPkg/>.${entName}">
+    <delete id="delete${entName}" parameterType="<@mf.entityPkg/>.${entName}">
          delete from ${tabName} where 1=1 
-         <@mf.list cols;idxCol>
+         <@mf.list uniIdxCols;idxCol>
          and ${idxCol.colName}=<@mf.print "#"/>{${idxCol.propName}}
          </@mf.list>   		
     </delete>
-	</@mf.map>
+	</#if>
     
     
-    <#if refTables?? && (refTables?size>0)>
-    <#list refTables as subtb>
-    <#if subtb.refColMap?? && (subtb.refColMap?size>0)>
-    <select id="find${entName}ByCons" parameterType="map" 
-    	resultType="map">
-        select * from ${tabName} a left join ${subtb.tabName} b on 
-        <#list subtb.refColMap?keys as key>a.${key}=b.${subtb.refColMap["${key}"]}</#list> 		
-    </select>
-    </#if>
-    </#list>
-    </#if>
 </mapper>

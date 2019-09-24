@@ -345,6 +345,10 @@ public class ConfigFactory {
 			if(type.length()>=8 && "OneToOne`ManyToMany`ManyToOne`OneToMany"
 					.contains(type)){
 				m.setRefType(type);
+				if(type.equals("ManyToMany")){//多对多有 中间表
+					m.setMidName(XmlUtil.getAttrValue(e, "midTabName", null));
+					m.setMidRefCol(XmlUtil.getAttrValue(e, "midRefCol", null));
+				}
 			}else{
 				m.setRefType("OneToMany");//其它的都默认OneToMany
 			}

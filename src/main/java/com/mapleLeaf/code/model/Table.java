@@ -1,9 +1,7 @@
 package com.mapleLeaf.code.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Table {
 
@@ -18,12 +16,14 @@ public class Table {
 
 	private List<RefTable> refTables = new ArrayList<>();// 所有关联表的集合
 	
-	private Map<String, List<Column>> uniIdxMap = new HashMap<>();// 唯一索引map集合，包含主键
+	//private Map<String, List<Column>> uniIdxMap = new HashMap<>();// 唯一索引map集合，包含主键
 																	// key:索引名
 																	// value:Column集合
-	private String exclude;//排除指定模板的文件生成(dao,service,controller,view,custom,entity)
+	private String exclude;//排除指定模板的文件生成(dao,service,controller,custom,entity)
 	
 	
+	private List<Column> uniIdxCols = new ArrayList<>();// 其中一组的表唯一索引（或主键）的字段集合
+													    
 	public String getTabName() {
 		return tabName;
 	}
@@ -73,14 +73,7 @@ public class Table {
 		this.entName = entName;
 	}
 
-	public Map<String, List<Column>> getUniIdxMap() {
-		return uniIdxMap;
-	}
-
-	public void setUniIdxMap(Map<String, List<Column>> uniIdxMap) {
-		this.uniIdxMap = uniIdxMap;
-	}
-
+	
 	public String getExclude() {
 		return exclude;
 	}
@@ -96,5 +89,14 @@ public class Table {
 	public void setRefTables(List<RefTable> refTables) {
 		this.refTables = refTables;
 	}
+
+	public List<Column> getUniIdxCols() {
+		return uniIdxCols;
+	}
+
+	public void setUniIdxCols(List<Column> uniIdxCols) {
+		this.uniIdxCols = uniIdxCols;
+	}
+	
 	
 }

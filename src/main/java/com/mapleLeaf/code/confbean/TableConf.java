@@ -15,7 +15,6 @@ public class TableConf {
 	//private String refType; //表关联类型,主表对从表 分为OneToOne,OneToMany等
 	//private String refColumns;//关联的字段，主表字段=从表字段 多个逗号分隔
 	private String exclude;//排除指定模板的文件生成(dao,service,controller,view,custom,entity)
-	//private List<TableConf> subTables = new ArrayList<TableConf>();//从表集合
 	
 	private List<RefConf> refConfs = new ArrayList<>(); //关联表的信息
 	

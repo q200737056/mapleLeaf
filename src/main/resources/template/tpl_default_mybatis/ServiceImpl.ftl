@@ -28,36 +28,25 @@ public class ${entName}ServiceImpl implements ${entName}Service {
 	 public int insert${entName}(${entName} ${lowEntName}){
 	 	return ${lowEntName}Mapper.insert${entName}(${lowEntName});
 	 }
-	<@mf.map uniIdxMap;idxnm,cols>
+	<#if uniIdxCols?? && (uniIdxCols?size>0)>
     /**
-	 * 根据唯一索引${idxnm}查找
+	 * ${tabName}查找
 	 */
-	 public ${entName} find${entName}By${idxnm?cap_first}(${entName} ${lowEntName}){
-	 	return ${lowEntName}Mapper.find${entName}By${idxnm?cap_first}(${lowEntName});
+	 public ${entName} find${entName}By(${entName} ${lowEntName}){
+	 	return ${lowEntName}Mapper.find${entName}By(${lowEntName});
 	 }
 	/**
-	 * 根据唯一索引${idxnm}修改
+	 * ${tabName}修改
 	 */
-	 public int update${entName}By${idxnm?cap_first}(${entName} ${lowEntName}){
-	 	return ${lowEntName}Mapper.update${entName}By${idxnm?cap_first}(${lowEntName});
+	 public int update${entName}(${entName} ${lowEntName}){
+	 	return ${lowEntName}Mapper.update${entName}(${lowEntName});
 	 }
 	/**
-	 * 根据唯一索引${idxnm}删除
+	 * ${tabName}删除
 	 */
-	 public int delete${entName}By${idxnm?cap_first}(${entName} ${lowEntName}){
-	 	return ${lowEntName}Mapper.delete${entName}By${idxnm?cap_first}(${lowEntName});
+	 public int delete${entName}(${entName} ${lowEntName}){
+	 	return ${lowEntName}Mapper.delete${entName}(${lowEntName});
 	 }
-	</@mf.map>
-    <#if refTables?? && (refTables?size>0)>
-    <#list refTables as subtb>
-    <#if subtb.refColumnMap?? && (subtb.refColumnMap?size>0)>
-    /**
-	 * 根据输入条件 关联查询
-	 */
-	 public List<Map> find${entName}ByCons(Map map){
-	 	return ${lowEntName}Mapper.find${entName}ByCons(Map map);
-	 }	
-    </#if>
-    </#list>
-    </#if>
+	</#if>
+  
 }
