@@ -194,9 +194,9 @@
                 <td>table</td>
                 <td>配置数据库表，一个模块下可以配置多个table</td>
                 <td>是</td>
-                <td>entName,tabName,
+                <td>tabName,
                 prefix,exclude</td>
-                <td>entName属性：配置自定义实体类名，非必需；
+                <td>
                 tabName属性：表名，必需；prefix属性：表名前缀，非必需；
                 exclude属性：排除指定模板代码生成（entity,dao,service,controller,custom选择多个时，逗号分隔），非必需；
                 </td>
@@ -311,12 +311,16 @@
                 <td>ref</td>
                 <td>
                  	关联表配置（单向）可以配置多个ref，如果需要双向关联，需两个table相互配置ref。 
-                 	标签内容为两table关联的字段，table标签的字段在前，可以多个，如：id=id,name=user_name
+                 	标签内容为 主表字段=关联表字段，可以多个，如：id=id,name=user_name；
+                 	特殊情况：多对多时，标签内容为 主表字段=中间表字段。
                	</td>
                 <td>否</td>
                 <td>tabName，type</td>
-                <td>tabName属性：关联表的表名，而且该表名已配置table，必需；
-                type属性：关联关系（OneToOne，ManyToMany，ManyToOne，OneToMany），必需
+                <td>tabName属性：关联表的表名，而且该表名必须配置table，必需；
+                type属性：关联关系（OneToOne，ManyToMany，ManyToOne，OneToMany），必需；
+                midTabName属性：中间表名，不用配置table，多对多时必需；
+                midRefCol属性：中间表字段=关联表字段，多对多时必需；
+                forKey属性：主表中的关联字段（外键），多对一时必需，一对一时，判断关联字段（外键）是否在主表中，不在就不用配置。
                 </td>
               </tr>
               <tr>

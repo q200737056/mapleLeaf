@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.mapleLeaf.code.confbean.ColumnConf;
 import com.mapleLeaf.code.confbean.ColumnGroupConf;
 import com.mapleLeaf.code.confbean.Db;
@@ -104,9 +102,8 @@ public abstract class AbstractTableService implements ITableService {
 		 	}
 		 }
 		 table.setRemark(getTableRemark(tableName, conn));//表 注释
-	      //实体类名,如果没设置实体类名属性，则,首字母大写的驼峰命名 
-         table.setEntName(CodeUtil.isEmpty(tbConf.getEntityName())
-        		?CodeUtil.convertToCamelCase(mvPrefix):tbConf.getEntityName());
+	      //实体类名,首字母大写的驼峰命名 
+         table.setEntName(CodeUtil.convertToCamelCase(mvPrefix));
         //首字母小写的驼峰命名
          table.setLowEntName(CodeUtil.convertToFstLowerCamelCase(mvPrefix));
     	
@@ -118,7 +115,7 @@ public abstract class AbstractTableService implements ITableService {
     	String pks = getTablePrimaryKey(table.getTabName(),conn);
     	String[] pkCols = pks.split(",");
     	String[] idxCols = pkCols;
-    	if(pkCols.length==0){//如果主键为空，则去查唯一索引
+    	if(CodeUtil.isEmpty(pks)){//如果主键为空，则去查唯一索引
     		//得到 唯一索引,主键
 	       	 Map<String,String> map = this.getTableUniqueIdx(tableName, conn);
 	       	 //取出 其中一组
@@ -213,9 +210,8 @@ public abstract class AbstractTableService implements ITableService {
 		 		
 		 	}
 		 }
-		//实体类名,如果没设置实体类名属性，则,首字母大写的驼峰命名 
-         ref.setEntName(CodeUtil.isEmpty(refCof.getEntityName())
-        		?CodeUtil.convertToCamelCase(mvPrefix):refCof.getEntityName());
+		//实体类名,首字母大写的驼峰命名 
+         ref.setEntName(CodeUtil.convertToCamelCase(mvPrefix));
         //首字母小写的驼峰命名
          ref.setLowEntName(CodeUtil.convertToFstLowerCamelCase(mvPrefix));
 		 
@@ -259,9 +255,9 @@ public abstract class AbstractTableService implements ITableService {
         	ref.getColumns().add(col);
      	}
      	
-     	//关联字段
+     	//关联字段(多对多时，主表字段=中间表字段)
 		String refColumn = refCof.getRefColumns();
-		if(!StringUtils.isBlank(refColumn)){
+		if(!CodeUtil.isEmpty(refColumn)){
 			Map<String,String> refColumnMap = new HashMap<>();
 			Map<String,String> refPropertyMap = new HashMap<>();
 			String[] refColumns = refColumn.split(",");
@@ -280,6 +276,23 @@ public abstract class AbstractTableService implements ITableService {
 		}
 		ref.setRefType(refCof.getRefType());//关联 方式
      	
+		//多对多时，有中间表
+		if("ManyToMany".equals(refCof.getRefType())){
+			ref.setMidTabName(refCof.getMidTabName());
+			String midRefColumn = refCof.getMidRefCol();
+			if(!CodeUtil.isEmpty(midRefColumn)){
+				//中间表字段=关联表字段
+				Map<String,String> midRefColumnMap = new HashMap<>();
+				String[] midRefColumns = midRefColumn.split("=");
+				midRefColumnMap.put(midRefColumns[0].trim(), midRefColumns[1].trim());
+				ref.setMidRefColMap(midRefColumnMap);
+			}
+		//多对一有关联字段（即外键）；一对一时 可能有关联字段。
+		}else if("OneToOne".equals(refCof.getRefType())||
+					"ManyToOne".equals(refCof.getRefType())){
+			ref.setForKey(refCof.getForKey());
+		}
+		
      	
     	return ref;
     }

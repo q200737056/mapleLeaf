@@ -21,7 +21,7 @@
                 <#list columns as col>
                 <#if !col.pk >
                 <div class="layui-inline">
-                    <label class="layui-form-label">${col.remark!}</label>
+                    <label class="layui-form-label">${col.labelName}</label>
                     <div class="layui-input-block">
                         <input type="text" name="${col.propName}" value="${'$'}{item.${col.propName}}" lay-verify="" class="layui-input" />
                     </div>

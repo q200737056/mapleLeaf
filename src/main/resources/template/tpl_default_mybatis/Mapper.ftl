@@ -5,7 +5,7 @@
     <#--设置关联表的resultMap-->
     <#if refTables?? && (refTables?size>0)>
     
-    <resultMap type="<@mf.entityPkg/>.${entName}" id="${lowEntName}Map">
+    <resultMap type="<@mf.entityPkg/>.${entName}" id="${lowEntName}Result">
       <@mf.list columns;col>
       <#if col.pk>
       <id property="${col.propName}" column="${col.colName}"/>
@@ -16,24 +16,28 @@
       <@mf.list refTables;refTab>
       <#--判断有一个 或 有很多个-->
       <#if refTab.refType=="OneToOne" || refTab.refType=="ManyToOne">
-          <association property="${refTab.lowEntName}" javaType="<@mf.entityPkg/>.${refTab.entName}">
-	      <#list refTab.columns as col>
-	      <result property="${col.propName}" column="${col.colName}"/>
-	      </#list>
-      	  </association>
+      <association property="${refTab.lowEntName}" javaType="<@mf.entityPkg/>.${refTab.entName}" 
+      		resultMap="${refTab.lowEntName}Result" />
       <#elseif refTab.refType=="OneToMany" || refTab.refType=="ManyToMany">
-	      <collection property="${refTab.lowEntName}List" ofType="<@mf.entityPkg/>.${refTab.entName}"
-	      	javaType="ArrayList">
-	      <#list refTab.columns as col>
-	      <result property="${col.propName}" column="${col.colName}"/>
-	      </#list>
-	      </collection>
+       <collection property="${refTab.lowEntName}List" ofType="<@mf.entityPkg/>.${refTab.entName}"
+	      	javaType="ArrayList" resultMap="${refTab.lowEntName}Result"/>
       </#if>
       </@mf.list>
+      </resultMap>
       
-    </resultMap>
+      <@mf.list refTables;refTab>
+      <resultMap type="<@mf.entityPkg/>.${refTab.entName}" id="${refTab.lowEntName}Result">
+      <@mf.list refTab.columns;col>
+	  <#if col.pk>
+      	 <id property="${col.propName}" column="${col.colName}"/>
+      <#else>
+      	 <result property="${col.propName}" column="${col.colName}"/>
+      </#if>
+	  </@mf.list>
+	  </resultMap>
+	  </@mf.list>
     <#--分页查询-->
-    <select id="find${entName}Page" parameterType="<@mf.entityPkg/>.${entName}" resultMap="${lowEntName}Map">
+    <select id="find${entName}Page" parameterType="<@mf.entityPkg/>.${entName}" resultMap="${lowEntName}Result">
     	select a.* from ${tabName} a
     	<where>
     	<@mf.list columns;col>

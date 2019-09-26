@@ -121,7 +121,7 @@
               <tr>
                 <td>entName</td>
                 <td>String</td>
-                <td>对应表的实体类，下划线表名会自动转成驼峰命名</td>
+                <td>对应表的实体类，下划线表名会自动转成驼峰命名（如果有去掉前缀，则为去掉前缀的类名）</td>
                 <td></td>
               </tr>
               <tr>
@@ -162,13 +162,13 @@
               <tr>
                 <td>tabName</td>
                 <td>String</td>
-                <td>表名（同Table）</td>
+                <td>关联表的表名</td>
                 <td></td>
               </tr>
               <tr>
                 <td>lowEntName</td>
                 <td>String</td>
-                <td>首字母小写的实体类名，下划线表名会自动转成驼峰命名（同Table）</td>
+                <td>首字母小写的关联表的实体类名，下划线表名会自动转成驼峰命名（同Table）</td>
                 <td></td>
               </tr>
               <tr>
@@ -192,13 +192,25 @@
               <tr>
                 <td>refColMap</td>
                 <td>Map&lt;String,String&gt;</td>
-                <td>关联字段，key主表字段，value从表字段</td>
+                <td>key主表字段，value关联表字段（特殊情况：多对多时value为中间表字段）</td>
                 <td></td>
               </tr>
               <tr>
                 <td>refPropMap</td>
                 <td>Map&lt;String,String&gt;</td>
                 <td>关联字段对应的属性，key主表实体类属性，value从表实体类属性</td>
+                <td></td>
+              </tr>
+               <tr>
+                <td>midTabName</td>
+                <td>String</td>
+                <td>多对多时的中间表名</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>midRefColMap</td>
+                <td>Map&lt;String,String&gt;</td>
+                <td>key中间表字段，value关联表字段</td>
                 <td></td>
               </tr>
               

@@ -6,8 +6,8 @@
 		<property name="baseDir" value="f:\\code" />
 		<!--基础包名，默认mapleLeaf.code-->
 		<property name="basePackage" value="com.test" />
-		<!-- 是否去表名前缀 ,默认false-->
-		<property name="deleteTabPrefix" value="false" />
+		<!-- 实体类名是否去掉表名前缀 ,默认false-->
+		<property name="deleteTabPrefix" value="true" />
 		<!-- 全局表名前缀，多个逗号分隔 ,默认""-->
 		<property name="baseTabPrefix" value="sys_,wxcms_" />
 		<!-- 表字段是否下划线转驼峰命名 ，默认false-->
@@ -68,17 +68,22 @@
 			<param key="fontSize" value="12px"></param>
 		</customArea>
 		
-		
-		<!-- 
-			ref标签（单向）  关联表，如果需要双向关联  两个table都需配置对应对方的ref 
-			ref标签内容为 主表字段=关联表的字段，默认可以多组，逗号分隔（推荐单组字段）
-		-->
+		<!-- table配置表，属性tabName表名，exclude排除指定模板代码生成，prefix表前缀，有全局配置，感觉没什么用了-->
 		<table tabName="sys_user" prefix="">
+			<!-- 
+			ref标签（单向）  关联表，如果需要双向关联  两个table都需配置对应对方的ref
+			ref所对应的 tabName，必须配置table
+			ref标签内容为 主表字段=关联表字段，默认可以多组，逗号分隔（推荐单组字段）（多对多时，则为 主表字段=中间表字段）
+			多对多时：需配置midTabName和midRefCol属性
+			midTabName中间表 不用配置table;midRefCol属性为（中间表字段=关联表字段）
+			多对一时：需配置forKey 主表的关联字段（即外键）
+			一对一时：关联字段（即外键）是否在 主表中，是，则配置forKey
+			-->
 			<ref tabName="wxcms_login_info" type="OneToMany">id=user_id</ref>
 			<ref tabName="wxcms_user_tag" type="OneToMany">account=account</ref>
 		</table>
-		<table tabName="wxcms_login_info" prefix="">
-			<ref tabName="sys_user" type="ManyToOne">user_id=id</ref>
+		<table tabName="wxcms_login_info">
+			<ref tabName="sys_user" type="ManyToOne" forKey="user_id">user_id=id</ref>
 		</table>
 		<table tabName="wxcms_user_tag" exclude="custom"/>
 		

@@ -172,7 +172,7 @@ public class ConfigFactory {
 						boolean errboo = true;
 						for(TableConf tab :tableConfs){
 							if(ref.getRefName().equalsIgnoreCase(tab.getName())){
-								ref.setEntityName(tab.getEntityName());
+								//ref.setEntityName(tab.getEntityName());
 								ref.setPrefix(tab.getPrefix());
 								ref.setColGroup(tab.getColGroup());
 								errboo = false;
@@ -303,7 +303,6 @@ public class ConfigFactory {
 	private static  TableConf initTableConf(Element e){
 		TableConf m = new TableConf();
 		
-		m.setEntityName(XmlUtil.getAttrValue(e, "entName", null));//实体类型
 		m.setName(XmlUtil.getAttrValue(e, "tabName", "").toLowerCase());//表名 转小写
 		m.setPrefix(XmlUtil.getAttrValue(e, "prefix", null));//前缀
 		m.setExclude(XmlUtil.getAttrValue(e, "exclude", null));//实排除指定模板的文件生成
@@ -346,8 +345,10 @@ public class ConfigFactory {
 					.contains(type)){
 				m.setRefType(type);
 				if(type.equals("ManyToMany")){//多对多有 中间表
-					m.setMidName(XmlUtil.getAttrValue(e, "midTabName", null));
+					m.setMidTabName(XmlUtil.getAttrValue(e, "midTabName", null));
 					m.setMidRefCol(XmlUtil.getAttrValue(e, "midRefCol", null));
+				}else if(type.equals("OneToOne")||type.equals("ManyToOne")){
+					m.setMidRefCol(XmlUtil.getAttrValue(e, "forKey", null));//关联字段（外键）
 				}
 			}else{
 				m.setRefType("OneToMany");//其它的都默认OneToMany
