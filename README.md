@@ -10,13 +10,13 @@
 
 #### 二、代码生成功能有哪些优势
 >1. 主持多种主流数据库：mysql，oracle，sqlserver，postgresql等；还能很容易的扩展需要支持的数据库。
-2. 支持多种类型的持久层：mybatis，hibernate等other持久层。
-3. 支持表之间的复杂关联关系，一对一，一对多，多对一，多对多，单双向的关联。
-4. 支持模块化生成代码，各模块之间相互独立，互不影响。
-5. 支持模板文件内容自定义，可自由编辑新增模板，生成自己业务需要的代码。模板使用了freemarker。
-6. 对视图中的代码生成，很友好；比如：字段表单类型分类，字段所在页面位置标识等。
-7. 不仅支持默认的java项目的dao,service,controller三层架构，而且支持强大的自定义，只要使用模板中现有的数据编辑模板，可以生成其他编程语言的文件。比如：页面jsp，js等等。还可以自定义参数，比如定义了参数 author作者，date日期等。
-8. 操作简单，只需要配置config.xml配置文件。
+>2. 支持多种类型的持久层：mybatis，hibernate等other持久层。
+>3. 支持表之间的复杂关联关系，一对一，一对多，多对一，多对多，单双向的关联。
+>4. 支持模块化生成代码，各模块之间相互独立，互不影响。
+>5. 支持模板文件内容自定义，可自由编辑新增模板，生成自己业务需要的代码。模板使用了freemarker。
+>6. 对视图中的代码生成，很友好；比如：字段表单类型分类，字段所在页面位置标识等。
+>7. 不仅支持默认的java项目的dao,service,controller三层架构，而且支持强大的自定义，只要使用模板中现有的数据编辑模板，可以生成其他编程语言的文件。比如：页面jsp，js等等。还可以自定义参数，比如定义了参数 author作者，date日期等。
+>8. 操作简单，只需要配置config.xml配置文件。
 
 #### 三、项目部署及代码生成演示：
 1. 如果用maven打成jar包运行时，需要在jar包所在目录下加入config.xml配置文件与template模板文件。（推荐）
@@ -24,7 +24,9 @@
 2. 用maven打成war包运行，则不需要这些，直接启动服务即可。
 
 以mysql数据库为例，分别生成mybatis,hibernate。
+
 #####表结构
+
 ```
 CREATE TABLE
     sys_user
@@ -92,7 +94,9 @@ CREATE TABLE
 COMMET约定格式（不区分中英逗号，分号，推荐中文；自动去除空格）： 字段文本；表单类型；val1:text1,val2:text2
 程序会自动加载,这些属性。
 表单类型现支持text,textarea,date,select,checkbox,radio,hidden,file。
+
 #####config.xml配置
+
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <configure>
@@ -205,22 +209,31 @@ COMMET约定格式（不区分中英逗号，分号，推荐中文；自动去�
 	</module>
 </configure>
 ```
+
 #####生成的部分代码展示
+
 1. hibernate生成的实体类
-sys_user表部分代码
-![sys_user表](http://i1.fuimg.com/686411/1bcb83b9b1780fba.png)
-sys_role表部分代码
+
++ sys_user表部分代码
+![](http://i1.fuimg.com/686411/1bcb83b9b1780fba.png)
++ sys_role表部分代码
 ![](http://i1.fuimg.com/686411/33c87cdee59ed294.png)
+
 2. mybatis生成的xml配置(配置文件设置成 实体类名不去掉表前缀)
-sys_user表
+
++ sys_user表
 ![](http://i1.fuimg.com/686411/451da44f46910397.png)
 ![](http://i1.fuimg.com/686411/660a7170177d61b8.png)
+
 3. 页面生成的代码（简单处理了）
-表单输入
+
++ 表单输入
 ![](http://i1.fuimg.com/686411/bc05e85ca6050a62.png)
-查询出来的列表项
++ 查询出来的列表项
 ![](http://i1.fuimg.com/686411/8f25be0a789aac43.png)
+
 #### 四、模板代码片段：
+
 （有自定义宏标签和函数，temlate/lib/mf.ftl）
 
 ##### 获取表字段信息
