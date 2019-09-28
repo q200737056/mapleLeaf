@@ -41,16 +41,16 @@
     	select <#list columns as col>a.${col.colName}<#if refTables?size gt 0><#sep></#if>,</#list>
     	<#list refTables as reftab>
     		<#if reftab_has_next>
-    		<#list reftab.columns as col>r${col?index+1}.${col.colName},</#list>
+    		<#list reftab.columns as col>r${reftab?index+1}.${col.colName},</#list>
     		<#else>
-    		<#list reftab.columns as col>r${col?index+1}.${col.colName}<#sep>,</#list>
+    		<#list reftab.columns as col>r${reftab?index+1}.${col.colName}<#sep>,</#list>
     		</#if>
     	</#list>
     	from ${tabName} a
     	<@mf.list refTables;reftab,idx>
     		<#if reftab.refType=="ManyToMany">
-    		left join ${reftab.tabName} r${idx+1} on <@mf.map reftab.refColMap;k,v>a.${k}=m.${v}</@mf.map>
-    		left join ${reftab.midTabName!} m on <@mf.map reftab.midRefColMap;k,v>m.${k}=r${idx+1}.${v}</@mf.map>
+    		left join ${reftab.midTabName!} m on <@mf.map reftab.refColMap;k,v>a.${k}=m.${v}</@mf.map>
+    		left join ${reftab.tabName} r${idx+1} on <@mf.map reftab.midRefColMap;k,v>m.${k}=r${idx+1}.${v}</@mf.map>
     		<#else>
     		left join ${reftab.tabName} r${idx+1} on <@mf.map reftab.refColMap;k,v>a.${k}=r${idx+1}.${v}</@mf.map>
     		</#if>

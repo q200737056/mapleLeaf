@@ -214,18 +214,18 @@ CREATE TABLE
 
 1. hibernate生成的实体类
 
-![](http://i1.fuimg.com/686411/1bcb83b9b1780fba.png "sys_user表部分代码")
-![](http://i1.fuimg.com/686411/33c87cdee59ed294.png "sys_role表部分代码")
+![User类部分代码](http://i1.fuimg.com/686411/1bcb83b9b1780fba.png "User类部分代码")
+![Role类部分代码](http://i1.fuimg.com/686411/33c87cdee59ed294.png "Role类部分代码")
 
 2. mybatis生成的xml配置(配置文件设置成 实体类名不去掉表前缀)
 
 ![](http://i1.fuimg.com/686411/451da44f46910397.png)
-![](http://i1.fuimg.com/686411/660a7170177d61b8.png)
+![](http://i2.tiimg.com/686411/6d976b33393fd208.png)
 
 3. 页面生成的代码（简单处理了）
  
-![](http://i1.fuimg.com/686411/bc05e85ca6050a62.png "表单输入") 
-![](http://i1.fuimg.com/686411/8f25be0a789aac43.png "查询出来的列表项")
+![表单输入](http://i1.fuimg.com/686411/bc05e85ca6050a62.png "表单输入") 
+![查询出来的列表项](http://i1.fuimg.com/686411/8f25be0a789aac43.png "查询出来的列表项")
 
 #### 四、模板代码片段：
 
