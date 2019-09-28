@@ -5,13 +5,13 @@
 		<!--生成代码路径 ,默认项目所在目录-->
 		<property name="baseDir" value="f:\\code" />
 		<!--基础包名，默认mapleLeaf.code-->
-		<property name="basePackage" value="com.test" />
+		<property name="basePackage" value="com.test2" />
 		<!-- 实体类名是否去掉表名前缀 ,默认false-->
-		<property name="deleteTabPrefix" value="true" />
+		<property name="deleteTabPrefix" value="fasle" />
 		<!-- 全局表名前缀，多个逗号分隔 ,默认""-->
-		<property name="baseTabPrefix" value="sys_,wxcms_" />
+		<property name="baseTabPrefix" value="sys_" />
 		<!-- 表字段是否下划线转驼峰命名 ，默认false-->
-		<property name="columnCamel" value="false" />
+		<property name="columnCamel" value="true" />
 		<!-- 持久层框架(mybatis,hibernate,other)，默认"mybatis" -->
 		<property name="persistence" value="mybatis" />
 		<!-- 一些公共类，工具类,父类等原样输出，不必需(包名=模板文件名(也是类名)，多个逗号隔开) -->
@@ -26,30 +26,13 @@
 		<!-- 数据库类型(mysql,oracle,sqlserver,postgresql,informix) -->
 		<dbType>mysql</dbType>
 		<!-- 数据库名 -->
-		<dbName>wxmp</dbName>
+		<dbName>demo2</dbName>
 		<user>root</user>
 		<pwd>q123</pwd>
 		<driver>com.mysql.jdbc.Driver</driver>
-		<url><![CDATA[jdbc:mysql://localhost:3306/wxmp?useUnicode=true&characterEncoding=UTF-8]]></url>
+		<url><![CDATA[jdbc:mysql://localhost:3306/demo2?useUnicode=true&characterEncoding=UTF-8]]></url>
 	</db>
-	<!-- <db>
-		<dbType>informix</dbType>
-		<dbName>rmbp</dbName>
-		<user>xxxx</user>
-		<pwd>xxxx</pwd>
-		<driver>com.informix.jdbc.IfxDriver</driver>
-		<url><![CDATA[jdbc:informix-sqli://XXXXX/rmbp:informixserver=zjtsywtsdb;DB_LOCALE=en_us.819;
-			CLIENT_LOCALE=en_us.57372;NEWCODESET=GBK,8859-1,819]]></url>
-	</db> -->
-	<!-- <db>
-		<dbType>postgresql</dbType>
-		<dbName>test</dbName>
-		<user>postgres</user>
-		<pwd>q123</pwd>
-		<driver>org.postgresql.Driver</driver>
-		<url><![CDATA[jdbc:postgresql://localhost:5432/test]]></url>
-	</db> -->
-	
+
 	<!-- 模块化配置，可以配置多个module,
 			各模块相互独立,name属性为模块名 -->
 	<module name="test">
@@ -65,12 +48,12 @@
 			<property name="mapperPkg" value="mapper"/>
 		</package>
 		<!--
-			customArea自定义区域 ，只要提供模板，任意生成代码，可以说 不仅仅 java语言了
+			customArea自定义区域 ，只要提供模板，任意生成代码，可以说 不仅仅生成 java语言
 		-->
 		<customArea>
 			<!-- 自定义生成，可以配置多组标签，不限于java语言，属性customPkg包名，属性suffix 文件后缀;
 				标签内容为模板文件(不需要后缀)，多个逗号分隔-->
-			<codeFile customPkg="page" suffix="jsp">Jsp_list,Jsp_add</codeFile>
+			<codeFile customPkg="page" suffix="jsp">Jsp_list,Jsp_add，Jsp_view</codeFile>
 			<!-- 自定义参数设置 ，模板中可以通过${param['author']!}获取参数值 -->
 			<param key="author" value="mapleLeaf"></param>
 		</customArea>
@@ -88,22 +71,40 @@
 			多对一时：需配置forKey 主表的关联字段（即外键）
 			一对一时：关联字段（即外键）是否在 主表中，如果是，则配置forKey
 			-->
-			<ref tabName="wxcms_login_info" type="OneToMany">id=user_id</ref>
-			<ref tabName="wxcms_user_tag" type="OneToMany">account=account</ref>
-		</table>
-		<table tabName="wxcms_login_info">
-			<ref tabName="sys_user" type="ManyToOne" forKey="user_id">user_id=id</ref>
-		</table>
-		<table tabName="wxcms_user_tag" exclude="custom"/>
-		
-		<table tabName="wxcms_article" exclude="custom">
-			<!-- exclude属性 ，需要排除的字段,多个逗号分隔-->
-			<columnGroup exclude="title"> 
-			   <!--column可以自定义一些表字段属性 ，这些配置主要是为了更好生成页面代码 -->
-			   <column colName="author" labelName="作者"></column>
-			   <!--表字段 自定义了 字段文本,表单类型及字段值标识  -->
-			   <column colName="show_cover_pic" labelName="是否显示图片" tagType="checkbox">0=显示,1=不显示</column>
+			<ref tabName="sys_role" type="ManyToMany" midTabName="sys_user_role" midRefCol="role_id=role_id">
+				user_id=user_id
+			</ref>
+			<ref tabName="sys_dept" type="ManyToOne" forKey="dept_id">dept_id=dept_id</ref>
+			<ref tabName="sys_user_info" type="OneToOne" forKey="user_info_id">
+			user_info_id=user_info_id
+			</ref>
+			<!-- columnGroup字段集合标签，对字段属性设置
+				exclude属性：排除字段，多个字段逗号分隔，以下属性一样。
+				searchPos属性：页面查询条件；listPos属性：页面查询结果列表；inputPos属性：页面表单输入
+			 -->
+			<columnGroup searchPos="login_name,status" 
+				inputPos="user_id,login_name,email,phonenumber,sex,status">
+				<!-- 
+					column字段标签，可自定义字段属性。
+					colName：字段名；tagType：表单类型，默认text；labelName：字段文本
+					column标签内容：字段值
+				 -->
+				<column colName="sex" tagType="radio" labelName="性别">
+					0=男，1=女</column>
+				<column colName="remark" tagType="textarea" />
 			</columnGroup>
 		</table>
+		
+		<table tabName="sys_role">
+			<ref tabName="sys_user" type="ManyToMany" midTabName="sys_user_role" midRefCol="user_id=user_id">
+				role_id=role_id
+			</ref>
+		</table>
+		
+		<table tabName="sys_dept" exclude="custom">
+			<ref tabName="sys_user" type="OneToMany">dept_id=dept_id</ref>
+		</table>
+		
+		<table tabName="sys_user_info"></table>
 	</module>
 </configure>

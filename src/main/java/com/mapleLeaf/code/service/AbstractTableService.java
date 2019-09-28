@@ -5,7 +5,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,15 +137,26 @@ public abstract class AbstractTableService implements ITableService {
 				}
 				if(arrTemp.length>2){
 					Map<String,String> colValMap = CodeUtil.splitKeyVal(
-							arrTemp[2].trim().replace("：", ":"), ":");
+							arrTemp[2].replace("：", ":"), ":");
 					if(colValMap!=null){
 						col.setColValueMap(colValMap);
 					}
 				}
 			}
     		
+    		//字段属性 配置
     		ColumnGroupConf colGoup = tbConf.getColGroup();
     		if(colGoup!=null){
+    			if(!CodeUtil.isEmpty(colGoup.getSearchPos())){
+        			table.getEnableColPos().add("searchPos");
+        		}
+        		if(!CodeUtil.isEmpty(colGoup.getListPos())){
+        			table.getEnableColPos().add("listPos");
+        		}
+        		if(!CodeUtil.isEmpty(colGoup.getInputPos())){
+        			table.getEnableColPos().add("inputPos");
+        		}
+        		//自定义 字段属性
     			col = renderColumn(colGoup, col);
     			if(col==null){
     				continue;
@@ -210,6 +220,7 @@ public abstract class AbstractTableService implements ITableService {
 		 		
 		 	}
 		 }
+		 ref.setRemark(getTableRemark(tableName, conn));//表 注释
 		//实体类名,首字母大写的驼峰命名 
          ref.setEntName(CodeUtil.convertToCamelCase(mvPrefix));
         //首字母小写的驼峰命名
@@ -234,15 +245,25 @@ public abstract class AbstractTableService implements ITableService {
 				}
 				if(arrTemp.length>2){
 					Map<String,String> colValMap = CodeUtil.splitKeyVal(
-							arrTemp[2].trim().replace("：", ":"), ":");
+							arrTemp[2].replace("：", ":"), ":");
 					if(colValMap!=null){
 						col.setColValueMap(colValMap);
 					}
 				}
 			}
-     		
+     		//字段集合 属性配置
     		ColumnGroupConf colGoup = refCof.getColGroup();
     		if(colGoup!=null){
+    			if(!CodeUtil.isEmpty(colGoup.getSearchPos())){
+        			ref.getEnableColPos().add("searchPos");
+        		}
+        		if(!CodeUtil.isEmpty(colGoup.getListPos())){
+        			ref.getEnableColPos().add("listPos");
+        		}
+        		if(!CodeUtil.isEmpty(colGoup.getInputPos())){
+        			ref.getEnableColPos().add("inputPos");
+        		}
+        		//自定义字段属性
     			col = renderColumn(colGoup, col);
     			if(col==null){
     				continue;
@@ -306,11 +327,34 @@ public abstract class AbstractTableService implements ITableService {
     	//判断字段 是否被排除
 		String exc = colGoup.getExclude();
 		if(exc!=null){
-			if(Arrays.asList(exc.replace("，", ",").split(","))
-					.contains(col.getColName())){
+			if(CodeUtil.checkStrArray(exc.replace("，", ",").split(","), 
+					col.getColName())){
 				return null;
 			}
 		}
+		//字段位置标识判断
+		String serPos = colGoup.getSearchPos();
+		if(serPos!=null){
+			if(CodeUtil.checkStrArray(serPos.replace("，", ",").split(","), 
+					col.getColName())){
+				col.getPositions().add("searchPos");
+			}
+		}
+		String listPos = colGoup.getListPos();
+		if(listPos!=null){
+			if(CodeUtil.checkStrArray(listPos.replace("，", ",").split(","), 
+					col.getColName())){
+				col.getPositions().add("listPos");
+			}
+		}
+		String inputPos = colGoup.getInputPos();
+		if(inputPos!=null){
+			if(CodeUtil.checkStrArray(inputPos.replace("，", ",").split(","), 
+					col.getColName())){
+				col.getPositions().add("inputPos");
+			}
+		}
+		
 		//字段属性 自定义 
 		Map<String,ColumnConf> colConfMap = colGoup.getColConfMap();
 		ColumnConf colConf = colConfMap.get(col.getColName());

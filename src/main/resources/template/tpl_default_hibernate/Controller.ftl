@@ -1,7 +1,8 @@
-package ${basePackage}.${controllerPackage};
+<#import "/lib/mf.ftl" as mf/>
+package <@mf.controllerPkg/>;
 
-import ${basePackage}.${entityPackage}.${entName};
-import ${basePackage}.${servicePackage}.${entName}Service;
+import <@mf.entityPkg/>.${entName};
+import <@mf.servicePkg/>.${entName}Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

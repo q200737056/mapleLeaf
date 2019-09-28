@@ -1,7 +1,8 @@
-﻿<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<#import "/lib/mf.ftl" as mf/>
+﻿<%@page language="java"  pageEncoding="UTF-8"%>
 <%@include file="../common/tag.jsp"%>
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <title>查看详情</title>
         <meta name="renderer" content="webkit">
@@ -16,20 +17,14 @@
                 <col width="120">
             </colgroup>
             <tbody>
-                <tr>
-                <#if columns??>
-                <#list columns as col>
-                <#if !col.pk >
-                    <td class="td_colo">${col.remark!}</td>
-                    <td>${'$'}{item.${col.propName}}</td>
-                    <#if col_index % 2 == 0>
-                </tr>
-                <tr>
-                    </#if>
-                </#if>
-                </#list>
-                </#if>
-                </tr>
+            	<#list columns?chunk(2) as row>
+            	<tr>
+            		<#list row as col>
+            			<td class="td_colo">${col.labelName}</td>
+                    	<td><@mf.print "$"/>{item.${col.propName}}</td>
+            		</#list>
+            	</tr>	
+            	</#list>
             </tbody>
         </table>
         <%@include file="../common/footer.jsp"%>

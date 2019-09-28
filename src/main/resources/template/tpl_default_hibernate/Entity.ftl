@@ -1,6 +1,6 @@
-<#--双向关联-->
+<#import "/lib/mf.ftl" as mf/>
 
-package ${basePackage}.${entityPackage};
+package <@mf.entityPkg/>;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,98 +19,91 @@ ${clz};
 */
 @Entity
 @Table(name = "${tabName}")
-public class ${entName} extends Page implements Serializable {
+public class ${entName} implements Serializable {
 	private static final long serialVersionUID = 1L;
-	<#if columns?? && (columns?size>0)>
+	
 	<#list columns as col>
+	<#if col.pk>
 	/**
 	 * ${col.remark!}
 	 */
-	<#assign type=col.propType>
-	<#if col.pk>
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	</#if>
+	private ${col.propType} ${col.propName};
+	<#else>
+	<#--过滤外键（关联字段）-->
+	<#if !mf.getFks()?seq_contains(col.colName)>
+	/**
+	 * ${col.remark!}
+	 */
 	@Column(name="${col.colName}")
-	private ${type} ${col.propName};
-	
-	</#list>
-	
-	<#--关联表属性,从表-->
-	<#if refTables?? && (refTables?size>0)>
-	<#list refTables as subtb>
-	<#--与从表的关联设置（循环）,如果是单个字段关联的，则取出,subrefSize为关联字段的个数;这里只做了单列关联-->
-	<#assign subrefSize=0>
-	<#if subtb.refColMap?? && (subtb.refColMap?size>0)>
-	<#assign subrefSize=subtb.refColMap?size>
-	<#if subrefSize==1>
-	<#list subtb.refColMap?keys as key>
-	<#assign subrefKey=key>
-	<#assign subrefVal=subtb.refColMap[key]>
-	</#list>
-	</#if>
+	private ${col.propType} ${col.propName};
 	</#if>
 	
-	<#if subrefSize==1>
-	<#if subtb.refType=="OneToOne" || subtb.refType=="ManyToOne">
-	@${subtb.refType}
-	@JoinColumn(name="${subrefKey}",referencedColumnName="${subrefVal}")
-	private ${subtb.entName} ${subtb.lowEntName};
-	<#elseif subtb.refType=="OneToMany" || subtb.refType=="ManyToMany">
+	</#if>
+	</#list>
 	
-	<#if subtb.refType=="ManyToMany">
+	<#--关联表属性配置-->
+	<@mf.list refTables;reftab>
+	/**
+	 * ${reftab.remark!}
+	 */
+	<#if reftab.refType=="ManyToOne" || reftab.refType=="OneToOne">
+	<#--多对一时，主表有外键，配置JoinColumn，一对一时，如果外键在主表中，也配置JoinColumn-->
+	@${reftab.refType}(targetEntity=${reftab.entName}.class)
+	<#if reftab.forKey??>
+	@JoinColumn(name="${reftab.forKey}")
+	</#if>
+	private ${reftab.entName} ${reftab.lowEntName};
+	<#elseif reftab.refType=="OneToMany">
+	<#--一对多时，配置外键由 关联表的类中属性维护-->
+	@OneToMany(targetEntity=${reftab.entName}.class,mappedBy="${lowEntName}")
+	private ${reftab.entName} ${reftab.lowEntName}Set;
+	<#else>
+	<#--多对多时，配置中间表-->
 	@ManyToMany
-	@JoinTable(name="",
-	joinColumns=@JoinColumn(name="${subrefKey}",referencedColumnName="${subrefKey}"),
-    inverseJoinColumns=@JoinColumn(name="${subrefVal}",referencedColumnName="${subrefVal}"))
-	<#elseif subtb.refType=="OneToMany">
-	@OneToMany(mappedBy="${lowEntName}")
+	@JoinTable(name="${reftab.midTabName}",
+		joinColumns={@JoinColumn(<@mf.map reftab.refColMap;k,v>name="${v}",referenceColumnName="${k}"</@mf.map>)},
+		inverseJoinColumns={@JoinColumn(<@mf.map reftab.midRefColMap;k,v>name="${k}",referenceColumnName="${v}"</@mf.map>)}
+		)
+	private ${reftab.entName} ${reftab.lowEntName}Set;
 	</#if>
-	private Set<${subtb.entName}> ${subtb.lowEntName}Set;
-	</#if>
-	</#if>
-		
-	</#list>
-	</#if>
+	</@mf.list>
+	
 	
 	<#list columns as col>
-	
+	<#if !mf.getFks()?seq_contains(col.colName)>
 	public void set${col.upperPropName}(${col.propType} ${col.propName}){
 		this.${col.propName}=${col.propName};
 	}
 	public ${col.propType} get${col.upperPropName}(){
 		return this.${col.propName};
 	}
+	
+	</#if>
 	</#list>
 	
-	<#--关联表get,set,-->
-	<#if refTables?? && (refTables?size>0)>
-	<#list refTables as subtb>
+	<#--关联表属性get,set,-->
+	<@mf.list refTables;reftab>
+	<#if reftab.refType=="OneToOne" || reftab.refType=="ManyToOne">
 	
-	<#if subtb.refColMap?? && (subtb.refColMap?size==1)>
-	<#if subtb.refType=="OneToOne" || subtb.refType=="ManyToOne">
-	
-	public void set${subtb.entName}(${subtb.entName} ${subtb.lowEntName}){
-		this.${subtb.lowEntName}=${subtb.lowEntName};
+	public void set${reftab.entName}(${reftab.entName} ${reftab.lowEntName}){
+		this.${reftab.lowEntName}=${reftab.lowEntName};
+	}
+	public ${reftab.entName} get${reftab.entName}(){
+		return this.${reftab.lowEntName};
 	}
 	
-	public ${subtb.entName} get${subtb.entName}(){
-		return this.${subtb.lowEntName};
+	<#elseif reftab.refType=="OneToMany" || reftab.refType=="ManyToMany">
+	public void set${reftab.entName}Set(List<${reftab.entName}> ${reftab.lowEntName}Set){
+		this.${reftab.lowEntName}Set=${reftab.lowEntName}Set;
 	}
-	<#elseif subtb.refType=="OneToMany" || subtb.refType=="ManyToMany">
-	
-	public void set${subtb.entName}Set(List<${subtb.entName}> ${subtb.lowEntName}Set){
-		this.${subtb.lowEntName}Set=${subtb.lowEntName}Set;
+	public Set<${reftab.entName}> get${reftab.entName}Set(){
+		return this.${reftab.lowEntName}Set;
 	}
-	public Set<${subtb.entName}> get${subtb.entName}Set(){
-		return this.${subtb.lowEntName}Set;
-	}
-	</#if>
-	</#if>
-		
-	</#list>
-	</#if>
 	
 	</#if>
+	</@mf.list>
 
+	
 }

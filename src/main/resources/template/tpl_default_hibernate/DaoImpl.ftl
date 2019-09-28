@@ -1,6 +1,7 @@
-package ${basePackage}.${daoPackage};
+<#import "/lib/mf.ftl" as mf/>
+package <@mf.daoImplPkg/>;
 
-import ${basePackage}.${entityPackage}.${entName};
+import <@mf.entityPkg/>.${entName};
 import org.hibernate.SessionFactory;  
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;   

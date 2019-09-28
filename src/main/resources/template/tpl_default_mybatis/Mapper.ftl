@@ -17,7 +17,7 @@
       <#--判断有一个 或 有很多个-->
       <#if refTab.refType=="OneToOne" || refTab.refType=="ManyToOne">
       <association property="${refTab.lowEntName}" javaType="<@mf.entityPkg/>.${refTab.entName}" 
-      		resultMap="${refTab.lowEntName}Result" />
+      	    <#if refTab.forKey??>column="${refTab.forKey}"</#if>  resultMap="${refTab.lowEntName}Result" />
       <#elseif refTab.refType=="OneToMany" || refTab.refType=="ManyToMany">
        <collection property="${refTab.lowEntName}List" ofType="<@mf.entityPkg/>.${refTab.entName}"
 	      	javaType="ArrayList" resultMap="${refTab.lowEntName}Result"/>
@@ -38,7 +38,23 @@
 	  </@mf.list>
     <#--分页查询-->
     <select id="find${entName}Page" parameterType="<@mf.entityPkg/>.${entName}" resultMap="${lowEntName}Result">
-    	select a.* from ${tabName} a
+    	select <#list columns as col>a.${col.colName}<#if refTables?size gt 0><#sep></#if>,</#list>
+    	<#list refTables as reftab>
+    		<#if reftab_has_next>
+    		<#list reftab.columns as col>r${col?index+1}.${col.colName},</#list>
+    		<#else>
+    		<#list reftab.columns as col>r${col?index+1}.${col.colName}<#sep>,</#list>
+    		</#if>
+    	</#list>
+    	from ${tabName} a
+    	<@mf.list refTables;reftab,idx>
+    		<#if reftab.refType=="ManyToMany">
+    		left join ${reftab.tabName} r${idx+1} on <@mf.map reftab.refColMap;k,v>a.${k}=m.${v}</@mf.map>
+    		left join ${reftab.midTabName!} m on <@mf.map reftab.midRefColMap;k,v>m.${k}=r${idx+1}.${v}</@mf.map>
+    		<#else>
+    		left join ${reftab.tabName} r${idx+1} on <@mf.map reftab.refColMap;k,v>a.${k}=r${idx+1}.${v}</@mf.map>
+    		</#if>
+    	</@mf.list>
     	<where>
     	<@mf.list columns;col>
     	<if test="${col.propName}!=null and ${col.propName}!='' ">
@@ -55,7 +71,7 @@
     	<where>
     	<@mf.list columns;col>
     	<if test="${col.propName}!=null and ${col.propName}!='' ">
-			a.${col.colName} = <@mf.print "#"/>{${col.propName}}
+			and a.${col.colName} = <@mf.print "#"/>{${col.propName}}
 		</if>
     	</@mf.list>
     	</where>

@@ -13,16 +13,15 @@ public class Table {
 	
 	private List<String> impClasses = new ArrayList<String>();//需要导入字段类型的类
 	private List<Column> columns = new ArrayList<Column>();// 字段
-
-	private List<RefTable> refTables = new ArrayList<>();// 所有关联表的集合
+	//所有关联表的集合
+	private List<RefTable> refTables = new ArrayList<>();
 	
-	//private Map<String, List<Column>> uniIdxMap = new HashMap<>();// 唯一索引map集合，包含主键
-																	// key:索引名
-																	// value:Column集合
-	private String exclude;//排除指定模板的文件生成(dao,service,controller,custom,entity)
-	
-	
-	private List<Column> uniIdxCols = new ArrayList<>();// 其中一组的表唯一索引（或主键）的字段集合
+	//排除指定模板的文件生成(dao,service,controller,custom,entity)
+	private String exclude;
+	// 其中一组的表唯一索引（或主键）的字段集合
+	private List<Column> uniIdxCols = new ArrayList<>();
+	//指定 字段position是否 可用
+	private List<String> enableColPos = new ArrayList<>();
 													    
 	public String getTabName() {
 		return tabName;
@@ -97,6 +96,13 @@ public class Table {
 	public void setUniIdxCols(List<Column> uniIdxCols) {
 		this.uniIdxCols = uniIdxCols;
 	}
-	
+
+	public List<String> getEnableColPos() {
+		return enableColPos;
+	}
+
+	public void setEnableColPos(List<String> enableColPos) {
+		this.enableColPos = enableColPos;
+	}
 	
 }

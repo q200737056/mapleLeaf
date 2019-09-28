@@ -1,34 +1,66 @@
-﻿<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+﻿<#import "/lib/mf.ftl" as mf/>
+<%@page language="java" pageEncoding="UTF-8"%>
 <%@include file="../common/tag.jsp"%>
-<%
-    String path = request.getContextPath();
-%>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>${remark!}</title>
+        <title>${remark!}查询</title>
         <%@include file="../common/header.jsp"%>
-        <script type="text/javascript">
-            var path = "<%=path%>";
-        </script>
     </head>
     <body>
         <form class="layui-form" action="" id="tableFrom">
-            <div class="layui-form-item">
-                <#if columns??>
+            
+              
                 <#list columns as col>
-                <#if !col.pk >
-                <#if col_index < 4>
-                <div class="layui-inline">
-                    <label class="layui-form-label">${col.labelName!}</label>
-                    <div class="layui-input-inline">
-                        <input type="" name="${col.propName}" lay-verify="" autocomplete="off" class="layui-input">
-                    </div>
+                <#if !enableColPos?seq_contains("searchPos") 
+                	|| col.positions?seq_contains("searchPos") >
+                <div class="layui-form-item">
+	                <div class="layui-inline">
+	                    <label class="layui-form-label">${col.labelName}</label>
+		                <#if col.tagType=="select">
+		                	<div class="layui-input-block">
+						      <select name="${col.propName}" id="${col.propName}" lay-verify="required">
+						        <option value=""></option>
+						        <@mf.map col.colValueMap;val,text>
+						        <option value="${val}">${text}</option>
+						        </@mf.map>
+						      </select>
+						    </div>
+						<#elseif col.tagType=="checkbox">
+							<div class="layui-input-block">
+							  <@mf.map col.colValueMap;val,text>
+						      <input type="checkbox" name="${col.propName}" value="${val}" title="${text}">
+						      </@mf.map>
+						    </div>
+						<#elseif col.tagType=="radio">
+							<div class="layui-input-block">
+							  <@mf.map col.colValueMap;val,text>
+						      <input type="radio" name="${col.propName}" value="${val}" title="${text}">
+						      </@mf.map>
+						    </div>
+						<#elseif col.tagType=="textarea">
+							<div class="layui-input-block">
+					            <textarea name="${col.propName}" id="${col.propName}" class="layui-textarea">
+					            </textarea>
+					         </div>
+					    <#elseif col.tagType=="date">
+					         <div class="layui-input-inline">
+					             <input type="text" name="${col.propName}" id="${col.propName}" lay-verify="date" 
+					             	placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+					         </div>
+					    <#else>
+					    	<div class="layui-input-block">
+			                    <input type="text" name="${col.propName}" id="${col.propName}"
+			                    	autocomplete="off" lay-verify="required" class="layui-input" />
+		                	</div>
+		                </#if>
+	                </div>
                 </div>
                 </#if>
-                </#if>
                 </#list>
-                </#if>
+                
+             <div class="layui-form-item">
                 <div class="btn-layui">
                     <a href="javascript:termQueryPage();" class="layui-btn layui-btn-small">查询</a>
                     <a href="javascript:resetFrom();" class="layui-btn layui-btn-small">清空</a>
@@ -39,27 +71,19 @@
         <div class="container" style="width: 100%; padding: 0; margin: 0;">
             <table class="layui-table tree table-bordered table-hover" lay-even="" lay-skin="">
                 <thead>
-                    <tr>
-                        <th colspan="9">
-                            <div class="layui-btn-group" id="LAY_demo">
-                                <a class="layui-btn layui-btn-small" data-method="notice">
-                                    <i class="layui-icon">&#xe608;</i>添加
-                                </a>
-                                <a class="layui-btn layui-btn-small" data-method="notice2">
-                                    <i class="layui-icon">&#xe642;</i>修改
-                                </a>
-                                <a class="layui-btn layui-btn-small" data-method="notice3">
-                                    <i class="layui-icon">&#xe640;</i>删除
-                                </a>
-                            </div>
-                        </th>
-                    </tr>
+                	<tr>
+                   <@mf.list columns;col>
+                   <#if !enableColPos?seq_contains("inputPos")
+                   		|| col.positions?seq_contains("inputPos")>
+                   	<th>${col.labelName}</th>
+                   	</#if>
+                   </@mf.list>
+                   <tr>
                 </thead>
                 <tbody id="list">
-
+					
                 </tbody>
             </table>
-            <div id="demo7"></div>
         </div>
         <%@include file="../common/footer.jsp"%>
        

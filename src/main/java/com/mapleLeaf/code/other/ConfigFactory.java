@@ -348,7 +348,7 @@ public class ConfigFactory {
 					m.setMidTabName(XmlUtil.getAttrValue(e, "midTabName", null));
 					m.setMidRefCol(XmlUtil.getAttrValue(e, "midRefCol", null));
 				}else if(type.equals("OneToOne")||type.equals("ManyToOne")){
-					m.setMidRefCol(XmlUtil.getAttrValue(e, "forKey", null));//关联字段（外键）
+					m.setForKey(XmlUtil.getAttrValue(e, "forKey", null));//关联字段（外键）
 				}
 			}else{
 				m.setRefType("OneToMany");//其它的都默认OneToMany
@@ -369,6 +369,9 @@ public class ConfigFactory {
 		ColumnGroupConf cnf = new ColumnGroupConf();
 		
 		cnf.setExclude(XmlUtil.getAttrValue(e, "exclude", null));
+		cnf.setSearchPos(XmlUtil.getAttrValue(e, "searchPos", null));
+		cnf.setListPos(XmlUtil.getAttrValue(e, "listPos", null));
+		cnf.setInputPos(XmlUtil.getAttrValue(e, "inputPos", null));
 		
 		//读取 column 标签
 		List<Element> columns = XmlUtil.getChildElements(e, "column");

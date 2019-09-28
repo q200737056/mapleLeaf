@@ -1,6 +1,7 @@
-package ${basePackage}.${daoPackage};
+<#import "/lib/mf.ftl" as mf/>
+package <@mf.daoPkg/>;
 
-import ${basePackage}.${entityPackage}.${entName};
+import <@mf.entityPkg/>.${entName};
 
 /**
  * ${remark!}操作相关

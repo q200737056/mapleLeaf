@@ -30,8 +30,6 @@ import com.mapleLeaf.code.utils.FreemarkerUtil;
 import com.mapleLeaf.common.util.GlobalConst;
 
 
-
-
 @Component
 public class DataBase2File {
 	
@@ -319,7 +317,7 @@ public class DataBase2File {
     public static void main(String[] args) {  
         DataBase2File reverser = new DataBase2File(); 
         try {
-			reverser.generateFiles(GlobalConst.CONFIG,
+			reverser.generateFiles("config2.xml",
 					GlobalConst.TEMPLATE_PATH+"/tpl_default_mybatis");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

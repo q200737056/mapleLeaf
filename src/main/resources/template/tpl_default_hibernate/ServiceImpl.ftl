@@ -1,8 +1,9 @@
-package ${basePackage}.${servicePackage}.${serviceImplPackage};
+<#import "/lib/mf.ftl" as mf/>
+package <@mf.serviceImplPkg/>;
 
-import ${basePackage}.${entityPackage}.${entName};
-import ${basePackage}.${servicePackage}.${entName}Service;
-import ${basePackage}.${daoPackage}.${entName}Mapper;
+import <@mf.entityPkg/>.${entName};
+import <@mf.servicePkg/>.${entName}Service;
+import <@mf.daoPkg/>.${entName}Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

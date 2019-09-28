@@ -188,13 +188,13 @@ public class CodeUtil {
     		return null;
     	}
     	Map<String,String> dataMap = new HashMap<>();
-    	String[] dataArr = data.replace("，", ",").split(",");
+    	String[] dataArr = data.trim().replace("，", ",").split(",");
     	for(String item : dataArr){
     		String[] itemArr = item.split(separ);
     		if(itemArr.length!=2){
     			return null;
     		}
-    		dataMap.put(itemArr[0], itemArr[1]);
+    		dataMap.put(itemArr[0].trim(), itemArr[1].trim());
     	}
     	return dataMap;
     }

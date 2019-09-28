@@ -1,6 +1,7 @@
-package ${basePackage}.${servicePackage};
+<#import "/lib/mf.ftl" as mf/>
+package <@mf.servicePkg/>;
 
-import ${basePackage}.${entityPackage}.${entName};
+import <@mf.entityPkg/>.${entName};
 
 /**
  * ${remark!}操作相关

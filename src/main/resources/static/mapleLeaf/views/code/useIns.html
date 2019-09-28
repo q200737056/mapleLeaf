@@ -11,7 +11,7 @@
           1.本项目运行不依赖数据库，推荐使用maven打成jar包部署运行，在jar所在目录下加入项目中的配置文件config.xml跟模板文件夹template。<br>
           2.数据库建表时，最好写上COMMENT注释；并且按约定的格式注释（格式：字段文本;表单类型;val1:text1,val2:text2;）比如有个flag字段,
           	 COMMENT 状态;select;0:可用,1:不可用<br>
-          3.推荐每张表至少建立一个主键（不推荐组合主键）或唯一索引（复合索引），建议索引名取的好一点。<br>
+          3.推荐每张表至少建立一个主键（不推荐组合主键）或唯一索引（复合索引）。<br>
           4.模板文件与配置文件请保持一致，否则出错，生成代码失败。<br>
           5.同模块中表不要重复配置，不然生成的代码数据会混乱，不正确。不同模块请配置不同包名。<br>
           </p>
@@ -157,6 +157,12 @@
                 <td>利用list标签, 可取出Column</td>
               </tr>
               <tr>
+                <td>enableColPos</td>
+                <td>List&lt;String&gt;</td>
+                <td>是否配置了字段位置标识，现支持3个（searchPos查询条件，listPos列表项，inputPos表单输入项）</td>
+                <td>利用list标签, 可取出Column</td>
+              </tr>
+              <tr>
             	<th colspan="4" class="nepadmin-c-red nepadmin-bold nepadmin-font-14">RefTable属性</th>
               </tr>
               <tr>
@@ -168,19 +174,25 @@
               <tr>
                 <td>lowEntName</td>
                 <td>String</td>
-                <td>首字母小写的关联表的实体类名，下划线表名会自动转成驼峰命名（同Table）</td>
+                <td>首字母小写的关联表的实体类名，下划线表名会自动转成驼峰命名</td>
                 <td></td>
               </tr>
               <tr>
                 <td>entName</td>
                 <td>String</td>
-                <td>对应表的实体类，下划线表名会自动转成驼峰命名（同Table）</td>
+                <td>关联表的实体类，下划线表名会自动转成驼峰命名</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>remark</td>
+                <td>String</td>
+                <td>关联表comment注释</td>
                 <td></td>
               </tr>
               <tr>
                 <td>columns</td>
                 <td>List&lt;Column&gt;</td>
-                <td>表字段，属性等（详见Column属性）（同Table）</td>
+                <td>关联表字段，属性等（详见Column属性）</td>
                 <td></td>
               </tr>
               <tr>
@@ -198,7 +210,7 @@
               <tr>
                 <td>refPropMap</td>
                 <td>Map&lt;String,String&gt;</td>
-                <td>关联字段对应的属性，key主表实体类属性，value从表实体类属性</td>
+                <td>关联字段对应的属性，key主表实体类属性，value从表实体类属性（暂没什么用处）</td>
                 <td></td>
               </tr>
                <tr>
@@ -213,7 +225,12 @@
                 <td>key中间表字段，value关联表字段</td>
                 <td></td>
               </tr>
-              
+              <tr>
+                <td>enableColPos</td>
+                <td>List&lt;String&gt;</td>
+                <td>是否配置了字段位置标识，现支持3个（searchPos查询条件，listPos列表项，inputPos表单输入项）</td>
+                <td>利用list标签, 可取出Column</td>
+              </tr>
               <tr>
             	<th colspan="4" class="nepadmin-c-red nepadmin-bold nepadmin-font-14">Column属性</th>
               </tr>
@@ -232,8 +249,11 @@
               <tr>
                 <td>remark</td>
                 <td>String</td>
-                <td>表字段comment,可用来注释</td>
-                <td></td>
+                <td>表字段comment注释</td>
+                <td>comment约定格式 --> 字段文本（对应labelName）;表单类型（对应tagType）;val1:text1,val2:text2（对应colValueMap）;
+                	程序会自动加载到对应字段。也可以在config.xml重定义；
+                	表单类型现支持(text,select,textarea,chackbox,radio,date,hidden,file)
+                </td>
               </tr>
               <tr>
                 <td>propName</td>
@@ -299,7 +319,17 @@
                 <td>
                 </td>
               </tr>
-              
+              <tr>
+                <td>positions</td>
+                <td>List&lt;String&gt;</td>
+                <td>表字段位置标识，现支持3个
+                	serachPos:页面查询条件；
+                	listPos:页面列表项；
+                	inputPos:页面表单输入项。
+                </td>
+                <td>
+                </td>
+              </tr>
             </tbody>
           </table>
           

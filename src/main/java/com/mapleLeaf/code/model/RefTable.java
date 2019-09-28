@@ -10,18 +10,24 @@ public class RefTable {
 	private String tabName;// 表名
 	private String lowEntName; // 首字母小写的实体类名
 	private String entName; // 实体类名
-
+	private String remark; // 表注释
 	private List<Column> columns = new ArrayList<Column>();// 字段
-
-	private String refType; //关联的表中需要赋值 关联类型
 	
-	private Map<String, String> refColMap = new HashMap<>();//关联的表中需要赋值 关联字段map，key主表字段，value从表字段
-															//(多对多时，value为中间表字段)
-	private Map<String, String> refPropMap = new HashMap<>();//关联的表中需要赋值 关联属性map，key主表实体类属性，value从表实体类属性
-	
-	private String midTabName;//多对多关联时 的中间表
-	private Map<String, String> midRefColMap = new HashMap<>();;//多对多关联时 中间表字段=关联表字段
-	private String forKey;//一对一或多对一时  主表的关联字段(即外键)
+	//关联的表中需要赋值 关联类型
+	private String refType; 
+	//关联的表中需要赋值 关联字段map，key主表字段，value从表字段
+	//(多对多时，value为中间表字段)
+	private Map<String, String> refColMap = new HashMap<>();
+	//关联的表中需要赋值 关联属性map，key主表实体类属性，value从表实体类属性
+	private Map<String, String> refPropMap = new HashMap<>();
+	//多对多关联时 的中间表
+	private String midTabName;
+	//多对多关联时 中间表字段=关联表字段
+	private Map<String, String> midRefColMap = new HashMap<>();
+	//一对一或多对一时  主表的关联字段(即外键)
+	private String forKey;
+	//指定 字段position是否 可用
+	private List<String> enableColPos = new ArrayList<>();
 	
 	public Map<String, String> getRefColMap() {
 		return refColMap;
@@ -101,6 +107,22 @@ public class RefTable {
 
 	public void setForKey(String forKey) {
 		this.forKey = forKey;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public List<String> getEnableColPos() {
+		return enableColPos;
+	}
+
+	public void setEnableColPos(List<String> enableColPos) {
+		this.enableColPos = enableColPos;
 	}
 	
 }
