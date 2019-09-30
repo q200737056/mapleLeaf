@@ -19,6 +19,7 @@ import com.mapleLeaf.code.model.Column;
 import com.mapleLeaf.code.model.RefTable;
 import com.mapleLeaf.code.model.Table;
 import com.mapleLeaf.code.utils.CodeUtil;
+import com.mapleLeaf.common.util.CacheUtil;
 import com.mapleLeaf.common.util.GlobalConst;
 
 public abstract class AbstractTableService implements ITableService {
@@ -73,13 +74,13 @@ public abstract class AbstractTableService implements ITableService {
     /**
      * 封装 主表数据
      */
-    protected Table renderTable(TableConf tbConf,Module module,Connection conn) 
+    @SuppressWarnings("unchecked")
+	protected Table renderTable(TableConf tbConf,Module module,Connection conn) 
     		throws SQLException{
     	 //表名
-    	 String tableName =tbConf.getName();
+    	 String tableName =tbConf.getTabName();
     	 //去掉前缀 的表名
-    	 String mvPrefix=tbConf.getName();
-    	 
+    	 String mvPrefix=tbConf.getTabName();
     	 
     	 Table table = new Table(); 
     	 
@@ -100,18 +101,43 @@ public abstract class AbstractTableService implements ITableService {
 		 		
 		 	}
 		 }
-		 table.setRemark(getTableRemark(tableName, conn));//表 注释
-	      //实体类名,首字母大写的驼峰命名 
+		 //实体类名,首字母大写的驼峰命名 
          table.setEntName(CodeUtil.convertToCamelCase(mvPrefix));
-        //首字母小写的驼峰命名
+         //首字母小写的驼峰命名
          table.setLowEntName(CodeUtil.convertToFstLowerCamelCase(mvPrefix));
-    	
+         
+         //获取  表 注释
+		 Object cacheComm = CacheUtil.getValue("code",tableName+"_commet");
+		 if(cacheComm==null){
+			 String tabRemark = getTableRemark(tableName, conn);
+			 table.setRemark(tabRemark);
+			 CacheUtil.addCache("code", tableName+"_commet", tabRemark);
+		 }else{
+			 table.setRemark((String)cacheComm);
+		 }
+		 
+	     
     	List<Column> indexes = new ArrayList<>();//其中一组 唯一索引或主键的字段集合
     	//获取字段
-    	List<Column> cols = getTableColumns(tableName, module, conn);
+    	List<Column> cols = null;
+    	Object cacheCol = CacheUtil.getValue("code",tableName+"_column");
+    	if(cacheCol==null){
+    		cols = getTableColumns(tableName, module, conn);
+    		CacheUtil.addCache("code",tableName+"_column",cols);
+    	}else{
+    		cols = (List<Column>)cacheCol;
+    	}
     	
     	//获取主键字段集
-    	String pks = getTablePrimaryKey(table.getTabName(),conn);
+    	Object cachePk = CacheUtil.getValue("code", tableName+"_pk");
+    	String pks = "";
+    	if(cachePk==null){
+    		pks = getTablePrimaryKey(tableName,conn);
+    		CacheUtil.addCache("code", tableName+"_pk", pks);
+    	}else{
+    		pks = (String)cachePk;
+    	}
+    	
     	String[] pkCols = pks.split(",");
     	String[] idxCols = pkCols;
     	if(CodeUtil.isEmpty(pks)){//如果主键为空，则去查唯一索引
@@ -197,12 +223,13 @@ public abstract class AbstractTableService implements ITableService {
      * @param conn
      * @return
      */
-    protected RefTable renderRefTable(RefConf refCof,Module module,Connection conn) throws SQLException{
+    @SuppressWarnings("unchecked")
+	protected RefTable renderRefTable(RefConf refCof,Module module,Connection conn) throws SQLException{
     	RefTable ref = new RefTable();
     	//表名
-    	String tableName = refCof.getRefName();
+    	String tableName = refCof.getTabName();
     	//去掉前缀 的表名
-   	 	String mvPrefix=refCof.getRefName();
+   	 	String mvPrefix=refCof.getTabName();
    	 	
     	ref.setTabName(tableName);//表名
     	
@@ -220,17 +247,42 @@ public abstract class AbstractTableService implements ITableService {
 		 		
 		 	}
 		 }
-		 ref.setRemark(getTableRemark(tableName, conn));//表 注释
 		//实体类名,首字母大写的驼峰命名 
          ref.setEntName(CodeUtil.convertToCamelCase(mvPrefix));
         //首字母小写的驼峰命名
          ref.setLowEntName(CodeUtil.convertToFstLowerCamelCase(mvPrefix));
-		 
-        //获取字段  
-     	List<Column> cols = getTableColumns(tableName, module, conn);
+         
+         
+		 //获取表 注释
+		 Object cacheComm = CacheUtil.getValue("code",tableName+"_commet");
+		 if(cacheComm==null){
+			 String tabRemark = getTableRemark(tableName, conn);
+			 ref.setRemark(tabRemark);
+			 CacheUtil.addCache("code", tableName+"_commet", tabRemark);
+		 }else{
+			 ref.setRemark((String)cacheComm);
+		 }
+		
+        //获取字段 
+         Object cacheCol = CacheUtil.getValue("code",tableName+"_column");
+         List<Column> cols = null;
+     	if(cacheCol==null){
+     		cols = getTableColumns(tableName, module, conn);
+     		CacheUtil.addCache("code",tableName+"_column",cols);
+     	}else{
+     		cols = (List<Column>)cacheCol;
+     	}
      	
      	//获取主键
-     	String pks = getTablePrimaryKey(ref.getTabName(),conn);
+     	Object cachePk = CacheUtil.getValue("code", tableName+"_pk");
+    	String pks = "";
+    	if(cachePk==null){
+    		pks = getTablePrimaryKey(tableName,conn);
+    		CacheUtil.addCache("code", tableName+"_pk", pks);
+    	}else{
+    		pks = (String)cachePk;
+    	}
+    	
     	String[] pkCols = pks.split(",");
     	
     	
@@ -317,6 +369,7 @@ public abstract class AbstractTableService implements ITableService {
      	
     	return ref;
     }
+   
     /**
      * 过滤及 封装  字段
      * @param groupConf

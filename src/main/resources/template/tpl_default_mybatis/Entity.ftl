@@ -22,6 +22,9 @@ public class ${entName} implements Serializable {
 	
 	<#--关联表属性-->
 	<@mf.list refTables;refTab>
+	/**
+	 * ${refTab.remark!}
+	 */
 	<#if refTab.refType=="OneToOne" || refTab.refType=="ManyToOne">
 	private ${refTab.entName} ${refTab.lowEntName};
 	<#elseif refTab.refType=="OneToMany" || refTab.refType=="ManyToMany">

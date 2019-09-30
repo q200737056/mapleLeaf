@@ -13,6 +13,7 @@
             
               
                 <#list columns as col>
+                <#--如果未配置searchPos，则显示全部字段-->
                 <#if !enableColPos?seq_contains("searchPos") 
                 	|| col.positions?seq_contains("searchPos") >
                 <div class="layui-form-item">

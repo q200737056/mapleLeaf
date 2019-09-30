@@ -19,7 +19,7 @@ public interface ${entName}Service {
 	/**
 	 * ${tabName}查找
 	 */
-	 public ${entName} find${entName}By(${entName} ${lowEntName});
+	 public ${entName} get${entName}(${entName} ${lowEntName});
 	/**
 	 * ${tabName}修改
 	 */

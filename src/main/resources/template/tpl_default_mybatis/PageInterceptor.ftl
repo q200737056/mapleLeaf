@@ -35,8 +35,8 @@ import java.util.regex.Pattern;
 /**
  * 通过拦截StatementHandler的prepare方法，重写sql语句实现物理分页
  *
- * @author hermit
- * @date 2017 -06-28 14:32:28
+ * @author 
+ * @date
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class,Integer.class})})
 public class PageInterceptor implements Interceptor {
@@ -108,7 +108,7 @@ public class PageInterceptor implements Interceptor {
     /**
      * 获取分页属性对象
      *
-     * @author hermit
+     * @author
      * @date 2016年9月1日
      * @param obj
      * @return
@@ -148,7 +148,7 @@ public class PageInterceptor implements Interceptor {
     /**
      * 给分页属性赋值
      *
-     * @author hermit
+     * @author 
      * @date 2014年11月10日
      * @param obj
      * @param page
@@ -163,7 +163,7 @@ public class PageInterceptor implements Interceptor {
     /**
      * 获取记录总数，并给分页属性赋值
      * 
-     * @author hermit
+     * @author 
      * @date 2017年6月27日 下午4:38:58
      * @param sql
      * @param connection
@@ -265,7 +265,7 @@ public class PageInterceptor implements Interceptor {
     /**
      * 对SQL参数设值
      * 
-     * @author hermit
+     * @author 
      * @date 2017年6月27日 下午4:38:51
      * @param ps
      * @param mappedStatement
@@ -282,7 +282,7 @@ public class PageInterceptor implements Interceptor {
     /**
      * 根据数据库方言，生成特定的分页sql
      * 
-     * @author hermit
+     * @author 
      * @date 2017年6月27日 下午4:38:46
      * @param sql
      * @param page
@@ -309,7 +309,7 @@ public class PageInterceptor implements Interceptor {
     /**
      * mysql分页
      * 
-     * @author hermit
+     * @author 
      * @date 2017年6月27日 下午4:37:49
      * @param sql
      * @param page
@@ -326,7 +326,7 @@ public class PageInterceptor implements Interceptor {
     /**
      * oracle分页
      * 
-     * @author hermit
+     * @author 
      * @date 2017年6月27日 下午4:37:53
      * @param sql
      * @param page

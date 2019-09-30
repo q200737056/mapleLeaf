@@ -12,7 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.mapleLeaf.code.other.DataBase2File;
+import com.mapleLeaf.code.other.GenCodeFile;
 import com.mapleLeaf.common.bean.AjaxResult;
 import com.mapleLeaf.common.util.FileTool;
 import com.mapleLeaf.common.util.GlobalConst;
@@ -24,7 +24,7 @@ import com.mapleLeaf.common.util.GlobalConst;
 public class CodeCtrl {
 	
 	@Autowired
-	DataBase2File dataBase2File;
+	public GenCodeFile genCode;
 	
 	
 	
@@ -297,7 +297,7 @@ public class CodeCtrl {
 		//生成代码
         try {
         	
-        	dataBase2File.generateFiles(GlobalConst.CONFIG,
+        	genCode.generateFiles(GlobalConst.CONFIG,
         			GlobalConst.TEMPLATE_PATH+"/"+tplname);
 		} catch (Exception e) {
 			e.printStackTrace();

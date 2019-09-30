@@ -27,14 +27,15 @@ import com.mapleLeaf.code.model.Table;
 import com.mapleLeaf.code.service.ITableService;
 import com.mapleLeaf.code.utils.CodeUtil;
 import com.mapleLeaf.code.utils.FreemarkerUtil;
+import com.mapleLeaf.common.util.CacheUtil;
 import com.mapleLeaf.common.util.GlobalConst;
 
 
 @Component
-public class DataBase2File {
+public class GenCodeFile {
 	
 	
-	private Logger log =  LoggerFactory.getLogger(DataBase2File.class);
+	private Logger log =  LoggerFactory.getLogger(GenCodeFile.class);
 	
 	
     /** 
@@ -90,6 +91,9 @@ public class DataBase2File {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception();
+		}finally{
+			//清空  生成代码的缓存
+			CacheUtil.removeCache("code");
 		}
         
     } 
@@ -315,7 +319,7 @@ public class DataBase2File {
 	}
    
     public static void main(String[] args) {  
-        DataBase2File reverser = new DataBase2File(); 
+        GenCodeFile reverser = new GenCodeFile(); 
         try {
 			reverser.generateFiles("config2.xml",
 					GlobalConst.TEMPLATE_PATH+"/tpl_default_mybatis");

@@ -171,7 +171,7 @@ public class ConfigFactory {
 					for(RefConf ref : item.getRefConfs()){
 						boolean errboo = true;
 						for(TableConf tab :tableConfs){
-							if(ref.getRefName().equalsIgnoreCase(tab.getName())){
+							if(ref.getTabName().equalsIgnoreCase(tab.getTabName())){
 								//ref.setEntityName(tab.getEntityName());
 								ref.setPrefix(tab.getPrefix());
 								ref.setColGroup(tab.getColGroup());
@@ -285,7 +285,7 @@ public class ConfigFactory {
 		for (Element e : tables) {
 			TableConf m = initTableConf(e);//读取 table 标签属性
 			//排除表名空的
-			if(CodeUtil.isEmpty(m.getName())){
+			if(CodeUtil.isEmpty(m.getTabName())){
 				continue;
 			}
 			
@@ -303,7 +303,7 @@ public class ConfigFactory {
 	private static  TableConf initTableConf(Element e){
 		TableConf m = new TableConf();
 		
-		m.setName(XmlUtil.getAttrValue(e, "tabName", "").toLowerCase());//表名 转小写
+		m.setTabName(XmlUtil.getAttrValue(e, "tabName", "").toLowerCase());//表名 转小写
 		m.setPrefix(XmlUtil.getAttrValue(e, "prefix", null));//前缀
 		m.setExclude(XmlUtil.getAttrValue(e, "exclude", null));//实排除指定模板的文件生成
 		
@@ -313,7 +313,7 @@ public class ConfigFactory {
 			for(Element ref : refs){
 				RefConf refConf = initRefConf(ref);
 				//排除 表名空的
-				if(CodeUtil.isEmpty(refConf.getRefName())){
+				if(CodeUtil.isEmpty(refConf.getTabName())){
 					continue;
 				}
 				m.getRefConfs().add(refConf);
@@ -335,7 +335,7 @@ public class ConfigFactory {
 	private static  RefConf initRefConf(Element e){
 		RefConf m = new RefConf();
 		
-		m.setRefName(XmlUtil.getAttrValue(e, "tabName", null));//关联表的表名
+		m.setTabName(XmlUtil.getAttrValue(e, "tabName", null));//关联表的表名
 		
 		Attribute refType =XmlUtil.getAttribute(e, "type");//关联 关系
 		if (refType!=null) {

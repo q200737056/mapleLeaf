@@ -27,7 +27,8 @@ public class FreemarkerUtil {
     
     public static void createDoc(Configuration configuration,Object obj
     		,String template,String saveFilePath) throws Exception {
-    	Map<String,Object> dataMap = (Map<String,Object>)JSON.toJSON(obj);
+    	@SuppressWarnings("unchecked")
+		Map<String,Object> dataMap = (Map<String,Object>)JSON.toJSON(obj);
     	
     	createDoc(configuration, dataMap, template, saveFilePath);
     }

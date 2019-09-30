@@ -88,7 +88,7 @@
     </insert>
     <#if uniIdxCols?? && (uniIdxCols?size>0)>
     <#--查询-->
-    <select id="find${entName}By" parameterType="<@mf.entityPkg/>.${entName}" 
+    <select id="get${entName}" parameterType="<@mf.entityPkg/>.${entName}" 
     	resultType="<@mf.entityPkg/>.${entName}">
         select * from ${tabName} where 1=1 
          <@mf.list uniIdxCols;idxCol>

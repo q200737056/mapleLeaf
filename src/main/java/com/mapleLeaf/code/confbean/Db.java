@@ -2,7 +2,7 @@ package com.mapleLeaf.code.confbean;
 
 /**
  * 数据库连接信息
- * @author mars.liu
+ * @author 
  *
  */
 public class Db {

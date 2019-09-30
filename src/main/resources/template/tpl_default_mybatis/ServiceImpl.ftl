@@ -32,7 +32,7 @@ public class ${entName}ServiceImpl implements ${entName}Service {
     /**
 	 * ${tabName}查找
 	 */
-	 public ${entName} find${entName}By(${entName} ${lowEntName}){
+	 public ${entName} get${entName}(${entName} ${lowEntName}){
 	 	return ${lowEntName}Mapper.find${entName}By(${lowEntName});
 	 }
 	/**

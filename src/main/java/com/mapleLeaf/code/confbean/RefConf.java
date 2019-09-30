@@ -1,23 +1,33 @@
 package com.mapleLeaf.code.confbean;
 
-public class RefConf {
-	private String refName; //关联从表的表名
+public class RefConf  {
+	private String tabName; //表名
+	
+	private String prefix; //表名前缀
 	private String refType; //关联类型，一对一，一对多等。主对从
 	private String refColumns; //关联的字段，主表字段=关联表字段(多对多时，主表字段=中间表字段) 多个逗号分隔 
 	private String midTabName;//多对多关联时 的中间表
 	private String midRefCol;//多对多关联时 中间表字段=关联表字段
 	private String forKey;//关联字段(即外键)
 	
-	private String prefix;//表名前缀
-	//private String entityName;//配置的实体类名
 	
 	private ColumnGroupConf colGroup;
 	
-	public String getRefName() {
-		return refName;
+	
+	public String getTabName() {
+		return tabName;
 	}
-	public void setRefName(String refName) {
-		this.refName = refName;
+
+	public void setTabName(String tabName) {
+		this.tabName = tabName;
+	}
+
+	public String getPrefix() {
+		return prefix;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
 	}
 	public String getRefType() {
 		return refType;
@@ -31,12 +41,7 @@ public class RefConf {
 	public void setRefColumns(String refColumns) {
 		this.refColumns = refColumns;
 	}
-	public String getPrefix() {
-		return prefix;
-	}
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
+	
 	
 	public ColumnGroupConf getColGroup() {
 		return colGroup;

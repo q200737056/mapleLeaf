@@ -24,7 +24,7 @@ import org.dom4j.io.XMLWriter;
  *  
 * @类名: XmlUtil  
 * @类功能描述: 解析xml 
-* @时间 ：2011-4-13 上午08:33:50 
+*
  */  
 public class XmlUtil{  
     /** 
