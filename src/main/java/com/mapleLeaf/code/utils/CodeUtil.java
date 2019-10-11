@@ -104,7 +104,7 @@ public class CodeUtil {
     
     /**
      * 转换(mybatis的jdbcType,hibernate的映射)
-     * @param type
+     * @param type 数据库字段类型
      * @return
      */
     public static String convertJdbcType(String type,String ormType) {
@@ -146,7 +146,7 @@ public class CodeUtil {
     			type="text";
     		}
     	}
-    	
+    	//数据库字段类型 对应框架的字段类型名一样的话， 就原样输出
     	return type;
     }
     

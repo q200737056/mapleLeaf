@@ -229,7 +229,7 @@ CREATE TABLE
 
 #### 四、模板代码片段：
 
-（有自定义宏标签和函数，temlate/lib/mf.ftl）
+（有自定义宏标签和函数，template/lib/mf.ftl）
 
 ##### 获取表字段信息
 ```
@@ -277,6 +277,7 @@ CREATE TABLE
 ![](https://gitee.com/uploads/images/2019/0506/193643_baffe7d2_1135865.gif "在这里输入图片标题")
 
 #### 五、留言：
-[freemarker模板学习]("http://freemarker.foofun.cn/index.html")
+[freemarker模板学习网址]("http://freemarker.foofun.cn/index.html")
+
 v2.0.1已发布，如果大家觉得有点用处，请给个星 :star: ，谢谢大家。
 

@@ -81,9 +81,11 @@
     <#--新增-->
     <insert id="insert${entName}" parameterType="<@mf.entityPkg/>.${entName}">
         insert into ${tabName} (
-			<#list columns as col>${col.colName}<#if col_has_next>,</#if></#list>
+			<@mf.list_row "colName" 10 columns></@mf.list_row>
         )values(
- 			<#list columns as col><@mf.print "#"/>{${col.propName}}<#if col_has_next>,</#if></#list>
+        	<#list columns?chunk(5) as row>
+        	<#list row as col><@mf.print "#"/>{${col.propName},jbdcType=${col.colType}}<#sep>,</#list><#if row?has_next>,</#if>
+        	</#list>
 		)
     </insert>
     <#if uniIdxCols?? && (uniIdxCols?size>0)>
@@ -97,8 +99,12 @@
     </select>
     <#--修改-->
     <update id="update${entName}" parameterType="<@mf.entityPkg/>.${entName}">
-        update ${tabName} set 
-        <#list columns as col>${col.colName}=<@mf.print "#"/>{${col.propName}}<#if col_has_next>,</#if></#list>
+        update ${tabName} 
+		<set>
+        <#list columns as col>
+        <if test="${col.propName} != null">${col.colName}=<@mf.print "#"/>{${col.propName}}</if>
+        </#list>
+        </set>
          where 1=1 
          <@mf.list uniIdxCols;idxCol>
          and ${idxCol.colName}=<@mf.print "#"/>{${idxCol.propName}}

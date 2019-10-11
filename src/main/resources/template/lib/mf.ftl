@@ -7,9 +7,18 @@
 <#--list输出(自带null判断)；推荐list类型循环时使用-->
 <#macro list list=[]>
 <#list list as item>
-  <#nested item,item_index>
+  <#nested item,item?index>
 </#list>
 </#macro>
+<#--分行输出list,默认1行1个，分隔符为‘，’-->
+<#macro list_row prop num=1 list=[] sign=",">
+<#if list?size gt 0>
+	<#list list?chunk(num) as r>
+		<#list r as item>${item[prop]}<#sep>${sign}</#list><#if r?has_next>${sign}</#if>
+	</#list>
+</#if>
+</#macro>
+
 <#--特殊字符原样输出，等同于<#noescape></#noescape>，${r''}，
 	为什么要自定义，因为比前者简单，比后者更直观
 -->

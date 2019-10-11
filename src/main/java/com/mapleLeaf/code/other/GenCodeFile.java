@@ -47,7 +47,7 @@ public class GenCodeFile {
     public void generateFiles(String configFile,String tplPath) throws Exception{
         log.info("Generating...");
         Long start=System.currentTimeMillis();
-        
+        Connection con =null;
         try {
         	
         	 Config config= ConfigFactory.createConfig(configFile,tplPath);
@@ -55,7 +55,7 @@ public class GenCodeFile {
              ITableService tableService = TableServiceFactory.getInstance(config.getDb().getDbType());
              tableService.setDb(config.getDb());
              Class.forName(config.getDb().getDriver());  
-             Connection con = DriverManager.getConnection(config.getDb().getUrl(), config.getDb().getUser()
+             con = DriverManager.getConnection(config.getDb().getUrl(), config.getDb().getUser()
              		,config.getDb().getPwd());  
              for (Module module : config.getModules()) {
              	log.info("module="+module.getName());
@@ -73,7 +73,7 @@ public class GenCodeFile {
              	
              	
              }
-             con.close();
+             
              //公共类生成
              if(!config.getCommonMap().isEmpty()){
              	for(Entry<String, List<String>> entry:config.getCommonMap().entrySet()){
@@ -86,12 +86,13 @@ public class GenCodeFile {
              }
              
              Long end = System.currentTimeMillis();
-             log.info("Generate Success! total time = "+(end-start));
-             log.info("Code Path: " + config.getBaseDir());
+             log.info("Success! total time: "+(end-start));
+             log.info("CodeFile Path: " + config.getBaseDir());
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception();
 		}finally{
+			con.close();
 			//清空  生成代码的缓存
 			CacheUtil.removeCache("code");
 		}
