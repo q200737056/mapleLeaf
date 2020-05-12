@@ -20,10 +20,10 @@
 
 #### 三、项目部署及代码生成演示：
 1. 如果用maven打成jar包运行时，需要在jar包所在目录下加入config.xml配置文件与template模板文件。（推荐）
-![](http://i2.tiimg.com/686411/4dd3530c40c4b0d3.png "")
+![](https://s1.ax1x.com/2020/05/12/YUQx1A.png "")
 2. 用maven打成war包运行，则不需要这些，直接启动服务即可。
 
-以mysql数据库为例，分别生成mybatis,hibernate。
+##### 以mysql数据库演示，分别生成mybatis,hibernate。
 
 ##### 表结构
 
@@ -212,20 +212,22 @@ CREATE TABLE
 
 ##### 生成的部分代码展示
 
-1. hibernate生成的实体类
++ hibernate生成的实体类（SysUser部分代码）
 
-![User类部分代码](http://i1.fuimg.com/686411/1bcb83b9b1780fba.png)
-![Role类部分代码](http://i1.fuimg.com/686411/33c87cdee59ed294.png)
+![User类部分代码](https://s1.ax1x.com/2020/05/12/YU1EVK.png)
 
-2. mybatis生成的xml配置(配置文件设置成 实体类名不去掉表前缀)
 
-![](http://i1.fuimg.com/686411/451da44f46910397.png)
-![](http://i2.tiimg.com/686411/6d976b33393fd208.png)
++ mybatis生成的xml配置(SysUserMapper.xml部分)
 
-3. 页面生成的代码（简单处理了）
+![](https://s1.ax1x.com/2020/05/12/YU8ecd.png)
+
+![](https://s1.ax1x.com/2020/05/12/YUGURe.png)
+
++ 页面生成的代码（简单处理了）
  
-![表单输入](http://i1.fuimg.com/686411/bc05e85ca6050a62.png "表单输入") 
-![查询出来的列表项](http://i1.fuimg.com/686411/8f25be0a789aac43.png "查询出来的列表项")
+![表单输入](https://s1.ax1x.com/2020/05/12/YUttiV.png "表单输入") 
+
+![查询](https://s1.ax1x.com/2020/05/12/YUt2RO.png "查询")
 
 #### 四、模板代码片段：
 
@@ -268,9 +270,6 @@ CREATE TABLE
 
 ```
 
-##### 整个项目页面展示：
-
-![](http://i2.tiimg.com/686411/69d23332dbb10510.gif "")
 
 ##### 扒取登陆用户页面时，通过浏览器工具获取cookies，把HTTP打钩的name,value填进cookie文本域就行：
 

@@ -5,7 +5,7 @@
 		<!--生成代码路径 ,默认项目所在目录-->
 		<property name="baseDir" value="f:\\code" />
 		<!--基础包名，默认mapleLeaf.code-->
-		<property name="basePackage" value="com.test2" />
+		<property name="basePackage" value="com.test" />
 		<!-- 实体类名是否去掉表名前缀 ,默认false-->
 		<property name="deleteTabPrefix" value="fasle" />
 		<!-- 全局表名前缀，多个逗号分隔 ,默认""-->
