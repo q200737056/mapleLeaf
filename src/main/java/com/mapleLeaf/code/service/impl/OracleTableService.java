@@ -21,48 +21,7 @@ import com.mapleLeaf.code.utils.CodeUtil;
 
 public class OracleTableService extends AbstractTableService {
 	
-	
-
-	/* 
-     * 连接数据库获取所有表信息 
-     */  
-    /*public List<TableConf> getAllTables(String pattern) {  
-        if (CodeUtil.isEmpty(pattern)) {
-        	pattern="*";
-        }
-        List<TableConf> tbConfList = new ArrayList<TableConf>();
-        Connection con = null;  
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {  
-            Class.forName(db.getDriver());  
-            con = DriverManager.getConnection(db.getUrl(), db.getUser(),db.getPwd());  
-            // 获取所有表名  
-            String showTablesSql = "";  
-            showTablesSql = "select table_name from user_tables where table_name like ? and owner=upper(?)"; // ORACLE查询所有表格名称命令  
-            ps = con.prepareStatement(showTablesSql);
-            ps.setString(1, pattern);
-            ps.setString(2, db.getUser());
-            rs = ps.executeQuery();  
-              
-            // 循环生成所有表的表信息
-            while(rs.next()) {  
-                if(rs.getString(1)==null) continue;  
-                TableConf cf = new TableConf();
-                cf.setName(rs.getString(1));
-                tbConfList.add(cf);
-            }  
-              
-            rs.close();  
-            ps.close(); 
-            con.close();  
-        } catch (Exception e) {  
-            e.printStackTrace();  
-        }  
-          
-        return tbConfList;  
-    } */ 
-      
+	  
     /**
      * 获取指定表信息并封装成Table对象 
      * @param tbConf 

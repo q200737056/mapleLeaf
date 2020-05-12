@@ -8,12 +8,11 @@ import java.util.List;
  *
  */
 public class TableConf {
-	private String tabName; //表名
-	private String prefix;//表前缀
-
-	private String exclude;//排除指定模板的文件生成(dao,service,controller,view,custom,entity)
+	private String tabName;
+	private String prefix;
+	private String exclude;
 	
-	private List<RefConf> refConfs = new ArrayList<>(); //关联表的信息
+	private List<RefConf> refConfs = new ArrayList<>();
 	
 	private ColumnGroupConf colGroup;
 	

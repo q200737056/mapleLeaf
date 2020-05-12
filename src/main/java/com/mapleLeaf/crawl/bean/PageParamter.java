@@ -5,12 +5,17 @@ package com.mapleLeaf.crawl.bean;
  *
  */
 public class PageParamter {
-	private String cookie;//k1=v1;k2=v2
+	//k1=v1;k2=v2
+	private String cookie;
 	private String userAgent;
-	private String localRootPath; //本地保存的路径
-	private String charset; //页面编码,默认UTF-8
-	private String domain; //当前网址 域名
-	private String protocol;//当前 网址 协议
+	//本地保存的路径
+	private String localRootPath; 
+	//页面编码,默认UTF-8
+	private String charset; 
+	//当前网址 域名
+	private String domain; 
+	//当前 网址 协议
+	private String protocol;
 	
 	public PageParamter(String cookie, String userAgent, String localRootPath) {
 		this.cookie = cookie;

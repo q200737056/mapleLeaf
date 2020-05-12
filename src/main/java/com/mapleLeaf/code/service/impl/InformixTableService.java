@@ -18,47 +18,7 @@ import com.mapleLeaf.code.utils.CodeUtil;
 
 public class InformixTableService extends AbstractTableService {
 	
-	
-
-	/* 
-     * 连接数据库获取所有表信息 
-     */  
-    /*public List<TableConf> getAllTables(String pattern) {  
-        if (CodeUtil.isEmpty(pattern)) {
-        	pattern="*";
-        }
-        List<TableConf> tbConfList = new ArrayList<TableConf>();
-        Connection con = null;  
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {  
-            Class.forName(db.getDriver());  
-            con = DriverManager.getConnection(db.getUrl(), db.getUser(),db.getPwd());  
-            // 获取所有表名  
-            String showTablesSql = "select * from systables where owner=? and tabname like '"+pattern+"%'";  
-           
-            ps = con.prepareStatement(showTablesSql);  
-            ps.setString(1, db.getDbName());
-            rs = ps.executeQuery();  
-              
-            // 循环生成所有表的表信息
-            while(rs.next()) {  
-                if(rs.getString(1)==null) continue;  
-                TableConf cf = new TableConf();
-                cf.setName(rs.getString("tabname"));//设置 表名
-                tbConfList.add(cf);
-            }  
-              
-            rs.close();  
-            ps.close(); 
-            con.close();  
-        } catch (Exception e) {  
-            e.printStackTrace();  
-        }  
-          
-        return tbConfList;  
-    } */ 
-      
+	  
     /**
      * 获取指定表信息并封装成Table对象 
      * @param tbConf 
@@ -180,6 +140,8 @@ public class InformixTableService extends AbstractTableService {
 			return "CHAR";
 		case 2:
 			return "INTEGER";
+		case 3:
+			return "FLOAT";
 		case 5:
 			return "DECIMAL";
 		case 13:
@@ -188,6 +150,8 @@ public class InformixTableService extends AbstractTableService {
 			return "CHAR";
 		case 258:
 			return "INTEGER";
+		case 259:
+			return "FLOAT";
 		case 261:
 			return "DECIMAL";
 		case 7:
@@ -221,7 +185,5 @@ public class InformixTableService extends AbstractTableService {
         return javaType;  
     
 	}*/
-
-	
 
 }

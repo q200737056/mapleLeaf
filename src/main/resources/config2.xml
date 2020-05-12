@@ -37,7 +37,7 @@
 			各模块相互独立,name属性为模块名 -->
 	<module name="test">
 		<!-- 
-			package标签 主要支持大多数  dao,service,controller 三层结构
+			package标签 主要支持大多数  dao,service,controller 三层架构
 			包名配置，如果为空或没配置，则该包对应的类不会生成代码 
 		-->
 		<package>

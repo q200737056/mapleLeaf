@@ -54,8 +54,9 @@
 			各模块相互独立,name属性为模块名 -->
 	<module name="test">
 		<!-- 
-			package标签 主要支持大多数  dao,service,controller 三层结构
-			包名配置，如果为空或没配置，则该包对应的类不会生成代码 
+			package标签 主要支持大多数  dao,service,controller三层架构
+			实现类默认存放在对应接口包下的impl
+			如果某个包配置为空或没配置，则该包对应的类，接口（实现类）不会生成代码 
 		-->
 		<package>
 			<property name="entityPkg" value="entity"/>
@@ -65,10 +66,10 @@
 			<property name="mapperPkg" value="mapper"/>
 		</package>
 		<!--
-			customArea自定义区域 ，只要提供模板，任意生成代码，可以说 不仅仅 java语言了
+			customArea自定义区域 ，只要提供模板，可任意生成代码，不仅限于java语言
 		-->
 		<customArea>
-			<!-- 自定义生成，可以配置多组标签，不限于java语言，属性customPkg包名，属性suffix 文件后缀;
+			<!-- 自定义生成，可以配置多组标签，属性customPkg包名，属性suffix 文件后缀;
 				标签内容为模板文件(不需要后缀)，多个逗号分隔-->
 			<codeFile customPkg="page" suffix="jsp">Jsp_list,Jsp_add</codeFile>
 			<!-- 自定义参数设置 ，模板中可以通过${param['author']!}获取参数值 -->
@@ -76,7 +77,7 @@
 		</customArea>
 		
 		<!-- table配置表，属性tabName表名，
-			  exclude排除指定模板代码生成，多个逗号分隔（dao,service,controller,entity,custom）
+			  exclude排除指定包下的代码生成，多个逗号分隔（dao,service,controller,entity,custom）
 			，prefix表前缀，有全局配置，感觉没什么用了-->
 		<table tabName="sys_user" prefix="">
 			<!-- 

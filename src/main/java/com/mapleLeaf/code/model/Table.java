@@ -4,19 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Table {
-
-	private String tabName; // 表名
-	
-	private String lowEntName; // 首字母小写的实体类名
-	private String entName; // 实体类名
-	private String remark; // 表注释
-	
-	private List<String> impClasses = new ArrayList<String>();//需要导入字段类型的类
-	private List<Column> columns = new ArrayList<Column>();// 字段
+	// 表名
+	private String tabName; 
+	// 首字母小写的实体类名
+	private String lowEntName; 
+	// 实体类名
+	private String entName; 
+	// 表注释
+	private String remark; 
+	//需要导入字段类型的类
+	private List<String> impClasses = new ArrayList<String>();
+	// 字段集合
+	private List<Column> columns = new ArrayList<Column>();
 	//所有关联表的集合
 	private List<RefTable> refTables = new ArrayList<>();
 	
-	//排除指定模板的文件生成(dao,service,controller,custom,entity)
+	//排除指定包下的代码生成(dao,service,controller,custom,entity)
 	private String exclude;
 	// 其中一组的表唯一索引（或主键）的字段集合
 	private List<Column> uniIdxCols = new ArrayList<>();

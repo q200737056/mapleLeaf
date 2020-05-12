@@ -33,13 +33,7 @@ public interface ITableService {
      */
 	Table getTable(TableConf tbConf,Module module, Connection con) throws SQLException;
 	
-	/**
-     * 获取数据表的所有字段
-     * @param table
-     * @param conn
-     * @throws SQLException
-     */
-	//void getTableColumns(Table table,Connection conn) throws SQLException;
+
 	
 	/**
 	 * 获取表主键

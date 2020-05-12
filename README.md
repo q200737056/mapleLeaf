@@ -9,13 +9,13 @@
 3. 扒取工具现有扒取网页，支持有用户登录的页面扒取，通过设置cookie（可用浏览器工具查看cookie）。可用作自己项目的模板，也可以静态演示。
 
 #### 二、代码生成功能有哪些优势
->1. 主持多种主流数据库：mysql，oracle，sqlserver，postgresql等；还能很容易的扩展需要支持的数据库。
+>1. 主持多种主流数据库：mysql，oracle，sqlserver，postgresql等；还能很容易扩展需要支持的数据库。
 >2. 支持多种类型的持久层：mybatis，hibernate等other持久层。
 >3. 支持表之间的复杂关联关系，一对一，一对多，多对一，多对多，单双向的关联。
 >4. 支持模块化生成代码，各模块之间相互独立，互不影响。
 >5. 支持模板文件内容自定义，可自由编辑新增模板，生成自己业务需要的代码。模板使用了freemarker。
->6. 对视图中的代码生成，很友好；比如：字段表单类型分类，字段所在页面位置标识等。
->7. 不仅支持默认的java项目的dao,service,controller三层架构，而且支持强大的自定义，只要使用模板中现有的数据编辑模板，可以生成其他编程语言的文件。比如：页面jsp，js等等。还可以自定义参数，比如定义了参数 author作者，date日期等。
+>6. 页面的代码生成有很好的支持；比如：字段表单类型分类，字段所在页面位置标识等。
+>7. 不仅支持默认的java项目的dao,service,controller三层架构，而且支持强大的自定义，只要使用模板中现有的数据编辑模板，可以生成其他编程语言的文件。比如：页面jsp，js等等。可自定义参数，比如定义了 author作者，date日期等。
 >8. 操作简单，只需要配置config.xml配置文件。
 
 #### 三、项目部署及代码生成演示：
@@ -92,7 +92,7 @@ CREATE TABLE
 + 用户表 1-->1 用户个人信息表；用户表 n-->1 部门表；
 + 用户表 n-->n 角色表，用户和角色关联表为中间表；
 + COMMET约定格式（不区分中英逗号，分号，推荐中文；自动去除空格）： 字段文本；表单类型；val1:text1,val2:text2
-+ 程序会自动加载,这些属性。
++ 程序会自动加载这些属性，来支持页面的代码生成；当然也可在配置文件中再重新配置或新增。
 + 表单类型现支持text,textarea,date,select,checkbox,radio,hidden,file。
 
 ##### config.xml配置
@@ -136,7 +136,7 @@ CREATE TABLE
 			各模块相互独立,name属性为模块名 -->
 	<module name="test">
 		<!-- 
-			package标签 主要支持大多数  dao,service,controller 三层结构
+			package标签 主要支持大多数  dao,service,controller三层架构
 			包名配置，如果为空或没配置，则该包对应的类不会生成代码 
 		-->
 		<package>
@@ -147,8 +147,8 @@ CREATE TABLE
 			<property name="mapperPkg" value="mapper"/>
 		</package>
 		<!--
-			customArea自定义区域 ，只要提供模板，任意生成代码，
-			可以说 不仅仅生成java语言
+			customArea自定义区域，只要提供可用模板，可任意生成代码，
+			不仅仅java语言
 		-->
 		<customArea>
 			<!-- 自定义生成，可以配置多组标签，不限于java语言，属性customPkg包名，属性suffix 文件后缀;
@@ -214,8 +214,8 @@ CREATE TABLE
 
 1. hibernate生成的实体类
 
-![User类部分代码](http://i1.fuimg.com/686411/1bcb83b9b1780fba.png "User类部分代码")
-![Role类部分代码](http://i1.fuimg.com/686411/33c87cdee59ed294.png "Role类部分代码")
+![User类部分代码](http://i1.fuimg.com/686411/1bcb83b9b1780fba.png)
+![Role类部分代码](http://i1.fuimg.com/686411/33c87cdee59ed294.png)
 
 2. mybatis生成的xml配置(配置文件设置成 实体类名不去掉表前缀)
 
@@ -268,7 +268,7 @@ CREATE TABLE
 
 ```
 
-##### 整个项目：
+##### 整个项目页面展示：
 
 ![](http://i2.tiimg.com/686411/69d23332dbb10510.gif "")
 
@@ -277,7 +277,7 @@ CREATE TABLE
 ![](https://gitee.com/uploads/images/2019/0506/193643_baffe7d2_1135865.gif "在这里输入图片标题")
 
 #### 五、留言：
-[freemarker模板学习网址]("http://freemarker.foofun.cn/index.html")
+[freemarker模板学习网址](http://freemarker.foofun.cn/index.html)
 
-v2.0.1已发布，如果大家觉得有点用处，请给个星 :star: ，谢谢大家。
+v2.0.1已发布。
 

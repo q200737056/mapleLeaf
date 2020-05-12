@@ -20,9 +20,10 @@ import java.util.Vector;
  */ 
 public class HttpUtil { 
 	
-	
-    private String encode; 	//默认编码格式
-    private String cookies="";	//每次请求都用自动发送此cookies,请求完毕后自动更新此cookies
+	//默认编码格式
+    private String encode;
+   //每次请求都用自动发送此cookies,请求完毕后自动更新此cookies
+    private String cookies="";	
     
    
     /**

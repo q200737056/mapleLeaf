@@ -45,7 +45,7 @@ import com.mapleLeaf.crawl.other.TrustAnyTrustManager;
 public class FileUtil {
 
 	
-	static final String ENCODE="UTF-8";	//默认文件编码UTF-8
+	static final String ENCODE="UTF-8";	
 	
 	/**
 	 * 读文件，返回文件文本信息，默认编码UTF-8
@@ -198,24 +198,22 @@ public class FileUtil {
         BufferedInputStream inBuff = null;
         BufferedOutputStream outBuff = null;
         try {
-            // 新建文件输入流并对它进行缓冲
+        
             inBuff = new BufferedInputStream(new FileInputStream(sourceFile));
 
-            // 新建文件输出流并对它进行缓冲
             outBuff = new BufferedOutputStream(new FileOutputStream(targetFile));
 
-            // 缓冲数组
             byte[] b = new byte[1024 * 5];
             int len;
             while ((len = inBuff.read(b)) != -1) {
                 outBuff.write(b, 0, len);
             }
-            // 刷新此缓冲的输出流
+            
             outBuff.flush();
         }catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			 // 关闭流
+			
             if (inBuff != null)
 				try {
 					inBuff.close();
@@ -279,7 +277,7 @@ public class FileUtil {
 			int responseCode = httpConnection.getResponseCode();
 			if (responseCode >= 400) {
 				System.err.println("Error Code : " + responseCode);
-				return -2; // -2 represent access is error
+				return -2; 
 			}
 			String sHeader;
 			for (int i = 1;; i++) {
@@ -390,7 +388,7 @@ public class FileUtil {
 	        conn.setSSLSocketFactory(sc.getSocketFactory());
 	        conn.setHostnameVerifier(new TrustAnyHostnameVerifier());
 	        
-	        //文件的长度
+	    
 	        int nEndPos = StrUtil.stringToInt(conn.getHeaderField("Content-Length"), -1);
 
 	        RandomAccessFile oSavedFile = new RandomAccessFile(savePath, "rw");

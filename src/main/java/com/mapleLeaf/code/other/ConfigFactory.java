@@ -38,7 +38,7 @@ public class ConfigFactory {
 	    	tplPath = tplPath.substring(0,tplPath.length()-1);
 	    }
 	    String basePath = tplPath.substring(0,tplPath.lastIndexOf("/")+1);
-	    //configuration.setClassForTemplateLoading(ConfigFactory.class,tplPath);
+	    
 	    try {
 			configuration.setDirectoryForTemplateLoading(new File(basePath));
 		} catch (IOException e2) {
@@ -131,7 +131,7 @@ public class ConfigFactory {
 			m.setPersistence(config.getPersistence());//持久层框架 ，全局参数
 			m.setBaseTabPrefix(config.getBaseTabPrefix());
 			
-			//模块名 ,默认 空字符
+			
 			m.setName(XmlUtil.getAttrValue(e, "name", ""));
 			
 			//加载模板中的包名
@@ -172,7 +172,7 @@ public class ConfigFactory {
 						boolean errboo = true;
 						for(TableConf tab :tableConfs){
 							if(ref.getTabName().equalsIgnoreCase(tab.getTabName())){
-								//ref.setEntityName(tab.getEntityName());
+								
 								ref.setPrefix(tab.getPrefix());
 								ref.setColGroup(tab.getColGroup());
 								errboo = false;
@@ -281,9 +281,9 @@ public class ConfigFactory {
 	 */
 	private static List<TableConf> readTableConfList(Element module){
 		List<TableConf> tableList = new ArrayList<TableConf>();
-		List<Element> tables = XmlUtil.getChildElements(module, "table");//module可以包含多个table
+		List<Element> tables = XmlUtil.getChildElements(module, "table");
 		for (Element e : tables) {
-			TableConf m = initTableConf(e);//读取 table 标签属性
+			TableConf m = initTableConf(e);
 			//排除表名空的
 			if(CodeUtil.isEmpty(m.getTabName())){
 				continue;
@@ -302,10 +302,10 @@ public class ConfigFactory {
 	 */
 	private static  TableConf initTableConf(Element e){
 		TableConf m = new TableConf();
-		
-		m.setTabName(XmlUtil.getAttrValue(e, "tabName", "").toLowerCase());//表名 转小写
-		m.setPrefix(XmlUtil.getAttrValue(e, "prefix", null));//前缀
-		m.setExclude(XmlUtil.getAttrValue(e, "exclude", null));//实排除指定模板的文件生成
+		//表名 转小写
+		m.setTabName(XmlUtil.getAttrValue(e, "tabName", "").toLowerCase());
+		m.setPrefix(XmlUtil.getAttrValue(e, "prefix", null));
+		m.setExclude(XmlUtil.getAttrValue(e, "exclude", null));
 		
 		//读取 ref 标签
 		List<Element> refs = XmlUtil.getChildElements(e, "ref");
@@ -335,9 +335,9 @@ public class ConfigFactory {
 	private static  RefConf initRefConf(Element e){
 		RefConf m = new RefConf();
 		
-		m.setTabName(XmlUtil.getAttrValue(e, "tabName", null));//关联表的表名
+		m.setTabName(XmlUtil.getAttrValue(e, "tabName", null));
 		
-		Attribute refType =XmlUtil.getAttribute(e, "type");//关联 关系
+		Attribute refType =XmlUtil.getAttribute(e, "type");
 		if (refType!=null) {
 			String type = refType.getValue().trim();
 			
@@ -351,13 +351,15 @@ public class ConfigFactory {
 					m.setForKey(XmlUtil.getAttrValue(e, "forKey", null));//关联字段（外键）
 				}
 			}else{
-				m.setRefType("OneToMany");//其它的都默认OneToMany
+				//其它的都默认OneToMany
+				m.setRefType("OneToMany");
 			}
 		} else {
-			m.setRefType("OneToMany"); //从表必需配置,否则默认OneToMany
+			//从表必需配置,否则默认OneToMany
+			m.setRefType("OneToMany"); 
 		}
 		String  refColumns = e.getTextTrim();
-		//关联的字段，主表字段=从表字段 多个逗号分隔
+
 		m.setRefColumns(refColumns);
 		
 		return m;
@@ -397,7 +399,6 @@ public class ConfigFactory {
 		cnf.setLabelName(XmlUtil.getAttrValue(e, "labelName", null));
 		cnf.setTagType(XmlUtil.getAttrValue(e, "tagType", null));
 		
-		//形式 k1=v1,k2=v2  k为字段值，v为值的描述
 		cnf.setColValue(e.getTextTrim());
 		
 		return cnf;
@@ -410,7 +411,6 @@ public class ConfigFactory {
 		cnf.setSuffix(XmlUtil.getAttrValue(e, "suffix", null));
 		cnf.setCustomPackage(XmlUtil.getAttrValue(e, "customPkg", null));
 		
-		//模板 多个逗号分隔
 		cnf.setTpl(e.getTextTrim());
 		
 		return cnf;

@@ -9,7 +9,7 @@ import java.util.Map;
  * @author 
  */
 public class Module {
-	private String name; //模块名称
+	private String name;
 	
 	private String persistence; //持久层框架  全局参数
 	private boolean isDeleteTablePrefix; //是否删除表前缀  全局参数
@@ -22,14 +22,13 @@ public class Module {
 	private String serviceImplPackage;
 	private String entityPackage;
 	private String controllerPackage;
-	//private String viewPackage;
-	//private String customPackage;
+
 	private String mapperPackage;
 	private String myBatisPackage;
-	private List<TableConf> tables; //配置的数据表信息 
-	private List<CodeFileConf> codeFiles;//自定义
+	private List<TableConf> tables;
+	private List<CodeFileConf> codeFiles;
 	
-	private Map<String,String> paramMap=new HashMap<>();//自定义参数
+	private Map<String,String> paramMap=new HashMap<>();
 	
 	public String getName() {
 		return name;

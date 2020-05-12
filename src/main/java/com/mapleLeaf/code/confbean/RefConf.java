@@ -1,14 +1,14 @@
 package com.mapleLeaf.code.confbean;
 
 public class RefConf  {
-	private String tabName; //表名
+	private String tabName; 
 	
-	private String prefix; //表名前缀
-	private String refType; //关联类型，一对一，一对多等。主对从
-	private String refColumns; //关联的字段，主表字段=关联表字段(多对多时，主表字段=中间表字段) 多个逗号分隔 
-	private String midTabName;//多对多关联时 的中间表
-	private String midRefCol;//多对多关联时 中间表字段=关联表字段
-	private String forKey;//关联字段(即外键)
+	private String prefix;
+	private String refType; 
+	private String refColumns;  
+	private String midTabName;
+	private String midRefCol;
+	private String forKey;
 	
 	
 	private ColumnGroupConf colGroup;

@@ -294,7 +294,7 @@ public class CodeCtrl {
 		
 		AjaxResult<String> rst = new AjaxResult<>();
 		
-		//生成代码
+		
         try {
         	
         	genCode.generateFiles(GlobalConst.CONFIG,

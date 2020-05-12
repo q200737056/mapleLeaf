@@ -25,8 +25,7 @@ public class Column {
     //k-v型 字段值，key为 字段值 val，value为标识描述text
     //默认 COMMENT中取 （如果有）
     private Map<String,String> colValueMap = new HashMap<>();
-    //表单 标签类型，默认text;该属性比较开放，自己定义一套类型，在页面需要时，做判断 
-    //比如 select 表示 下拉框，checkbox表示多选，radio 表示单选
+    //表单 标签类型，默认text;
     //默认 COMMENT中取 （如果有）
     private String tagType="text"; 
     //字段所在位置的标识

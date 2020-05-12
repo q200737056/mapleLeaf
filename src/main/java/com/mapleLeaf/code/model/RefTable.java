@@ -6,12 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 public class RefTable {
-
-	private String tabName;// 表名
-	private String lowEntName; // 首字母小写的实体类名
-	private String entName; // 实体类名
-	private String remark; // 表注释
-	private List<Column> columns = new ArrayList<Column>();// 字段
+	// 关联表名
+	private String tabName;
+	// 首字母小写的实体类名
+	private String lowEntName; 
+	// 实体类名
+	private String entName; 
+	// 表注释
+	private String remark; 
+	// 字段集合
+	private List<Column> columns = new ArrayList<Column>();
 	
 	//关联的表中需要赋值 关联类型
 	private String refType; 

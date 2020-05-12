@@ -45,7 +45,7 @@ public class GenCodeFile {
      * @throws SQLException 
      */  
     public void generateFiles(String configFile,String tplPath) throws Exception{
-        log.info("Generating...");
+        log.info("开始生成代码...");
         Long start=System.currentTimeMillis();
         Connection con =null;
         try {
@@ -86,8 +86,7 @@ public class GenCodeFile {
              }
              
              Long end = System.currentTimeMillis();
-             log.info("Success! total time: "+(end-start));
-             log.info("CodeFile Path: " + config.getBaseDir());
+             log.info("生成代码结束，共花费: "+(end-start));
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception();
@@ -225,7 +224,7 @@ public class GenCodeFile {
     	
     	FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+"Dao", savePath);
     	log.info("生成文件："+savePath);
-    	//dao实现类
+    	
     	if (module.getPersistence().equals("hibernate")){
         	File implDir=getSaveFilePath(module.getDaoPackage()+File.separator+module.getDaoImplPackage(),config);
 	    	
@@ -266,7 +265,7 @@ public class GenCodeFile {
     	String savePath =saveFile.getAbsolutePath();
     	log.info("生成文件："+savePath);
     	FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+"Service", savePath);
-    	//实现类
+ 
     	File implDir=getSaveFilePath(module.getServicePackage()+File.separator+module.getServiceImplPackage(),config);
     	File implFile = new File(implDir,table.getEntName()+"ServiceImpl.java");
     	String implPath =implFile.getAbsolutePath();
@@ -320,12 +319,11 @@ public class GenCodeFile {
 	}
    
     public static void main(String[] args) {  
-        GenCodeFile reverser = new GenCodeFile(); 
+        GenCodeFile gen = new GenCodeFile(); 
         try {
-			reverser.generateFiles("config2.xml",
+        	gen.generateFiles("config2.xml",
 					GlobalConst.TEMPLATE_PATH+"/tpl_default_mybatis");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }  

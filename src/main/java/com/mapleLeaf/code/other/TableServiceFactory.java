@@ -7,11 +7,7 @@ import com.mapleLeaf.code.service.impl.OracleTableService;
 import com.mapleLeaf.code.service.impl.PostgresqlTableService;
 import com.mapleLeaf.code.service.impl.SqlServerTableService;
 
-/**
- * 针对各类数据库的服务创建工厂
- * @author
- *
- */
+
 public class TableServiceFactory {
 	
 	public static ITableService getInstance(String dbType) {
