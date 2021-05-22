@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class TableConf {
 	private String tabName;
-	private String prefix;
+	
 	private String exclude;
 	
 	private List<RefConf> refConfs = new ArrayList<>();
@@ -25,13 +25,6 @@ public class TableConf {
 		this.tabName = tabName;
 	}
 
-	public String getPrefix() {
-		return prefix;
-	}
-
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
 	public String getExclude() {
 		return exclude;
 	}

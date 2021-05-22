@@ -15,10 +15,11 @@ public class Config {
 	private String basePackage;
 	//表字段是否驼峰命名
 	private boolean columnIsCamel;
-	//是否删除表名前缀
-	private boolean isDeleteTablePrefix;
+	
 	//表名前缀，可以多个
 	private String baseTabPrefix;
+	//全部表字段名前缀，可以多个
+	private String baseColPrefix;
 	//持久层框架
 	private String persistence; 
 	//连接数据库的配置信息
@@ -45,12 +46,7 @@ public class Config {
 	public void setCommonMap(Map<String, List<String>> commonMap) {
 		this.commonMap = commonMap;
 	}
-	public boolean isDeleteTablePrefix() {
-		return isDeleteTablePrefix;
-	}
-	public void setDeleteTablePrefix(boolean isDeleteTablePrefix) {
-		this.isDeleteTablePrefix = isDeleteTablePrefix;
-	}
+	
 	public boolean isColumnIsCamel() {
 		return columnIsCamel;
 	}
@@ -98,6 +94,12 @@ public class Config {
 	}
 	public void setTplName(String tplName) {
 		this.tplName = tplName;
+	}
+	public String getBaseColPrefix() {
+		return baseColPrefix;
+	}
+	public void setBaseColPrefix(String baseColPrefix) {
+		this.baseColPrefix = baseColPrefix;
 	}
 	
 }

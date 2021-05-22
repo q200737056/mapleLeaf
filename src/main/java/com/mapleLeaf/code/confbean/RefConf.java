@@ -3,7 +3,6 @@ package com.mapleLeaf.code.confbean;
 public class RefConf  {
 	private String tabName; 
 	
-	private String prefix;
 	private String refType; 
 	private String refColumns;  
 	private String midTabName;
@@ -22,13 +21,6 @@ public class RefConf  {
 		this.tabName = tabName;
 	}
 
-	public String getPrefix() {
-		return prefix;
-	}
-
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
 	public String getRefType() {
 		return refType;
 	}

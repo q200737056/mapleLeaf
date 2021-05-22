@@ -87,11 +87,8 @@ public abstract class AbstractTableService implements ITableService {
 		 table.setExclude(tbConf.getExclude());
 		 table.setTabName(tableName);//表名
 		
-		 //自定义 表名前缀
-		 if (module.isDeleteTablePrefix() && !CodeUtil.isEmpty(tbConf.getPrefix())){
-		 	mvPrefix = tableName.toLowerCase().replaceFirst(tbConf.getPrefix().toLowerCase(), "");
 		 //全局 表名前缀
-		 }else if(module.isDeleteTablePrefix() && !CodeUtil.isEmpty(module.getBaseTabPrefix())){
+		 if(!CodeUtil.isEmpty(module.getBaseTabPrefix())){
 		 	String[] prefixs = module.getBaseTabPrefix().replace("，", ",").split(",");
 		 	for(int i=0;i<prefixs.length;i++){
 		 		if(tableName.toLowerCase().indexOf(prefixs[i].trim().toLowerCase())==0){
@@ -123,6 +120,23 @@ public abstract class AbstractTableService implements ITableService {
     	Object cacheCol = CacheUtil.getValue("code",tableName+"_column");
     	if(cacheCol==null){
     		cols = getTableColumns(tableName, module, conn);
+    		//如果有去掉字段名前缀，重新赋值属性值
+     		if(!CodeUtil.isEmpty(module.getBaseColPrefix())){
+     			String[] colPrefixs = module.getBaseColPrefix().replace("，", ",").split(",");
+     			for(Column col : cols){
+     				for(int i=0;i<colPrefixs.length;i++){
+     					if(col.getColName().indexOf(colPrefixs[i].trim().toLowerCase())==0){
+     						String tmpColName = col.getColName().replaceFirst(colPrefixs[i].trim().toLowerCase(), "");
+     						col.setPropName(module.isColumnIsCamel()?CodeUtil.convertToFstLowerCamelCase(tmpColName)
+     			        			:tmpColName);// 类属性名
+     						col.setUpperPropName(module.isColumnIsCamel()?CodeUtil.convertToCamelCase(tmpColName)
+     			        			:CodeUtil.converFirstUpper(tmpColName));//类 属性名首字母大写
+     						break;
+         				}
+     				}
+     				
+     			}
+     		}
     		CacheUtil.addCache("code",tableName+"_column",cols);
     	}else{
     		cols = (List<Column>)cacheCol;
@@ -233,11 +247,8 @@ public abstract class AbstractTableService implements ITableService {
    	 	
     	ref.setTabName(tableName);//表名
     	
-		 //自定义 表名前缀
-		 if (module.isDeleteTablePrefix() && !CodeUtil.isEmpty(refCof.getPrefix())){
-			 mvPrefix=tableName.toLowerCase().replaceFirst(refCof.getPrefix().toLowerCase(), "");
 		 //全局 表名前缀
-		 }else if(module.isDeleteTablePrefix() && !CodeUtil.isEmpty(module.getBaseTabPrefix())){
+		 if(!CodeUtil.isEmpty(module.getBaseTabPrefix())){
 		 	String[] prefixs = module.getBaseTabPrefix().replace("，", ",").split(",");
 		 	for(int i=0;i<prefixs.length;i++){
 		 		if(tableName.toLowerCase().indexOf(prefixs[i].trim().toLowerCase())==0){
@@ -268,6 +279,23 @@ public abstract class AbstractTableService implements ITableService {
          List<Column> cols = null;
      	if(cacheCol==null){
      		cols = getTableColumns(tableName, module, conn);
+     		//如果有去掉字段名前缀，重新赋值属性值
+     		if(!CodeUtil.isEmpty(module.getBaseColPrefix())){
+     			String[] colPrefixs = module.getBaseColPrefix().replace("，", ",").split(",");
+     			for(Column col : cols){
+     				for(int i=0;i<colPrefixs.length;i++){
+     					if(col.getColName().indexOf(colPrefixs[i].trim().toLowerCase())==0){
+     						String tmpColName = col.getColName().replaceFirst(colPrefixs[i].trim().toLowerCase(), "");
+     						col.setPropName(module.isColumnIsCamel()?CodeUtil.convertToFstLowerCamelCase(tmpColName)
+     			        			:tmpColName);// 类属性名
+     						col.setUpperPropName(module.isColumnIsCamel()?CodeUtil.convertToCamelCase(tmpColName)
+     			        			:CodeUtil.converFirstUpper(tmpColName));//类 属性名首字母大写
+     						break;
+         				}
+     				}
+     				
+     			}
+     		}
      		CacheUtil.addCache("code",tableName+"_column",cols);
      	}else{
      		cols = (List<Column>)cacheCol;

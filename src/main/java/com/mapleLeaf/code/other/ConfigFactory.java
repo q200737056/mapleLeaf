@@ -84,8 +84,8 @@ public class ConfigFactory {
 			config.setBasePackage(basePackage);
 			//表字段是否下划线转驼峰命名  默认false
 		    config.setColumnIsCamel(Boolean.valueOf(propMap.get("columnCamel")));
-		    //是否去掉表前缀  默认false
-		  	config.setDeleteTablePrefix(Boolean.valueOf(propMap.get("deleteTabPrefix")));
+		    //字段名前缀 默认""
+		    config.setBaseColPrefix(propMap.get("baseColPrefix"));
 		    //表名前缀 默认""
 		    config.setBaseTabPrefix(propMap.get("baseTabPrefix"));
 		    //持久层框架 默认"mybatis"
@@ -127,10 +127,9 @@ public class ConfigFactory {
 			Module m = new Module();
 			//全局参数 设置
 			m.setColumnIsCamel(config.isColumnIsCamel());//字段是否驼峰命名，全局参数
-			m.setDeleteTablePrefix(config.isDeleteTablePrefix());//是否删除表名前缀，全局参数
 			m.setPersistence(config.getPersistence());//持久层框架 ，全局参数
 			m.setBaseTabPrefix(config.getBaseTabPrefix());
-			
+			m.setBaseColPrefix(config.getBaseColPrefix());
 			
 			m.setName(XmlUtil.getAttrValue(e, "name", ""));
 			
@@ -173,7 +172,6 @@ public class ConfigFactory {
 						for(TableConf tab :tableConfs){
 							if(ref.getTabName().equalsIgnoreCase(tab.getTabName())){
 								
-								ref.setPrefix(tab.getPrefix());
 								ref.setColGroup(tab.getColGroup());
 								errboo = false;
 								break;
@@ -304,7 +302,6 @@ public class ConfigFactory {
 		TableConf m = new TableConf();
 		//表名 转小写
 		m.setTabName(XmlUtil.getAttrValue(e, "tabName", "").toLowerCase());
-		m.setPrefix(XmlUtil.getAttrValue(e, "prefix", null));
 		m.setExclude(XmlUtil.getAttrValue(e, "exclude", null));
 		
 		//读取 ref 标签

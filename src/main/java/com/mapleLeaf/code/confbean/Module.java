@@ -12,10 +12,11 @@ public class Module {
 	private String name;
 	
 	private String persistence; //持久层框架  全局参数
-	private boolean isDeleteTablePrefix; //是否删除表前缀  全局参数
+
 	private boolean columnIsCamel;//表字段是否驼峰命名  全局参数
 	private String baseTabPrefix;//表名前缀，可以多个 全局参数
-	
+	//全部表字段名前缀，可以多个
+	private String baseColPrefix;
 	private String daoPackage;
 	private String daoImplPackage;
 	private String servicePackage;
@@ -36,12 +37,7 @@ public class Module {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public boolean isDeleteTablePrefix() {
-		return isDeleteTablePrefix;
-	}
-	public void setDeleteTablePrefix(boolean isDeleteTablePrefix) {
-		this.isDeleteTablePrefix = isDeleteTablePrefix;
-	}
+	
 	
 	public String getDaoPackage() {
 		return daoPackage;
@@ -131,6 +127,12 @@ public class Module {
 	}
 	public void setCodeFiles(List<CodeFileConf> codeFiles) {
 		this.codeFiles = codeFiles;
+	}
+	public String getBaseColPrefix() {
+		return baseColPrefix;
+	}
+	public void setBaseColPrefix(String baseColPrefix) {
+		this.baseColPrefix = baseColPrefix;
 	}
 	
 }
