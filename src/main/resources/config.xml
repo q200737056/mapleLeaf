@@ -6,10 +6,10 @@
 		<property name="baseDir" value="f:\\code" />
 		<!--基础包名，默认mapleLeaf.code-->
 		<property name="basePackage" value="com.test" />
-		<!-- 实体类名是否去掉表名前缀 ,默认false-->
-		<property name="deleteTabPrefix" value="true" />
-		<!-- 全局表名前缀，多个逗号分隔 ,默认""-->
+		<!-- 需要去掉的全局表名前缀，多个逗号分隔 ,默认""-->
 		<property name="baseTabPrefix" value="sys_,wxcms_" />
+		<!-- 需要去掉的全局字段名名前缀，多个逗号分隔 ,默认""-->
+		<property name="baseColPrefix" value="" />
 		<!-- 表字段是否下划线转驼峰命名 ，默认false-->
 		<property name="columnCamel" value="false" />
 		<!-- 持久层框架(mybatis,hibernate,other)，默认"mybatis" -->
@@ -77,9 +77,8 @@
 		</customArea>
 		
 		<!-- table配置表，属性tabName表名，
-			  exclude排除指定包下的代码生成，多个逗号分隔（dao,service,controller,entity,custom）
-			，prefix表前缀，有全局配置，感觉没什么用了-->
-		<table tabName="sys_user" prefix="">
+			  exclude排除指定包下的代码生成，多个逗号分隔（dao,service,controller,entity,custom）-->
+		<table tabName="sys_user">
 			<!-- 
 			ref标签（单向）  关联表，如果需要双向关联  两个table都需配置对应对方的ref
 			ref所对应的 tabName，必须配置table
