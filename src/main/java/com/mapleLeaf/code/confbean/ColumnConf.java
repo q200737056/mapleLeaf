@@ -6,6 +6,7 @@ public class ColumnConf {
 	private String labelName;
 	private String tagType;
 	private String colValue;
+	private String propName;
 	
 	public String getColName() {
 		return colName;
@@ -30,6 +31,12 @@ public class ColumnConf {
 	}
 	public void setColValue(String colValue) {
 		this.colValue = colValue;
+	}
+	public String getPropName() {
+		return propName;
+	}
+	public void setPropName(String propName) {
+		this.propName = propName;
 	}
 	
 }

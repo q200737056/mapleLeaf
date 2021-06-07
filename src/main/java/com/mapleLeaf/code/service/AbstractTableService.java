@@ -449,6 +449,11 @@ public abstract class AbstractTableService implements ITableService {
 					CodeUtil.checkStrArray(GlobalConst.TAG_TYPES, tagType)){
 				col.setTagType(tagType.toLowerCase());//默认 text
 			}
+			String propName = colConf.getPropName();
+			if(!CodeUtil.isEmpty(propName)){
+				col.setPropName(propName);
+				col.setUpperPropName(CodeUtil.converFirstUpper(propName));
+			}
 			String colValue = colConf.getColValue();
 			if(!CodeUtil.isEmpty(colValue)){
 				Map<String,String> colValMap = CodeUtil.splitKeyVal(colValue, "=");
