@@ -11,7 +11,7 @@ public class RefConf  {
 	
 	
 	private ColumnGroupConf colGroup;
-	
+	private String entName;
 	
 	public String getTabName() {
 		return tabName;
@@ -59,6 +59,14 @@ public class RefConf  {
 	}
 	public void setForKey(String forKey) {
 		this.forKey = forKey;
+	}
+
+	public String getEntName() {
+		return entName;
+	}
+
+	public void setEntName(String entName) {
+		this.entName = entName;
 	}
 	
 	

@@ -17,109 +17,134 @@ import com.mapleLeaf.code.service.AbstractTableService;
 import com.mapleLeaf.code.utils.CodeUtil;
 
 public class InformixTableService extends AbstractTableService {
-	
-	  
-    /**
-     * 获取指定表信息并封装成Table对象 
-     * @param tbConf 
-     * @param module
-     * @param con 
-     */ 
+
+	/**
+	 * 获取指定表信息并封装成Table对象
+	 * 
+	 * @param tbConf
+	 * @param module
+	 * @param con
+	 */
 	@Override
-    public Table getTable(TableConf tbConf,Module module, Connection con) throws SQLException {
-    	return super.getTable(tbConf, module, con);
-    } 
-    
-    
-    /**
-     * 获取数据表的所有字段
-     * @param table
-     * @param conn
-     * @throws SQLException
-     */
+	public Table getTable(TableConf tbConf, Module module, Connection con) throws SQLException {
+		return super.getTable(tbConf, module, con);
+	}
+
+	/**
+	 * 获取数据表的所有字段
+	 * 
+	 * @param table
+	 * @param conn
+	 * @throws SQLException
+	 */
 	@Override
-    public List<Column> getTableColumns(String tableName,Module module,Connection conn) throws SQLException {
-	    	
-    		boolean isCamel = module.isColumnIsCamel();
-    		
-    		List<Column> cols = new ArrayList<>();
-    		
-    		String sql="SELECT c.* FROM syscolumns c, systables t WHERE c.tabid=t.tabid AND t.tabname=?";
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1,tableName);
-			ResultSet rs = ps.executeQuery();
+	public List<Column> getTableColumns(String tableName, Module module, Connection conn) throws SQLException {
+
+		boolean isCamel = module.isColumnIsCamel();
+
+		List<Column> cols = new ArrayList<>();
+
+		String sql = "SELECT c.* FROM syscolumns c, systables t WHERE c.tabid=t.tabid AND t.tabname=?";
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, tableName);
+			rs = ps.executeQuery();
 			while (rs.next()) {
 				Column col = new Column();
-				String colName = rs.getString("colname");//字段名
-	        	col.setColName(colName);
-	        	int type = rs.getInt("coltype");//字段类型
-	        	String type_str=Informixconvert(type);
-	        	col.setColType(CodeUtil.convertJdbcType(type_str, module.getPersistence()));
-	        	col.setRemark("");//没有
-	        	col.setPropName(isCamel?CodeUtil.convertToFstLowerCamelCase(colName)
-	        			:colName);//属性 就是 字段名
-	        	col.setPropType(CodeUtil.convertType(type_str));//属性 类型
-	        	col.setUpperPropName(isCamel?CodeUtil.convertToCamelCase(colName)
-	        			:CodeUtil.converFirstUpper(colName));//首字母大写
-	        	col.setNullable(true);//默认 允许为空
-	        	col.setLength((long)rs.getInt("collength"));//字段长度
-	        	col.setDefaultValue("");
-	        	
-	        	cols.add(col);
-	        	
+				String colName = rs.getString("colname");// 字段名
+				col.setColName(colName);
+				int type = rs.getInt("coltype");// 字段类型
+				String type_str = informixConvert(type);
+				col.setColType(CodeUtil.convertJdbcType(type_str, module.getPersistence()));
+				col.setRemark("");// 没有
+				col.setPropName(isCamel ? CodeUtil.convertToFstLowerCamelCase(colName) : colName);// 属性
+																									// 就是
+																									// 字段名
+				col.setPropType(CodeUtil.convertType(type_str));// 属性 类型
+				col.setUpperPropName(
+						isCamel ? CodeUtil.convertToCamelCase(colName) : CodeUtil.converFirstUpper(colName));// 首字母大写
+				col.setNullable(true);// 默认 允许为空
+				col.setLength((long) rs.getInt("collength"));// 字段长度
+				col.setDefaultValue("");
+
+				cols.add(col);
+
 			}
-			rs.close();
-			ps.close();
-		
+		} finally {
+			if (null != rs) {
+				rs.close();
+			}
+			if (null != ps) {
+				ps.close();
+			}
+		}
+
 		return cols;
-    }
-	
-	@Override
-    public String getTablePrimaryKey(String tableName, Connection con) throws SQLException{
-    	return super.getTablePrimaryKey(tableName, con);
 	}
-    /**
-     * 获取 表中 所有 唯一索引(包含主键)
-     * @param tableName
-     * @param con
-     * @return
-     * @throws SQLException
-     */
+
 	@Override
-    public Map<String,String> getTableUniqueIdx(String tableName, Connection con) throws SQLException{
-		Map<String,String> map = new HashMap<>();
-		
-		String sql="select b.idxname, a.colname,a.colno from  syscolumns  a ,"
+	public String getTablePrimaryKey(String tableName, Connection con) throws SQLException {
+		return super.getTablePrimaryKey(tableName, con);
+	}
+
+	/**
+	 * 获取 表中 所有 唯一索引(包含主键)
+	 * 
+	 * @param tableName
+	 * @param con
+	 * @return
+	 * @throws SQLException
+	 */
+	@Override
+	public Map<String, String> getTableUniqueIdx(String tableName, Connection con) throws SQLException {
+		Map<String, String> map = new HashMap<>();
+
+		String sql = "select b.idxname, a.colname,a.colno from  syscolumns  a ,"
 				+ "sysindexes b ,systables c where  (a.colno=b.part1 or a.colno=b.part2 or a.colno=b.part3"
 				+ " or a.colno=b.part4 or a.colno=b.part5) and a.tabid =b.tabid and a.tabid = c.tabid"
 				+ " and b.idxtype='U' and c.tabname=?";
-		PreparedStatement ps = con.prepareStatement(sql);
-		ps.setString(1,tableName);
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()){
-			String idxName = rs.getString("idxname");
-			if(idxName==null){
-				continue;
-			}else{
-				idxName = idxName.toLowerCase();
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = con.prepareStatement(sql);
+			ps.setString(1, tableName);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				String idxName = rs.getString("idxname");
+				if (idxName == null) {
+					continue;
+				} else {
+					idxName = idxName.toLowerCase();
+				}
+				String colName = rs.getString("colname");
+				if (colName != null) {
+					colName = colName.toLowerCase();
+				}
+				String v = map.get(idxName);
+				if (v == null) {
+					map.put(idxName, colName + ",");
+				} else {
+					map.put(idxName, v + colName + ",");
+				}
 			}
-			String colName = rs.getString("colname");
-			if(colName!=null){
-				colName = colName.toLowerCase();
+		} finally {
+			if (null != rs) {
+				rs.close();
 			}
-			String v = map.get(idxName);
-			if(v==null){
-				map.put(idxName, colName+",");
-			}else{
-				map.put(idxName, v+colName+",");
+			if (null != ps) {
+				ps.close();
 			}
 		}
-		rs.close();
 		return map;
 	}
-	
+
 	/**
 	 * 表注释
+	 * 
 	 * @param tableName
 	 * @return
 	 * @throws SQLException
@@ -129,12 +154,14 @@ public class InformixTableService extends AbstractTableService {
 		// TODO Auto-generated method stub
 		return "";
 	}
+
 	/**
 	 * 字段类型转换
+	 * 
 	 * @param type
 	 * @return
 	 */
-	private String Informixconvert(int type){
+	private String informixConvert(int type) {
 		switch (type) {
 		case 0:
 			return "CHAR";
@@ -161,29 +188,24 @@ public class InformixTableService extends AbstractTableService {
 		default:
 			break;
 		}
-    	return "VARCHAR";
+		return "VARCHAR";
 	}
-	/*private String convertJavaType(String databaseType){
-		  
-        String javaType = "";  
-          
-        String databaseTypeStr = databaseType.trim().toLowerCase();
-        if(databaseTypeStr.startsWith("int")) {  
-            javaType = "int";  
-        } else if(databaseTypeStr.equals("char")) {  
-            javaType = "String";  
-        } else if(databaseTypeStr.indexOf("varchar")!=-1) {  
-            javaType = "String";  
-        } else if(databaseTypeStr.equals("decimal")) {  
-            javaType = "BigDecimal";  
-        }  else if(databaseTypeStr.equals("date")) {  
-            javaType = "String";  
-        } else {
-            javaType = "String";  
-        }  
-          
-        return javaType;  
-    
-	}*/
+	/*
+	 * private String convertJavaType(String databaseType){
+	 * 
+	 * String javaType = "";
+	 * 
+	 * String databaseTypeStr = databaseType.trim().toLowerCase();
+	 * if(databaseTypeStr.startsWith("int")) { javaType = "int"; } else
+	 * if(databaseTypeStr.equals("char")) { javaType = "String"; } else
+	 * if(databaseTypeStr.indexOf("varchar")!=-1) { javaType = "String"; } else
+	 * if(databaseTypeStr.equals("decimal")) { javaType = "BigDecimal"; } else
+	 * if(databaseTypeStr.equals("date")) { javaType = "String"; } else {
+	 * javaType = "String"; }
+	 * 
+	 * return javaType;
+	 * 
+	 * }
+	 */
 
 }

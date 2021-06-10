@@ -171,7 +171,7 @@ public class ConfigFactory {
 						boolean errboo = true;
 						for(TableConf tab :tableConfs){
 							if(ref.getTabName().equalsIgnoreCase(tab.getTabName())){
-								
+								ref.setEntName(tab.getEntName());
 								ref.setColGroup(tab.getColGroup());
 								errboo = false;
 								break;
@@ -303,7 +303,7 @@ public class ConfigFactory {
 		//表名 转小写
 		m.setTabName(XmlUtil.getAttrValue(e, "tabName", "").toLowerCase());
 		m.setExclude(XmlUtil.getAttrValue(e, "exclude", null));
-		
+		m.setEntName(XmlUtil.getAttrValue(e, "entName", ""));
 		//读取 ref 标签
 		List<Element> refs = XmlUtil.getChildElements(e, "ref");
 		if(refs!=null && refs.size()>0){

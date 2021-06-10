@@ -102,7 +102,7 @@
         update ${tabName} 
 		<set>
         <#list columns as col>
-        <if test="${col.propName} != null">${col.colName}=<@mf.print "#"/>{${col.propName}}</if>
+        <if test="${col.propName} != null">${col.colName}=<@mf.print "#"/>{${col.propName}},</if>
         </#list>
         </set>
          where 1=1 

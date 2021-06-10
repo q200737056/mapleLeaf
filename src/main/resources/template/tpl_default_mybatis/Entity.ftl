@@ -3,7 +3,7 @@ package <@mf.entityPkg/>;
 import java.io.Serializable;
 <#--导入包-->
 <@mf.list impClasses;clz>
-${clz};
+import ${clz};
 </@mf.list>
 /**
 * ${remark!}

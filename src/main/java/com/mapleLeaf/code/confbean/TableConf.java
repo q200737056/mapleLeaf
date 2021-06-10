@@ -16,6 +16,7 @@ public class TableConf {
 	
 	private ColumnGroupConf colGroup;
 	
+	private String entName;
 	
 	public String getTabName() {
 		return tabName;
@@ -42,6 +43,14 @@ public class TableConf {
 	}
 	public void setColGroup(ColumnGroupConf colGroup) {
 		this.colGroup = colGroup;
+	}
+
+	public String getEntName() {
+		return entName;
+	}
+
+	public void setEntName(String entName) {
+		this.entName = entName;
 	}
 	
 }

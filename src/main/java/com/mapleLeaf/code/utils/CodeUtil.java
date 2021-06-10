@@ -51,9 +51,22 @@ public class CodeUtil {
      * @return
      */
     public static String converFirstUpper(String str){
+    	if(isEmpty(str)){
+    		return str;
+    	}
     	return str.substring(0, 1).toUpperCase()+str.substring(1);
     }
-    
+    /**
+     * 首字母小写
+     * @param 
+     * @return
+     */
+    public static String converFirstLower(String str){
+    	if(isEmpty(str)){
+    		return str;
+    	}
+    	return str.substring(0, 1).toLowerCase()+str.substring(1);
+    }
     /**
      * 将数据库的数据类型转换为java的数据类型 
      * @param databaseType

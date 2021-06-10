@@ -187,9 +187,10 @@
                 <td>table</td>
                 <td>配置数据库表，一个模块下可以配置多个table</td>
                 <td>是</td>
-                <td>tabName,exclude</td>
+                <td>tabName,entName,exclude</td>
                 <td>
                 tabName属性：表名，必需；
+                entName属性：自定义表对应的类名，非必需；
                 exclude属性：排除指定模板代码生成（entity,dao,service,controller,custom选择多个时，逗号分隔），非必需；
                 </td>
               </tr>
@@ -307,7 +308,7 @@
                  	特殊情况：多对多时，标签内容为 主表字段=中间表字段。
                	</td>
                 <td>否</td>
-                <td>tabName，type</td>
+                <td>tabName，type,midTabName,midRefCol,forKey</td>
                 <td>tabName属性：关联表的表名，而且该表名必须配置table，必需；
                 type属性：关联关系（OneToOne，ManyToMany，ManyToOne，OneToMany），必需；
                 midTabName属性：中间表名，不用配置table，多对多时必需；
