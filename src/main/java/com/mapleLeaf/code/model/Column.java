@@ -1,8 +1,6 @@
 package com.mapleLeaf.code.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Column {
@@ -28,11 +26,7 @@ public class Column {
     //表单 标签类型，默认text;
     //默认 COMMENT中取 （如果有）
     private String tagType="text"; 
-    //字段所在位置的标识
-    //现有searchPos,listPos,inputPos
-	private List<String> positions = new ArrayList<>(); 
-									
-    
+   
 	public String getColName() {
 		return colName;
 	}
@@ -115,12 +109,6 @@ public class Column {
 	}
 	public void setTagType(String tagType) {
 		this.tagType = tagType;
-	}
-	public List<String> getPositions() {
-		return positions;
-	}
-	public void setPositions(List<String> positions) {
-		this.positions = positions;
 	}
 	
 }

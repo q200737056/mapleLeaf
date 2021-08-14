@@ -325,9 +325,9 @@
                 <td>exclude，searchPos，listPos，inputPos</td>
                 <td>
                 exclude属性：需要排除的表字段（一般不要去排除），非必需；
-                searchPos属性：字段位置标识，页面的查询条件，多个字段逗号分隔，非必需；
-                listPos属性：字段位置标识，页面的列表项，多个字段逗号分隔，非必需；
-                inputPos属性：字段位置标识，页面的表单输入项，多个字段逗号分隔，非必需；
+                searchPos属性：存放于searchColumns，页面的查询条件，多个字段逗号分隔，按输入顺序排序，非必需；
+                listPos属性：存放于listColumns，页面的查询结果列表，多个字段逗号分隔，按输入顺序排序，非必需；
+                inputPos属性：存放于inpurColumns，页面的表单输入项，多个字段逗号分隔，按输入顺序排序，非必需；
                 </td>
               </tr>
               
@@ -369,7 +369,7 @@
                 	默认会从COMMENT中取； 
                 	tagType属性：自定义表单标签类型,可选(text,select,date,checkbox,radio,hidden,textarea,file)
                 	，默认 text，非必需，默认会从COMMENT约定格式(字段文本;表单类型;val1:text1,val2:text2;)中取；
-                	propName属性：自定义java类属性。
+                	propName属性：自定义java类的属性名。
                 </td>
               </tr>
              

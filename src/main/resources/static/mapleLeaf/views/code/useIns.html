@@ -139,9 +139,27 @@
               <tr>
                 <td>columns</td>
                 <td>List&lt;Column&gt;</td>
-                <td>表字段，属性等（详见Column属性）</td>
+                <td>全部字段集合（详见Column属性）</td>
                 <td>利用&lt;#list columns as col&gt;freemarker标签，
                 	可循环取出Column属性</td>
+              </tr>
+              <tr>
+                <td>searchColumns</td>
+                <td>List&lt;Column&gt;</td>
+                <td>查询条件字段集合（详见Column属性）</td>
+                <td>常用于生成页面查询条件</td>
+              </tr>
+              <tr>
+                <td>listColumns</td>
+                <td>List&lt;Column&gt;</td>
+                <td>查询结果列表字段集合（详见Column属性）</td>
+                <td>常用于生成页面查询结果列表</td>
+              </tr>
+              <tr>
+                <td>inputColumns</td>
+                <td>List&lt;Column&gt;</td>
+                <td>表单输入字段集合（详见Column属性）</td>
+                <td>常用于生成页面新增，修改等</td>
               </tr>
               <tr>
                 <td>refTables</td>
@@ -156,12 +174,7 @@
                 <td>如果有主键，则主键字段集合；没有主键，则取其中一组唯一索引字段集合；都没有，则空集合</td>
                 <td>利用list标签, 可取出Column</td>
               </tr>
-              <tr>
-                <td>enableColPos</td>
-                <td>List&lt;String&gt;</td>
-                <td>是否配置了字段位置标识，现支持3个（searchPos查询条件，listPos列表项，inputPos表单输入项）</td>
-                <td>利用list标签, 可取出Column</td>
-              </tr>
+              
               <tr>
             	<th colspan="4" class="nepadmin-c-red nepadmin-bold nepadmin-font-14">RefTable属性</th>
               </tr>
@@ -192,8 +205,26 @@
               <tr>
                 <td>columns</td>
                 <td>List&lt;Column&gt;</td>
-                <td>关联表字段，属性等（详见Column属性）</td>
+                <td>全部表字段集合（详见Column属性）</td>
                 <td></td>
+              </tr>
+              <tr>
+                <td>searchColumns</td>
+                <td>List&lt;Column&gt;</td>
+                <td>查询条件字段集合（详见Column属性）</td>
+                <td>常用于生成页面查询条件</td>
+              </tr>
+              <tr>
+                <td>listColumns</td>
+                <td>List&lt;Column&gt;</td>
+                <td>查询结果列表字段集合（详见Column属性）</td>
+                <td>常用于生成页面查询结果列表</td>
+              </tr>
+              <tr>
+                <td>inputColumns</td>
+                <td>List&lt;Column&gt;</td>
+                <td>表单输入字段集合（详见Column属性）</td>
+                <td>常用于生成页面新增，修改等</td>
               </tr>
               <tr>
                 <td>refType</td>
@@ -222,15 +253,10 @@
               <tr>
                 <td>midRefColMap</td>
                 <td>Map&lt;String,String&gt;</td>
-                <td>key中间表字段，value关联表字段</td>
+                <td>多对多时存在，key中间表字段，value关联表字段</td>
                 <td></td>
               </tr>
-              <tr>
-                <td>enableColPos</td>
-                <td>List&lt;String&gt;</td>
-                <td>是否配置了字段位置标识，现支持3个（searchPos查询条件，listPos列表项，inputPos表单输入项）</td>
-                <td>利用list标签, 可取出Column</td>
-              </tr>
+            
               <tr>
             	<th colspan="4" class="nepadmin-c-red nepadmin-bold nepadmin-font-14">Column属性</th>
               </tr>
@@ -319,17 +345,7 @@
                 <td>
                 </td>
               </tr>
-              <tr>
-                <td>positions</td>
-                <td>List&lt;String&gt;</td>
-                <td>表字段位置标识，现支持3个
-                	serachPos:页面查询条件；
-                	listPos:页面列表项；
-                	inputPos:页面表单输入项。
-                </td>
-                <td>
-                </td>
-              </tr>
+              
             </tbody>
           </table>
           

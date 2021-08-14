@@ -16,6 +16,12 @@ public class Table {
 	private List<String> impClasses = new ArrayList<String>();
 	// 字段集合
 	private List<Column> columns = new ArrayList<Column>();
+	// 查询条件字段集合
+	private List<Column> searchColumns = new ArrayList<Column>();
+	// 列表字段集合
+	private List<Column> listColumns = new ArrayList<Column>();
+	// 表单输入字段集合
+	private List<Column> inputColumns = new ArrayList<Column>();
 	//所有关联表的集合
 	private List<RefTable> refTables = new ArrayList<>();
 	
@@ -23,8 +29,7 @@ public class Table {
 	private String exclude;
 	// 其中一组的表唯一索引（或主键）的字段集合
 	private List<Column> uniIdxCols = new ArrayList<>();
-	//指定 字段position是否 可用
-	private List<String> enableColPos = new ArrayList<>();
+	
 													    
 	public String getTabName() {
 		return tabName;
@@ -100,12 +105,28 @@ public class Table {
 		this.uniIdxCols = uniIdxCols;
 	}
 
-	public List<String> getEnableColPos() {
-		return enableColPos;
+	public List<Column> getSearchColumns() {
+		return searchColumns;
 	}
 
-	public void setEnableColPos(List<String> enableColPos) {
-		this.enableColPos = enableColPos;
+	public void setSearchColumns(List<Column> searchColumns) {
+		this.searchColumns = searchColumns;
+	}
+
+	public List<Column> getListColumns() {
+		return listColumns;
+	}
+
+	public void setListColumns(List<Column> listColumns) {
+		this.listColumns = listColumns;
+	}
+
+	public List<Column> getInputColumns() {
+		return inputColumns;
+	}
+
+	public void setInputColumns(List<Column> inputColumns) {
+		this.inputColumns = inputColumns;
 	}
 	
 }

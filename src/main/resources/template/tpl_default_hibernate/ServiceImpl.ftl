@@ -20,7 +20,7 @@ public class ${entName}ServiceImpl implements ${entName}Service {
 	 * 分页查询
 	 */
 	 public List<${entName}> find${entName}Page(${entName} ${lowEntName}){
-	 	return ${lowEntName}Dao.find${entName}Page(${entName} ${lowEntName});
+	 	return ${lowEntName}Dao.find${entName}Page(${lowEntName});
 	 }
 	/**
 	 * 新增

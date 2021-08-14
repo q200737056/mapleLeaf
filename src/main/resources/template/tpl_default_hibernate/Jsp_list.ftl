@@ -12,10 +12,9 @@
         <form class="layui-form" action="" id="tableFrom">
             
               
-                <#list columns as col>
+                <#list searchColumns as col>
                 <#--如果未配置searchPos，则显示全部字段-->
-                <#if !enableColPos?seq_contains("searchPos") 
-                	|| col.positions?seq_contains("searchPos") >
+              
                 <div class="layui-form-item">
 	                <div class="layui-inline">
 	                    <label class="layui-form-label">${col.labelName}</label>
@@ -58,7 +57,6 @@
 		                </#if>
 	                </div>
                 </div>
-                </#if>
                 </#list>
                 
              <div class="layui-form-item">
@@ -73,11 +71,8 @@
             <table class="layui-table tree table-bordered table-hover" lay-even="" lay-skin="">
                 <thead>
                 	<tr>
-                   <@mf.list columns;col>
-                   <#if !enableColPos?seq_contains("inputPos")
-                   		|| col.positions?seq_contains("inputPos")>
+                   <@mf.list listColumns;col>
                    	<th>${col.labelName}</th>
-                   	</#if>
                    </@mf.list>
                    <tr>
                 </thead>

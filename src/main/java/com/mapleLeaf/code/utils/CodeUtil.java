@@ -224,4 +224,28 @@ public class CodeUtil {
     	}
     	return false;
     }
+    /**
+     * 判断 字符串数组中 是否存在 指定字符串，不区分大小写
+     * @param per
+     * @return 索引
+     */
+    public static int checkStrArrayIdx(String[] arr,String str){
+    	for(int i=0;i<arr.length;i++){
+    		String s = arr[i];
+    		if(s.equalsIgnoreCase(str)){
+    			return i;
+    		}
+    	}
+    	return -1;
+    }
+    /**
+     * map中的value 放入到 list集合中
+     * @param map
+     * @param list
+     */
+    public static <T> void  mapvalToList(Map<String,T> map,List<T> list){
+    	for(Map.Entry<String, T> entry : map.entrySet() ){
+			 list.add(entry.getValue());
+		}
+    }
 }

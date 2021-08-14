@@ -16,7 +16,12 @@ public class RefTable {
 	private String remark; 
 	// 字段集合
 	private List<Column> columns = new ArrayList<Column>();
-	
+	// 查询条件字段集合
+	private List<Column> searchColumns = new ArrayList<Column>();
+	// 列表字段集合
+	private List<Column> listColumns = new ArrayList<Column>();
+	// 表单输入字段集合
+	private List<Column> inputColumns = new ArrayList<Column>();
 	//关联的表中需要赋值 关联类型
 	private String refType; 
 	//关联的表中需要赋值 关联字段map，key主表字段，value从表字段
@@ -30,9 +35,7 @@ public class RefTable {
 	private Map<String, String> midRefColMap = new HashMap<>();
 	//一对一或多对一时  主表的关联字段(即外键)
 	private String forKey;
-	//指定 字段position是否 可用
-	private List<String> enableColPos = new ArrayList<>();
-	
+
 	public Map<String, String> getRefColMap() {
 		return refColMap;
 	}
@@ -121,12 +124,28 @@ public class RefTable {
 		this.remark = remark;
 	}
 
-	public List<String> getEnableColPos() {
-		return enableColPos;
+	public List<Column> getSearchColumns() {
+		return searchColumns;
 	}
 
-	public void setEnableColPos(List<String> enableColPos) {
-		this.enableColPos = enableColPos;
+	public void setSearchColumns(List<Column> searchColumns) {
+		this.searchColumns = searchColumns;
+	}
+
+	public List<Column> getListColumns() {
+		return listColumns;
+	}
+
+	public void setListColumns(List<Column> listColumns) {
+		this.listColumns = listColumns;
+	}
+
+	public List<Column> getInputColumns() {
+		return inputColumns;
+	}
+
+	public void setInputColumns(List<Column> inputColumns) {
+		this.inputColumns = inputColumns;
 	}
 	
 }

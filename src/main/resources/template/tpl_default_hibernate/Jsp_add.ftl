@@ -11,7 +11,7 @@
     </head>
     <body>
         <form class="layui-form" id="addFrom" method="post">
-           	<#list columns?chunk(2) as row>
+           	<#list inputColumns?chunk(2) as row>
             <div class="layui-form-item">
            		<#list row as col>
            		<#if !col.pk && !mf.getFks()?seq_contains(col.colName)>
