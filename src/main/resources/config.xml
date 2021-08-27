@@ -10,8 +10,10 @@
 		<property name="baseTabPrefix" value="sys_,wxcms_" />
 		<!-- 需要去掉的全局字段名名前缀，多个逗号分隔 ,默认""-->
 		<property name="baseColPrefix" value="" />
-		<!-- 表字段是否下划线转驼峰命名 ，默认false-->
+		<!-- 表字段是否下划线转驼峰命名 ，默认true-->
 		<property name="columnCamel" value="false" />
+		<!-- java基本类型是否为包装类 ，默认true-->
+		<property name="wrapperClass" value="false" />
 		<!-- 持久层框架(mybatis,hibernate,other)，默认"mybatis" -->
 		<property name="persistence" value="mybatis" />
 		<!-- 一些公共类，工具类,父类等原样输出，不必需(包名=模板文件名(也是类名)，多个逗号隔开) -->

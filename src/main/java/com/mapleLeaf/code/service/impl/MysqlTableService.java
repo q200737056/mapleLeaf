@@ -63,7 +63,7 @@ public class MysqlTableService extends AbstractTableService {
 				col.setRemark(rs.getString("column_comment"));// 字段注释
 
 				col.setPropName(isCamel ? CodeUtil.convertToFstLowerCamelCase(colName) : colName);// 类属性名
-				col.setPropType(CodeUtil.convertType(type));// 属性类型
+				col.setPropType(CodeUtil.convertType(type,module.isWrapperClass()));// 属性类型
 				// 属性名首字母大写
 				col.setUpperPropName(
 						isCamel ? CodeUtil.convertToCamelCase(colName) : CodeUtil.converFirstUpper(colName));

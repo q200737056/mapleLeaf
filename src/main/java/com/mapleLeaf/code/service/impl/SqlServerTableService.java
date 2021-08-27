@@ -87,7 +87,7 @@ public class SqlServerTableService extends AbstractTableService {
 				col.setRemark(rs.getString("comments"));
 
 				col.setPropName(isCamel ? CodeUtil.convertToFstLowerCamelCase(colName) : colName);
-				col.setPropType(CodeUtil.convertType(type));
+				col.setPropType(CodeUtil.convertType(type,module.isWrapperClass()));
 				col.setUpperPropName(
 						isCamel ? CodeUtil.convertToCamelCase(colName) : CodeUtil.converFirstUpper(colName));
 				col.setNullable(rs.getString("nullable").equals("Y"));

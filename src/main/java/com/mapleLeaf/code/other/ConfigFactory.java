@@ -83,7 +83,12 @@ public class ConfigFactory {
 					"mapleLeaf.code":propMap.get("basePackage");
 			config.setBasePackage(basePackage);
 			//表字段是否下划线转驼峰命名  默认false
-		    config.setColumnIsCamel(Boolean.valueOf(propMap.get("columnCamel")));
+			if(!"".equals(propMap.get("columnCamel"))){
+				config.setColumnIsCamel(Boolean.valueOf(propMap.get("columnCamel")));
+			}
+		    if(!"".equals(propMap.get("wrapperClass"))){
+		    	config.setWrapperClass(Boolean.valueOf(propMap.get("wrapperClass")));
+		    }
 		    //字段名前缀 默认""
 		    config.setBaseColPrefix(propMap.get("baseColPrefix"));
 		    //表名前缀 默认""
@@ -127,6 +132,7 @@ public class ConfigFactory {
 			Module m = new Module();
 			//全局参数 设置
 			m.setColumnIsCamel(config.isColumnIsCamel());//字段是否驼峰命名，全局参数
+			m.setWrapperClass(config.isWrapperClass());//java基本类型是否为包装类
 			m.setPersistence(config.getPersistence());//持久层框架 ，全局参数
 			m.setBaseTabPrefix(config.getBaseTabPrefix());
 			m.setBaseColPrefix(config.getBaseColPrefix());

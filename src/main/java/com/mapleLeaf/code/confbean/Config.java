@@ -14,8 +14,9 @@ public class Config {
 	//包路径的前缀，如com.test，后面则跟上模块名等
 	private String basePackage;
 	//表字段是否驼峰命名
-	private boolean columnIsCamel;
-	
+	private boolean columnIsCamel=true;
+	//java基本类型是否为包装
+	private boolean wrapperClass=true;
 	//表名前缀，可以多个
 	private String baseTabPrefix;
 	//全部表字段名前缀，可以多个
@@ -100,6 +101,12 @@ public class Config {
 	}
 	public void setBaseColPrefix(String baseColPrefix) {
 		this.baseColPrefix = baseColPrefix;
+	}
+	public boolean isWrapperClass() {
+		return wrapperClass;
+	}
+	public void setWrapperClass(boolean wrapperClass) {
+		this.wrapperClass = wrapperClass;
 	}
 	
 }

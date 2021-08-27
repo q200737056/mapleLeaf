@@ -72,39 +72,51 @@ public class CodeUtil {
      * @param databaseType
      * @return
      */
-    public static String convertType(String databaseType) {  
-        String javaType = "";  
-          
-        String databaseTypeStr = databaseType.toLowerCase().replace("unsigned","").trim();
-        if(databaseTypeStr.startsWith("int")
-        		||databaseTypeStr.equals("smallint")
-        		|| databaseTypeStr.equals("tinyint")) {  
-            javaType = "Integer";  
-        } else if(databaseTypeStr.equals("char")||databaseTypeStr.indexOf("varchar")!=-1) {  
-            javaType = "String";  
-        } else if(databaseTypeStr.equals("number") 
-        		|| databaseTypeStr.equals("numeric")) {  
-            javaType = "BigDecimal";  
-        } else if(databaseTypeStr.equals("blob")) {  
-            javaType = "Byte[]";  
-        } else if(databaseTypeStr.equals("float")) {  
-            javaType = "Float";  
-        } else if(databaseTypeStr.equals("double")) {  
-            javaType = "Double";  
-        } else if(databaseTypeStr.equals("decimal")) {  
-            javaType = "BigDecimal";
-        } else if(databaseTypeStr.startsWith("bigint")) {  
-            javaType = "Long";  
-        } else if(databaseTypeStr.equals("date")||databaseTypeStr.equals("time")
-        		||databaseTypeStr.equals("datetime")||databaseTypeStr.startsWith("timestamp")
-        		||databaseTypeStr.equals("year")) {  
-            javaType = "Date";  
-        } else {
-            javaType = "String";  
-        }  
-          
-        return javaType;  
-    }
+    public static String convertType(String databaseType,boolean wrap) {  
+        
+       String databaseTypeStr = databaseType.toLowerCase().replace("unsigned","").trim();
+       if(databaseTypeStr.startsWith("int")
+       		||databaseTypeStr.equals("smallint")
+       		|| databaseTypeStr.equals("tinyint")) {
+       	if(wrap){
+       		return "Integer";
+       	}
+           return "int";  
+       } else if(databaseTypeStr.equals("char")||databaseTypeStr.indexOf("varchar")!=-1) {  
+           return "String";  
+       } else if(databaseTypeStr.equals("number") 
+       		|| databaseTypeStr.equals("numeric")) {  
+           return "BigDecimal";  
+       } else if(databaseTypeStr.equals("blob")) {
+       	if(wrap){
+       		return "Byte[]";
+       	}
+           return "byte[]";  
+       } else if(databaseTypeStr.equals("float")) { 
+       	if(wrap){
+       		return "Float";
+       	}
+           return "float";  
+       } else if(databaseTypeStr.equals("double")) { 
+       	if(wrap){
+       		return "Double";
+       	}
+           return "double";  
+       } else if(databaseTypeStr.equals("decimal")) {  
+           return "BigDecimal";
+       } else if(databaseTypeStr.startsWith("bigint")) {
+       	if(wrap){
+       		return "Long";
+       	}
+           return "long";  
+       } else if(databaseTypeStr.equals("date")||databaseTypeStr.equals("time")
+       		||databaseTypeStr.equals("datetime")||databaseTypeStr.startsWith("timestamp")
+       		||databaseTypeStr.equals("year")) {  
+           return "Date";  
+       }  
+         
+       return "String";  
+   }
     public static String convertClassType(String type){
     	String renType="";
     	if("Date".equals(type)){
@@ -121,7 +133,11 @@ public class CodeUtil {
      * @return
      */
     public static String convertJdbcType(String type,String ormType) {
-    	if("mybatis".equals(ormType.toLowerCase())){
+    	ormType = ormType.toLowerCase();
+    	if("other".equals(ormType)){
+    		return type.toLowerCase();
+    	}
+    	if("mybatis".equals(ormType)){
     		type=type.toUpperCase().replace("UNSIGNED","").trim();
     		
         	if (type.equals("INT")) {
@@ -137,7 +153,7 @@ public class CodeUtil {
         	} else if (type.equals("NVARCHAR")) {
         		type="VARCHAR";
         	}
-    	}else if("hibernate".equals(ormType.toLowerCase())){
+    	}else if("hibernate".equals(ormType)){
     		type=type.toLowerCase().replace("unsigned","").trim();
     		if(type.equals("tinyint")){
     			type="byte";

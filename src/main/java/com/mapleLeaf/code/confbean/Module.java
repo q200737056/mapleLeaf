@@ -14,6 +14,8 @@ public class Module {
 	private String persistence; //持久层框架  全局参数
 
 	private boolean columnIsCamel;//表字段是否驼峰命名  全局参数
+	//java基本类型是否为包装
+	private boolean wrapperClass;
 	private String baseTabPrefix;//表名前缀，可以多个 全局参数
 	//全部表字段名前缀，可以多个
 	private String baseColPrefix;
@@ -133,6 +135,12 @@ public class Module {
 	}
 	public void setBaseColPrefix(String baseColPrefix) {
 		this.baseColPrefix = baseColPrefix;
+	}
+	public boolean isWrapperClass() {
+		return wrapperClass;
+	}
+	public void setWrapperClass(boolean wrapperClass) {
+		this.wrapperClass = wrapperClass;
 	}
 	
 }

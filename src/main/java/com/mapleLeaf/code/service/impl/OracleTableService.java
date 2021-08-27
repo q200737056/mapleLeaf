@@ -68,7 +68,7 @@ public class OracleTableService extends AbstractTableService {
 				col.setColType(CodeUtil.convertJdbcType(type, module.getPersistence()));
 				col.setPropName(isCamel ? CodeUtil.convertToFstLowerCamelCase(colName) : colName);
 
-				col.setPropType(CodeUtil.convertType(type));
+				col.setPropType(CodeUtil.convertType(type,module.isWrapperClass()));
 				col.setUpperPropName(
 						isCamel ? CodeUtil.convertToCamelCase(colName) : CodeUtil.converFirstUpper(colName));
 				col.setLength(rs.getLong("data_length"));

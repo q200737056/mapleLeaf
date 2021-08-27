@@ -9,7 +9,7 @@ public class GlobalConst {
 	public final static String CONFIG="config.xml";
 	//表单类型
 	public final static String[] TAG_TYPES={"select","text","date","checkbox","radio","textarea",
-			"hidden","file","email","mobilphone","telphone","money","number","idcard"};
+			"hidden","file","email","mobilphone","telephone","money","number","idcard"};
 	//持久层类型
 	public final static String[] PERSISTENCE={"mybatis","hibernate","other"};
 }
