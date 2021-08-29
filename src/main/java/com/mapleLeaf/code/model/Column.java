@@ -1,6 +1,6 @@
 package com.mapleLeaf.code.model;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Column {
@@ -22,7 +22,7 @@ public class Column {
     private String labelName=""; 
     //k-v型 字段值，key为 字段值 val，value为标识描述text
     //默认 COMMENT中取 （如果有）
-    private Map<String,String> colValueMap = new HashMap<>();
+    private Map<String,String> colValueMap = new LinkedHashMap<>();
     //表单 标签类型，默认text;
     //默认 COMMENT中取 （如果有）
     private String tagType="text"; 

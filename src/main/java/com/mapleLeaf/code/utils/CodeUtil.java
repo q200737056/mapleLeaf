@@ -1,6 +1,6 @@
 package com.mapleLeaf.code.utils;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -216,7 +216,7 @@ public class CodeUtil {
     	if(isEmpty(data)){
     		return null;
     	}
-    	Map<String,String> dataMap = new HashMap<>();
+    	Map<String,String> dataMap = new LinkedHashMap<>();
     	String[] dataArr = data.trim().replace("，", ",").split(",");
     	for(String item : dataArr){
     		String[] itemArr = item.split(separ);
