@@ -47,12 +47,12 @@ public class OracleTableService extends AbstractTableService {
 
 		List<Column> cols = new ArrayList<>();
 
-		String sql = "SELECT USER_TAB_COLS.TABLE_NAME, USER_TAB_COLS.COLUMN_NAME , " + "USER_TAB_COLS.DATA_TYPE, "
-				+ "USER_TAB_COLS.DATA_LENGTH , " + " USER_TAB_COLS.NULLABLE, " + " USER_TAB_COLS.COLUMN_ID, "
-				+ " user_tab_cols.data_default," + "    user_col_comments.comments " + "FROM USER_TAB_COLS  "
-				+ "inner join user_col_comments on " + " user_col_comments.TABLE_NAME=USER_TAB_COLS.TABLE_NAME "
-				+ "and user_col_comments.COLUMN_NAME=USER_TAB_COLS.COLUMN_NAME "
-				+ "where  USER_TAB_COLS.Table_Name=upper(?)";
+		String sql = "SELECT a.TABLE_NAME, a.COLUMN_NAME,a.DATA_TYPE, "
+				+ "a.DATA_LENGTH , a.NULLABLE, a.COLUMN_ID, "
+				+ "a.data_default, b.comments FROM USER_TAB_COLS a "
+				+ "inner join user_col_comments b on b.TABLE_NAME=a.TABLE_NAME "
+				+ "and b.COLUMN_NAME=a.COLUMN_NAME "
+				+ "where a.Table_Name=upper(?) order by a.COLUMN_ID";
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
