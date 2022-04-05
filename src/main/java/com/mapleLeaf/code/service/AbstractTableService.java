@@ -558,22 +558,40 @@ public abstract class AbstractTableService implements ITableService {
 	 * @param col
 	 */
 	private void setColumnFormat(Column col){
+		//通过字段类型推断表单类型
+		if("text".equals(col.getColType()) || "clob".equals(col.getColType()) 
+				|| col.getLength()>1000){
+			col.setTagType("textarea");
+		}else if("datetime".equals(col.getColType()) || "timestamp".equals(col.getColType())
+				|| "date".equals(col.getColType())){
+			col.setTagType("date");
+		}
 		if(!CodeUtil.isEmpty(col.getRemark())){
 			//字段 文本,表单类型,字段标识 默认 COMMENT中取  
-			//COMMENT约定形式(字段文本;表单类型;val1:text1,val2:text2;)
-			String[] arrTemp = col.getRemark().replace("；", ";").split(";");
-			col.setLabelName(arrTemp[0].trim());
-			if(arrTemp.length>1){
-				col.setTagType(arrTemp[1].trim());
-			}
-			if(arrTemp.length>2){
-				Map<String,String> colValMap = CodeUtil.splitKeyVal(
-						arrTemp[2].replace("：", ":"), ":");
+			//COMMENT约定形式:  字段文本(val1=text1,val2=text2)select
+			String comment = col.getRemark().replace("（", "(").replace("）", ")").replace("：", ":").replace(":", "=");
+			int startIdx = comment.indexOf("(");
+			int endIdx = comment.indexOf(")");
+			if(startIdx!=-1 && endIdx!=-1){
+				col.setLabelName(comment.substring(0,startIdx).trim());
+				String colValStr = comment.substring(startIdx+1,endIdx);
+				Map<String,String> colValMap = CodeUtil.splitKeyVal(colValStr, "=");
 				if(colValMap!=null){
 					col.setColValueMap(colValMap);
 				}
+				if(endIdx+1 != comment.length()){
+					String tagType = comment.substring(endIdx+1,comment.length()).trim();
+					if(CodeUtil.checkStrArray(GlobalConst.TAG_TYPES, tagType)){
+						col.setTagType(tagType);
+					}
+				}else{
+					col.setTagType("select");
+				}
+			}else{
+				col.setLabelName(col.getRemark());
 			}
 		}
+		
 	}
 
 }

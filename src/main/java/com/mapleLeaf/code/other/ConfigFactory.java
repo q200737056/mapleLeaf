@@ -13,13 +13,14 @@ import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
+import com.mapleLeaf.code.confbean.CodeFileConf;
 import com.mapleLeaf.code.confbean.ColumnConf;
 import com.mapleLeaf.code.confbean.ColumnGroupConf;
 import com.mapleLeaf.code.confbean.Config;
-import com.mapleLeaf.code.confbean.CodeFileConf;
 import com.mapleLeaf.code.confbean.Db;
 import com.mapleLeaf.code.confbean.Module;
 import com.mapleLeaf.code.confbean.RefConf;
+import com.mapleLeaf.code.confbean.ReportConf;
 import com.mapleLeaf.code.confbean.TableConf;
 import com.mapleLeaf.code.utils.CodeUtil;
 import com.mapleLeaf.code.utils.XmlUtil;
@@ -101,25 +102,6 @@ public class ConfigFactory {
 		    }
 		  	
 		  	
-			//公共类(包名+模板)非必需
-			Element commonElm = XmlUtil.getChild(global, "common");
-			if(commonElm!=null){
-				String common = commonElm.getTextTrim();
-				if(!common.equals("")){
-					String[] commons = common.replace("，", ",").split(",");
-					for(int i=0;i<commons.length;i++){
-						String[] items = commons[i].split("=");
-						List<String> v=config.getCommonMap().get(items[0].trim());
-						if(v==null||v.isEmpty()){
-							v = new ArrayList<>();
-							v.add(items[1].trim());
-							config.getCommonMap().put(items[0].trim(), v);
-						}else{
-							v.add(items[1].trim());
-						}
-					}
-				}
-			}
 		}
 		
 		//加载db配置
@@ -192,7 +174,8 @@ public class ConfigFactory {
 				}
 			}
 			m.setTables(tableConfs);
-			
+			//加载report
+			m.setReportConf(readReportConf(e));
 			moduleList.add(m);
 		}
 		config.setModules(moduleList);
@@ -213,13 +196,14 @@ public class ConfigFactory {
 	
 		db.setDbType(XmlUtil.getChildValue(dbNode, "dbType", null));
 		db.setDriver(XmlUtil.getChildValue(dbNode, "driver", null));
-		db.setDbName(XmlUtil.getChildValue(dbNode, "dbName", null));
+		db.setCatalog(XmlUtil.getChildValue(dbNode, "catalog", null));
+		db.setSchema(XmlUtil.getChildValue(dbNode, "schema", null));
 		db.setUser(XmlUtil.getChildValue(dbNode, "user", null));
 		db.setPwd(XmlUtil.getChildValue(dbNode, "pwd", null));
 		db.setUrl(XmlUtil.getChildValue(dbNode, "url", null));
 		
 		if(CodeUtil.isEmpty(db.getDbType())||CodeUtil.isEmpty(db.getDriver())
-				||CodeUtil.isEmpty(db.getDbName())||CodeUtil.isEmpty(db.getUser())
+				||CodeUtil.isEmpty(db.getUser())
 				||CodeUtil.isEmpty(db.getPwd())||CodeUtil.isEmpty(db.getUrl())){
 			throw new Exception("未配置db所有项");
 		}
@@ -419,5 +403,18 @@ public class ConfigFactory {
 		
 		return cnf;
 	}
-	
+	/**
+	 * report标签
+	 */
+	private static ReportConf readReportConf(Element module){
+		Element reportEle = XmlUtil.getChild(module, "report");
+		ReportConf cnf = null;
+		if(reportEle!=null) {
+			cnf = new ReportConf();
+			cnf.setSuffix(XmlUtil.getAttrValue(reportEle, "suffix", "doc"));
+			cnf.setName(XmlUtil.getAttrValue(reportEle, "name", "清单"));
+			cnf.setTpl(reportEle.getTextTrim());
+		}
+		return cnf;
+	}
 }

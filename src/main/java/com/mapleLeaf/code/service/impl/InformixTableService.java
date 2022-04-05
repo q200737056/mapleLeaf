@@ -58,11 +58,11 @@ public class InformixTableService extends AbstractTableService {
 				col.setColName(colName);
 				int type = rs.getInt("coltype");// 字段类型
 				String type_str = informixConvert(type);
-				col.setColType(CodeUtil.convertJdbcType(type_str, module.getPersistence()));
+				col.setColType(type_str.toLowerCase());// 数据库字段类型
+				col.setJdbcType(CodeUtil.convertJdbcType(type_str, module.getPersistence()));//jdbc类型
 				col.setRemark("");// 没有
+				
 				col.setPropName(isCamel ? CodeUtil.convertToFstLowerCamelCase(colName) : colName);// 属性
-																									// 就是
-																									// 字段名
 				col.setPropType(CodeUtil.convertType(type_str,module.isWrapperClass()));// 属性 类型
 				col.setUpperPropName(
 						isCamel ? CodeUtil.convertToCamelCase(colName) : CodeUtil.converFirstUpper(colName));// 首字母大写

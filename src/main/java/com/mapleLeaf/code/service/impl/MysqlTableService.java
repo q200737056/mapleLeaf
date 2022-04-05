@@ -1,6 +1,7 @@
 package com.mapleLeaf.code.service.impl;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -50,7 +51,7 @@ public class MysqlTableService extends AbstractTableService {
 		ResultSet rs = null;
 		try {
 			ps = conn.prepareStatement(sql);
-			ps.setString(1, db.getDbName());
+			ps.setString(1, db.getSchema());
 			ps.setString(2, tableName);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -58,8 +59,8 @@ public class MysqlTableService extends AbstractTableService {
 				String colName = rs.getString("column_name");
 				col.setColName(colName);// 字段名
 				String type = rs.getString("data_type");
-
-				col.setColType(CodeUtil.convertJdbcType(type, module.getPersistence()));// 字段类型
+				col.setColType(type.toLowerCase());// 数据库字段类型
+				col.setJdbcType(CodeUtil.convertJdbcType(type, module.getPersistence()));//jdbc类型
 				col.setRemark(rs.getString("column_comment"));// 字段注释
 
 				col.setPropName(isCamel ? CodeUtil.convertToFstLowerCamelCase(colName) : colName);// 类属性名
@@ -88,7 +89,22 @@ public class MysqlTableService extends AbstractTableService {
 
 	@Override
 	public String getTablePrimaryKey(String tableName, Connection con) throws SQLException {
-		return super.getTablePrimaryKey(tableName, con);
+		//return super.getTablePrimaryKey(tableName, con);
+		String colName="";
+		ResultSet rs = null;
+		try {
+			DatabaseMetaData dbMeta = con.getMetaData(); 
+			
+			rs = dbMeta.getPrimaryKeys(con.getCatalog(),con.getSchema(),tableName);
+			while (rs.next()){
+				colName+=rs.getString("column_name")+",";
+			}
+		} finally {
+			if(null!=rs){
+				rs.close();
+			}
+		}
+		return colName;
 	}
 
 	/**

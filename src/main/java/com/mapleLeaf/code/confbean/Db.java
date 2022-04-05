@@ -11,7 +11,8 @@ public class Db {
 	private String pwd;
 	private String driver;
 	private String url;
-	private String dbName;
+	private String catalog;
+	private String schema;
 	
 	public String getDbType() {
 		return dbType;
@@ -43,18 +44,17 @@ public class Db {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+	public String getCatalog() {
+		return catalog;
+	}
+	public void setCatalog(String catalog) {
+		this.catalog = catalog;
+	}
+	public String getSchema() {
+		return schema;
+	}
+	public void setSchema(String schema) {
+		this.schema = schema;
+	}
 	
-	public String getDbName() {
-		return dbName;
-	}
-	public void setDbName(String dbName) {
-		this.dbName = dbName;
-	}
-	
-	@Override
-	public String toString() {
-		return "Db [dbType=" + dbType + ", user=" + user + ", pwd=" + pwd
-				+ ", driver=" + driver + ", url=" + url + ", dbName=" + dbName
-				+ "]";
-	}
 }

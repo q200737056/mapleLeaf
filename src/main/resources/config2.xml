@@ -16,19 +16,16 @@
 		<property name="wrapperClass" value="false" />
 		<!-- 持久层框架(mybatis,hibernate,other)，默认"mybatis" -->
 		<property name="persistence" value="mybatis" />
-		<!-- 一些公共类，工具类,父类等原样输出，不必需(包名=模板文件名(也是类名)，多个逗号隔开) -->
-		<!-- 这里配置了分页类，mybatis分页拦截器, mybatis通用配置-->
-		<!--  
-		<common>common=Page,common=PageInterceptor,resource=Xml_mybatis</common>
-		-->
+		
 	</global>
 
 	<!-- 数据库配置 -->
 	<db>
 		<!-- 数据库类型(mysql,oracle,sqlserver,postgresql,informix) -->
 		<dbType>mysql</dbType>
-		<!-- 数据库名 -->
-		<dbName>demo2</dbName>
+		<!--catalog,schema默认null -->
+		<catalog></catalog>
+		<schema>demo2</schema>
 		<user>root</user>
 		<pwd>q123</pwd>
 		<driver>com.mysql.jdbc.Driver</driver>

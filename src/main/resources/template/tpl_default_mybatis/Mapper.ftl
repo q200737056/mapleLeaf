@@ -84,7 +84,7 @@
 			<@mf.list_row "colName" 10 columns></@mf.list_row>
         )values(
         	<#list columns?chunk(5) as row>
-        	<#list row as col><@mf.print "#"/>{${col.propName},jdbcType=${col.colType}}<#sep>,</#list><#if row?has_next>,</#if>
+        	<#list row as col><@mf.print "#"/>{${col.propName},jdbcType=${col.jdbcType}}<#sep>,</#list><#if row?has_next>,</#if>
         	</#list>
 		)
     </insert>

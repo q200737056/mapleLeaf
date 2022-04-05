@@ -7,6 +7,7 @@ public class Column {
     
     private String colName;//字段名
     private String colType; //字段的类型
+    private String jdbcType; //字段jdbc对应的类型
     private String remark;//字段 注释
     private String propName; //属性名
     private String propType; //属性的java type
@@ -17,7 +18,7 @@ public class Column {
     private Object defaultValue; //字段默认值
     
     //字段 文本,表单类型,字段标识 默认 COMMENT中取  
-	//COMMENT约定形式(字段文本;表单类型;val1:text1,val2:text2;)
+  //COMMENT约定形式:  字段文本(val1=text1,val2=text2)select
     //例如 flag字段   状态;select;0:初始,1:已审核,2:已退回;
     private String labelName=""; 
     //k-v型 字段值，key为 字段值 val，value为标识描述text
@@ -109,6 +110,12 @@ public class Column {
 	}
 	public void setTagType(String tagType) {
 		this.tagType = tagType;
+	}
+	public String getJdbcType() {
+		return jdbcType;
+	}
+	public void setJdbcType(String jdbcType) {
+		this.jdbcType = jdbcType;
 	}
 	
 }

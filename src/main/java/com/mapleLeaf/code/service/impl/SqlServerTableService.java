@@ -82,8 +82,8 @@ public class SqlServerTableService extends AbstractTableService {
 				String colName = rs.getString("column_name");
 				col.setColName(colName);
 				String type = rs.getString("data_type");
-
-				col.setColType(CodeUtil.convertJdbcType(type, module.getPersistence()));
+				col.setColType(type.toLowerCase());// 数据库字段类型
+				col.setJdbcType(CodeUtil.convertJdbcType(type, module.getPersistence()));//jdbc类型
 				col.setRemark(rs.getString("comments"));
 
 				col.setPropName(isCamel ? CodeUtil.convertToFstLowerCamelCase(colName) : colName);

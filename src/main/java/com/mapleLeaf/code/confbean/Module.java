@@ -33,6 +33,7 @@ public class Module {
 	
 	private Map<String,String> paramMap=new HashMap<>();
 	
+	private ReportConf reportConf;
 	public String getName() {
 		return name;
 	}
@@ -141,6 +142,12 @@ public class Module {
 	}
 	public void setWrapperClass(boolean wrapperClass) {
 		this.wrapperClass = wrapperClass;
+	}
+	public ReportConf getReportConf() {
+		return reportConf;
+	}
+	public void setReportConf(ReportConf reportConf) {
+		this.reportConf = reportConf;
 	}
 	
 }

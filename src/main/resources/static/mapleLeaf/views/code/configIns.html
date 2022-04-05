@@ -76,19 +76,14 @@
                 <td>全局属性配置，可配置多个</td>
                 <td>否</td>
                 <td>name,value</td>
-                <td>配置name-value，现有属性：baseDir(路径,默认项目所在目录),basePackage(基础包名，默认mapleLeaf.code)
-                ,baseColPrefix(需要去掉的全局字段名前缀，默认""),baseTabPrefix(需要去掉的全局表名前缀，默认"")
-                ,columnCamel(表字段下划线转驼峰命名，默认true),wrapperClass(java基本类型是否为包装类，默认true)
+                <td>配置name-value，现有属性：baseDir(路径,默认项目所在目录)
+                ,basePackage(基础包名，默认mapleLeaf.code)
+                ,baseColPrefix(需要去掉的全局字段名前缀，默认"")
+                ,baseTabPrefix(需要去掉的全局表名前缀，默认"")
+                ,columnCamel(表字段下划线转驼峰命名，默认true)
+                ,wrapperClass(java基本类型是否为包装类，默认true)
                 ,persistence(持久层框架，默认mybatis)</td>
               </tr>
-              <tr>
-                <td>common</td>
-                <td>公共类配置，形式：“包名=模板”多个逗号分隔，模板不需要后缀。如：util=Page,commom.Dao=BaseDao</td>
-                <td>否</td>
-                <td>没有</td>
-                <td></td>
-              </tr>
-              
             </tbody>
           </table>
           
@@ -121,9 +116,17 @@
                 </td>
               </tr>
               <tr>
-                <td>dbName</td>
-                <td>数据库名</td>
-                <td>是</td>
+                <td>catalog</td>
+                <td>数据库目录（抽象对象）</td>
+                <td>否</td>
+                <td>没有</td>
+                <td>
+                </td>
+              </tr>
+              <tr>
+                <td>schema</td>
+                <td>数据库对象集合（抽象对象）</td>
+                <td>否</td>
                 <td>没有</td>
                 <td>
                 </td>
@@ -198,7 +201,7 @@
             
               <tr>
                 <td>package</td>
-                <td>包名配置</td>
+                <td>三层架构包名配置</td>
                 <td>是</td>
                 <td>没有</td>
                 <td></td>
@@ -209,6 +212,14 @@
                 <td>否</td>
                 <td>没有</td>
                 <td></td>
+              </tr>
+              <tr class="nepadmin-c-red nepadmin-bold">
+                <td>report</td>
+                <td>清单，可以显示所有配置的table，通过tables循环获取;标签内容为模板，多个逗号分隔，必需</td>
+                <td>否</td>
+                <td>name,suffix</td>
+                <td>name属性：清单名，非必需,默认"清单"；
+                 suffix属性：清单后缀，非必需，默认"doc"；</td>
               </tr>
             </tbody>
           </table>

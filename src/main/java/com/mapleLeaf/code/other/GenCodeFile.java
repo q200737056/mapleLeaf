@@ -1,16 +1,13 @@
 package com.mapleLeaf.code.other;
 
 import java.io.File;
-
 import java.io.IOException;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -22,7 +19,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.mapleLeaf.code.confbean.CodeFileConf;
 import com.mapleLeaf.code.confbean.Config;
 import com.mapleLeaf.code.confbean.Module;
+import com.mapleLeaf.code.confbean.ReportConf;
 import com.mapleLeaf.code.confbean.TableConf;
+import com.mapleLeaf.code.model.Report;
 import com.mapleLeaf.code.model.Table;
 import com.mapleLeaf.code.service.ITableService;
 import com.mapleLeaf.code.utils.CodeUtil;
@@ -56,7 +55,14 @@ public class GenCodeFile {
              tableService.setDb(config.getDb());
              Class.forName(config.getDb().getDriver());  
              con = DriverManager.getConnection(config.getDb().getUrl(), config.getDb().getUser()
-             		,config.getDb().getPwd());  
+             		,config.getDb().getPwd());
+             if(null!=config.getDb().getCatalog()){
+            	 con.setCatalog(config.getDb().getCatalog());
+             }
+             if(null!=config.getDb().getSchema()){
+            	 con.setSchema(config.getDb().getSchema());
+             }
+             ArrayList<Table> tables = new ArrayList<>();
              for (Module module : config.getModules()) {
              	log.info("module="+module.getName());
              	
@@ -70,21 +76,19 @@ public class GenCodeFile {
              		Table table = tableService.getTable(tbConf,module, con);//获取一个表的相关信息
              		genFile(table,config, module);//生成代码
              	}
-             	
-             	
-             }
-             
-             //公共类生成
-             if(!config.getCommonMap().isEmpty()){
-             	for(Entry<String, List<String>> entry:config.getCommonMap().entrySet()){
-             		String pak = entry.getKey();
-             		List<String> templs = entry.getValue();
-             		for(String item:templs){
-             			generateCommonFile(pak,item,config);
-             		}
+             	//生成清单
+             	if(module.getReportConf()!=null) {
+             		Report report = new Report();
+             		report.setTables(tables);
+             		JSONObject jsonObj = (JSONObject)JSON.toJSON(report);
+             		setBaseInfo(jsonObj,config,module);
+                 	generateReportFile(jsonObj, config, module);
+                 	tables.clear();
              	}
+             	
              }
              
+            
              Long end = System.currentTimeMillis();
              log.info("生成代码结束，共花费: "+(end-start));
 		} catch (Exception e) {
@@ -176,20 +180,7 @@ public class GenCodeFile {
     	log.info("生成文件："+savePath);
     	
     }
-    /**
-     * 生成公共类文件 
-     * @param table 
-     */  
-    private void generateCommonFile(String pak,String tmpl,Config config) throws Exception {
-    	
-    	File saveDir=getSaveFilePath(pak,config);
-    	File saveFile = new File(saveDir,tmpl+".java");
-
-    	String savePath =saveFile.getAbsolutePath();
-    	FreemarkerUtil.createDoc(config.getFmkConf(),null, config.getTplName()+"/"+tmpl, savePath);
-    	log.info("生成文件："+savePath);
-    }
-
+    
     /**
      * 根据模块定义生成文件保存目录
      * @param module
@@ -305,7 +296,7 @@ public class GenCodeFile {
 	    	if(!StringUtils.isBlank(type)){
 	    		suffix = type.toLowerCase();
 	    	}
-			File saveDir=getSaveFilePath(codeFile.getCustomPackage()+File.separator+table.getLowEntName(),config);
+			File saveDir=getSaveFilePath(codeFile.getCustomPackage(),config);
 			for (String tpl : tplArr) {
 				
 				File saveFile = new File(saveDir,tpl+"_"+table.getEntName()+"."+suffix);
@@ -317,7 +308,37 @@ public class GenCodeFile {
 		}
 		
 	}
-   
+	/**
+	 * 生成清单
+	 * @param table
+	 */
+	private void generateReportFile(JSONObject obj,Config config,Module module) throws Exception {
+		ReportConf reportConf = module.getReportConf();
+		if(reportConf!=null) {
+			String tpls = reportConf.getTpl();
+	    	String[] tplArr = tpls.replace("，", ",").split(",");
+	    	String type = reportConf.getSuffix();
+	    	String suffix = "doc";
+	    	if(!StringUtils.isBlank(type)){
+	    		suffix = type.toLowerCase();
+	    	}
+			File saveDir=new File(config.getBaseDir()+ File.separator 
+					+ config.getBasePackage().replace(".", File.separator));
+			if (!saveDir.exists()) {
+	    		saveDir.mkdirs();
+	    	}
+			
+			for (String tpl : tplArr) {
+				
+				File saveFile = new File(saveDir,tpl+"_"+reportConf.getName()+"."+suffix);
+				String savePath =saveFile.getAbsolutePath();
+				log.info("生成文件："+savePath);
+				FreemarkerUtil.createDoc(config.getFmkConf(),obj, config.getTplName()+"/"+tpl.trim(), savePath);
+			}
+		}
+		
+	}
+     
     public static void main(String[] args) {  
         GenCodeFile gen = new GenCodeFile(); 
         try {

@@ -248,7 +248,7 @@ public class CodeUtil {
     public static int checkStrArrayIdx(String[] arr,String str){
     	for(int i=0;i<arr.length;i++){
     		String s = arr[i];
-    		if(s.equalsIgnoreCase(str)){
+    		if(s!=null && s.trim().equalsIgnoreCase(str)){
     			return i;
     		}
     	}
