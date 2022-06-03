@@ -88,8 +88,7 @@ public class SqlServerTableService extends AbstractTableService {
 
 				col.setPropName(isCamel ? CodeUtil.convertToFstLowerCamelCase(colName) : colName);
 				col.setPropType(CodeUtil.convertType(type,module.isWrapperClass()));
-				col.setUpperPropName(
-						isCamel ? CodeUtil.convertToCamelCase(colName) : CodeUtil.converFirstUpper(colName));
+				
 				col.setNullable(rs.getString("nullable").equals("Y"));
 				col.setLength(rs.getLong("data_length"));
 				col.setDefaultValue(rs.getString("data_default"));

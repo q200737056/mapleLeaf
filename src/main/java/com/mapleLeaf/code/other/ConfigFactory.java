@@ -386,7 +386,7 @@ public class ConfigFactory {
 		cnf.setLabelName(XmlUtil.getAttrValue(e, "labelName", null));
 		cnf.setTagType(XmlUtil.getAttrValue(e, "tagType", null));
 		cnf.setPropName(XmlUtil.getAttrValue(e, "propName", null));
-		
+		cnf.setMetaData(XmlUtil.getAttrValue(e, "metaData", null));
 		cnf.setColValue(e.getTextTrim());
 		
 		return cnf;

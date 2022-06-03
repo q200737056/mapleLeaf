@@ -67,8 +67,7 @@ public class PostgresqlTableService extends AbstractTableService {
 
 				col.setPropName(isCamel ? CodeUtil.convertToFstLowerCamelCase(colName) : colName);// 类属性名
 				col.setPropType(CodeUtil.convertType(type,module.isWrapperClass()));// 属性类型
-				col.setUpperPropName(
-						isCamel ? CodeUtil.convertToCamelCase(colName) : CodeUtil.converFirstUpper(colName));
+				
 				col.setNullable(rs.getString("is_nullable").equals("YES"));// 字段是否为空
 				col.setLength(rs.getLong("character_maximum_length"));// 字段长度
 				col.setDefaultValue(rs.getString("column_default"));// 字段默认值

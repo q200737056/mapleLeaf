@@ -299,12 +299,7 @@
                 <td>属性类型，即字段类型对应的java类型</td>
                 <td></td>
               </tr>
-              <tr>
-                <td>upperPropName</td>
-                <td>String</td>
-                <td>属性名首字母大写，主要用来get..,set..</td>
-                <td></td>
-              </tr>
+              
               <tr>
                 <td>nullable</td>
                 <td>Boolean</td>
@@ -348,6 +343,13 @@
                 <td>Map&lt;String,String&gt;</td>
                 <td>表字段值，对应COMMENT格式（字段文本;表单类型;val1:text1,val2:text2;）第3个，
                 	可在配置文件中column标签内容中自定义的字段值</td>
+                <td>
+                </td>
+              </tr>
+              <tr>
+                <td>metaData</td>
+                <td>Map&lt;String,Object&gt;</td>
+                <td>附带元数据,通过字段.meteData['key']!获取值</td>
                 <td>
                 </td>
               </tr>

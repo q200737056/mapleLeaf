@@ -7,6 +7,7 @@ public class ColumnConf {
 	private String tagType;
 	private String colValue;
 	private String propName;
+	private String metaData;
 	
 	public String getColName() {
 		return colName;
@@ -37,6 +38,12 @@ public class ColumnConf {
 	}
 	public void setPropName(String propName) {
 		this.propName = propName;
+	}
+	public String getMetaData() {
+		return metaData;
+	}
+	public void setMetaData(String metaData) {
+		this.metaData = metaData;
 	}
 	
 }

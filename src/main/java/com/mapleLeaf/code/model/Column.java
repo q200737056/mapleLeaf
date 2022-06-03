@@ -1,5 +1,6 @@
 package com.mapleLeaf.code.model;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ public class Column {
     private String remark;//字段 注释
     private String propName; //属性名
     private String propType; //属性的java type
-    private String upperPropName; //首字大写的属性名 
+   
     private boolean isPk=false;//是否主键
     private boolean isNullable=true;//是否允许为空
     private Long length; //字段长度
@@ -27,7 +28,8 @@ public class Column {
     //表单 标签类型，默认text;
     //默认 COMMENT中取 （如果有）
     private String tagType="text"; 
-   
+    private Map<String,Object> metaData = new HashMap<>();
+    
 	public String getColName() {
 		return colName;
 	}
@@ -52,12 +54,7 @@ public class Column {
 	public void setPropType(String propType) {
 		this.propType = propType;
 	}
-	public String getUpperPropName() {
-		return upperPropName;
-	}
-	public void setUpperPropName(String upperPropName) {
-		this.upperPropName = upperPropName;
-	}
+	
 	public String getRemark() {
 		return remark;
 	}
@@ -65,15 +62,12 @@ public class Column {
 		this.remark = remark;
 	}
 	
-	
 	public boolean isPk() {
 		return isPk;
 	}
 	public void setPk(boolean isPk) {
 		this.isPk = isPk;
 	}
-	
-	
 	public boolean isNullable() {
 		return isNullable;
 	}
@@ -116,6 +110,12 @@ public class Column {
 	}
 	public void setJdbcType(String jdbcType) {
 		this.jdbcType = jdbcType;
+	}
+	public Map<String, Object> getMetaData() {
+		return metaData;
+	}
+	public void setMetaData(Map<String, Object> metaData) {
+		this.metaData = metaData;
 	}
 	
 }

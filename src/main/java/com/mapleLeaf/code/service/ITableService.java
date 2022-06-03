@@ -22,7 +22,6 @@ import com.mapleLeaf.code.model.Table;
  */
 public interface ITableService {
 
-	void setDb(Db db);
 	
 	
 	 /**

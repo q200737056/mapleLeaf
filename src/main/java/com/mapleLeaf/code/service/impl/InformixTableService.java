@@ -64,8 +64,7 @@ public class InformixTableService extends AbstractTableService {
 				
 				col.setPropName(isCamel ? CodeUtil.convertToFstLowerCamelCase(colName) : colName);// 属性
 				col.setPropType(CodeUtil.convertType(type_str,module.isWrapperClass()));// 属性 类型
-				col.setUpperPropName(
-						isCamel ? CodeUtil.convertToCamelCase(colName) : CodeUtil.converFirstUpper(colName));// 首字母大写
+				
 				col.setNullable(true);// 默认 允许为空
 				col.setLength((long) rs.getInt("collength"));// 字段长度
 				col.setDefaultValue("");

@@ -49,10 +49,10 @@ public class OracleTableService extends AbstractTableService {
 
 		String sql = "SELECT a.TABLE_NAME, a.COLUMN_NAME,a.DATA_TYPE, "
 				+ "a.DATA_LENGTH , a.NULLABLE, a.COLUMN_ID, "
-				+ "a.data_default, b.comments FROM USER_TAB_COLS a "
-				+ "inner join user_col_comments b on b.TABLE_NAME=a.TABLE_NAME "
-				+ "and b.COLUMN_NAME=a.COLUMN_NAME "
-				+ "where a.Table_Name=upper(?) order by a.COLUMN_ID";
+				+ "a.data_default, b.comments FROM all_tab_columns a "
+				+ "inner join all_col_comments b on b.TABLE_NAME=a.TABLE_NAME "
+				+ "and b.COLUMN_NAME=a.COLUMN_NAME and a.OWNER = b.OWNER "
+				+ "where a.TABLE_NAME=upper(?) and a.OWNER=? order by a.COLUMN_ID";
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -69,8 +69,7 @@ public class OracleTableService extends AbstractTableService {
 				
 				col.setPropName(isCamel ? CodeUtil.convertToFstLowerCamelCase(colName) : colName);
 				col.setPropType(CodeUtil.convertType(type,module.isWrapperClass()));
-				col.setUpperPropName(
-						isCamel ? CodeUtil.convertToCamelCase(colName) : CodeUtil.converFirstUpper(colName));
+				
 				col.setLength(rs.getLong("data_length"));
 				col.setNullable(rs.getString("nullable").equals("YES") || rs.getString("nullable").equals("Y"));
 				col.setDefaultValue(rs.getString("data_default"));
@@ -95,8 +94,8 @@ public class OracleTableService extends AbstractTableService {
 	public String getTablePrimaryKey(String tableName, Connection con) throws SQLException {
 		// DatabaseMetaData dbMeta = con.getMetaData();
 		// ResultSet rs = dbMeta.getPrimaryKeys(null,null,tableName);
-		String sql = "select a.constraint_name,a.column_name from user_cons_columns a, user_constraints b  "
-				+ "where a.constraint_name = b.constraint_name  and b.constraint_type = 'P' and a.table_name = ?";
+		String sql = "select a.constraint_name,a.column_name from all_cons_columns a, all_constraints b  "
+				+ "where a.constraint_name = b.constraint_name  and b.constraint_type = 'P' and a.table_name = ? and a.owner=?";
 		String columnName = "";
 
 		PreparedStatement ps = null;

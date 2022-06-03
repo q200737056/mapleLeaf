@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.alibaba.fastjson.JSON;
 import com.mapleLeaf.code.confbean.ColumnConf;
 import com.mapleLeaf.code.confbean.ColumnGroupConf;
 import com.mapleLeaf.code.confbean.Db;
@@ -28,10 +29,6 @@ import com.mapleLeaf.common.util.GlobalConst;
 public abstract class AbstractTableService implements ITableService {
 
 	
-	protected Db db;
-	public void setDb(Db db) {
-		this.db = db;
-	}
 	/**
 	 * 表注释
 	 * @param tableName
@@ -378,7 +375,19 @@ public abstract class AbstractTableService implements ITableService {
 			String propName = colConf.getPropName();
 			if(!CodeUtil.isEmpty(propName)){
 				col.setPropName(propName);
-				col.setUpperPropName(CodeUtil.converFirstUpper(propName));
+			}
+			//字段元数据
+			String metaData = colConf.getMetaData();
+			if(!CodeUtil.isEmpty(metaData)){
+				metaData = metaData.replaceAll("'", "\"");
+				Map<String,Object> metaDataMap = null;
+				try {
+					metaDataMap = JSON.parseObject(metaData,Map.class);
+				} catch (Exception e) {
+				}
+				if(metaDataMap!=null){
+					col.setMetaData(metaDataMap);
+				}
 			}
 			String colValue = colConf.getColValue();
 			if(!CodeUtil.isEmpty(colValue)){
@@ -519,8 +528,7 @@ public abstract class AbstractTableService implements ITableService {
  						String tmpColName = col.getColName().replaceFirst(colPrefixs[i].trim().toLowerCase(), "");
  						col.setPropName(isCamel?CodeUtil.convertToFstLowerCamelCase(tmpColName)
  			        			:tmpColName);// 类属性名
- 						col.setUpperPropName(isCamel?CodeUtil.convertToCamelCase(tmpColName)
- 			        			:CodeUtil.converFirstUpper(tmpColName));//类 属性名首字母大写
+ 						
  						break;
      				}
  				}
@@ -560,7 +568,7 @@ public abstract class AbstractTableService implements ITableService {
 	private void setColumnFormat(Column col){
 		//通过字段类型推断表单类型
 		if("text".equals(col.getColType()) || "clob".equals(col.getColType()) 
-				|| col.getLength()>1000){
+				|| col.getLength()>=1000){
 			col.setTagType("textarea");
 		}else if("datetime".equals(col.getColType()) || "timestamp".equals(col.getColType())
 				|| "date".equals(col.getColType())){
@@ -569,7 +577,8 @@ public abstract class AbstractTableService implements ITableService {
 		if(!CodeUtil.isEmpty(col.getRemark())){
 			//字段 文本,表单类型,字段标识 默认 COMMENT中取  
 			//COMMENT约定形式:  字段文本(val1=text1,val2=text2)select
-			String comment = col.getRemark().replace("（", "(").replace("）", ")").replace("：", ":").replace(":", "=");
+			String comment = col.getRemark().replace("（", "(").replace("）", ")").replace("：", ":").replace(":", "=")
+					.replace("；", ";").replace(";", ",");
 			int startIdx = comment.indexOf("(");
 			int endIdx = comment.indexOf(")");
 			if(startIdx!=-1 && endIdx!=-1){

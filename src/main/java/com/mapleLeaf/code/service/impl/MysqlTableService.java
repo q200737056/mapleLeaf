@@ -51,7 +51,7 @@ public class MysqlTableService extends AbstractTableService {
 		ResultSet rs = null;
 		try {
 			ps = conn.prepareStatement(sql);
-			ps.setString(1, db.getSchema());
+			ps.setString(1, conn.getCatalog());
 			ps.setString(2, tableName);
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -65,9 +65,7 @@ public class MysqlTableService extends AbstractTableService {
 
 				col.setPropName(isCamel ? CodeUtil.convertToFstLowerCamelCase(colName) : colName);// 类属性名
 				col.setPropType(CodeUtil.convertType(type,module.isWrapperClass()));// 属性类型
-				// 属性名首字母大写
-				col.setUpperPropName(
-						isCamel ? CodeUtil.convertToCamelCase(colName) : CodeUtil.converFirstUpper(colName));
+				
 																												
 				col.setNullable(rs.getString("is_nullable").equals("YES"));// 字段是否为空
 				col.setLength(rs.getLong("character_maximum_length"));// 字段长度

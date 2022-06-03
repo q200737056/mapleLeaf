@@ -371,7 +371,7 @@
                 <td>
                  	表字段标签，可自定义字段属性；配置的字段名必须未被过滤掉，而且表中存在；
                  	标签内容为字段值设定，比如 flag字段表示状态。可自定义字段值  
-                 	如：0=可用,1=不可用；对应COMMENT约定格式(字段文本;表单类型;val1:text1,val2:text2;)中的第3个；
+                 	如：0=可用,1=不可用；对应COMMENT约定格式[字段文本(val1:text1,val2:text2)表单类型]中的第3个；
                  	默认会从COMMENT中取（如果有）。
                	</td>
                 <td>否</td>
@@ -380,7 +380,7 @@
                 	labelName属性：自定义字段文本，可用来在页面中显示文本，非必需，
                 	默认会从COMMENT中取； 
                 	tagType属性：自定义表单标签类型,可选(text,select,date,checkbox,radio,hidden,textarea,file)
-                	，默认 text，非必需，默认会从COMMENT约定格式(字段文本;表单类型;val1:text1,val2:text2;)中取；
+                	，默认 text，非必需，默认会从COMMENT约定格式[字段文本(val1:text1,val2:text2)表单类型]中取；
                 	propName属性：自定义java类的属性名。
                 </td>
               </tr>

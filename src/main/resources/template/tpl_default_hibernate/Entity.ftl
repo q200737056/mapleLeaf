@@ -73,10 +73,10 @@ public class ${entName} implements Serializable {
 	
 	<#list columns as col>
 	<#if !mf.getFks()?seq_contains(col.colName)>
-	public void set${col.upperPropName}(${col.propType} ${col.propName}){
+	public void set${col.propName?cap_first}(${col.propType} ${col.propName}){
 		this.${col.propName}=${col.propName};
 	}
-	public ${col.propType} get${col.upperPropName}(){
+	public ${col.propType} get${col.propName?cap_first}(){
 		return this.${col.propName};
 	}
 	

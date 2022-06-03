@@ -52,7 +52,7 @@ public class GenCodeFile {
         	 Config config= ConfigFactory.createConfig(configFile,tplPath);
              
              ITableService tableService = TableServiceFactory.getInstance(config.getDb().getDbType());
-             tableService.setDb(config.getDb());
+             
              Class.forName(config.getDb().getDriver());  
              con = DriverManager.getConnection(config.getDb().getUrl(), config.getDb().getUser()
              		,config.getDb().getPwd());
